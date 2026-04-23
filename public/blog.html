@@ -87,28 +87,35 @@ async function loadBlogPosts() {
       return;
     }
 
-    container.innerHTML = posts.map(post => `
-      <div class="blog-card">
-        <div class="blog-card-img"
-             style="background:linear-gradient(135deg,rgba(0,229,255,0.12),rgba(0,230,118,0.06));">
-          <i class="fas fa-pen-fancy"
-             style="font-size:3rem;color:var(--neon-cyan);text-shadow:0 0 20px var(--neon-cyan);"></i>
-        </div>
-        <div class="blog-card-body">
-          <div class="blog-meta">
-            <span class="blog-cat"
-                  style="background:rgba(0,229,255,0.1);color:var(--neon-cyan);
-                         border:1px solid rgba(0,229,255,0.2);">مقالاتي</span>
-            <span class="blog-date"><i class="fas fa-calendar"></i> ${post.date || ''}</span>
-          </div>
-          <h3>${post.title}</h3>
-          <p>${post.excerpt || ''}</p>
-          <a href="blog-post.html?id=${post.id}" class="blog-read-more">
-            اقرأ المزيد <i class="fas fa-arrow-left"></i>
-          </a>
-        </div>
+    container.innerHTML = posts.map(post => {
+  const iconClass = post.icon || "fas fa-pen-fancy";
+
+  return `
+  <div class="blog-card">
+    <div class="blog-card-img"
+         style="background:linear-gradient(135deg,rgba(0,229,255,0.12),rgba(0,230,118,0.06));">
+      <i class="${iconClass}"
+         style="font-size:3rem;color:var(--neon-cyan);text-shadow:0 0 20px var(--neon-cyan);"></i>
+    </div>
+
+    <div class="blog-card-body">
+      <div class="blog-meta">
+        <span class="blog-cat"
+              style="background:rgba(0,229,255,0.1);color:var(--neon-cyan);
+                     border:1px solid rgba(0,229,255,0.2);">مقالاتي</span>
+        <span class="blog-date"><i class="fas fa-calendar"></i> ${post.date || ''}</span>
       </div>
-    `).join('');
+
+      <h3>${post.title}</h3>
+      <p>${post.excerpt || ''}</p>
+
+      <a href="blog-post.html?id=${post.id}" class="blog-read-more">
+        اقرأ المزيد <i class="fas fa-arrow-left"></i>
+      </a>
+    </div>
+  </div>
+  `;
+}).join('');
 
   } catch (err) {
     console.error('خطأ في تحميل مقالات البلوج:', err);

@@ -70,6 +70,7 @@ app.post('/api/community-submit', async (req, res) => {
       author:    req.body.author  || 'guest',
       excerpt:   req.body.excerpt || '',
       content:   req.body.content || '',
+      icon:      req.body.icon || "fas fa-user-edit",
       type:      'guest',
       published: false,
       date:      new Date().toISOString().split('T')[0],
@@ -158,14 +159,15 @@ app.post('/api/login', (req, res) => {
 app.post('/api/blog', verifyAdmin, async (req, res) => {
   try {
     const db   = await getDB();
-    const post = {
-      id:        generateId(),
-      title:     req.body.title,
-      excerpt:   req.body.excerpt,
-      content:   req.body.content,
-      published: true,
-      date:      new Date().toISOString().split('T')[0],
-    };
+const post = {
+  id:        generateId(),
+  title:     req.body.title,
+  excerpt:   req.body.excerpt,
+  content:   req.body.content,
+  icon:      req.body.icon || "fas fa-pen-fancy",
+  published: true,
+  date:      new Date().toISOString().split('T')[0],
+};
     await db.collection('blog').insertOne(post);
     res.json({ ok: true });
   } catch {
