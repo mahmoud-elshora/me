@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>المدونة | محمود الشوري</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="page-common.css"/>
+</head>
+<body data-page="blog">
+  
+  <div id="loader" class="loader">
+    <div class="loader-inner">
+      <div class="loader-logo" style="font-size:1.5rem;">00</div>
+      <div class="loader-bar"><span></span></div>
+    </div>
+  </div>
+
+
+<section class="page-hero">
+  <div class="page-hero-glow"></div>
+  <div class="page-hero-badge"><i class="fas fa-pen-fancy"></i> أفكاري</div>
+  <h1>المدونة</h1>
+  <p>أفكار وتأملات وتجارب من رحلة محمود الشوري في عالم التعليم والقيادة والابتكار</p>
+  <div class="breadcrumb">
+    <a href="index.html">الرئيسية</a>
+    <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+    <span>المدونة</span>
+  </div>
+</section>
+
+<div class="page-content">
+
+  <!-- Featured Post (ثابت) -->
+  <div class="text-section" style="border-right:3px solid var(--neon-cyan);margin-bottom:3rem;">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <span style="background:var(--neon-cyan);color:#030a14;padding:0.3rem 0.8rem;border-radius:50px;font-size:0.75rem;font-weight:700;">⭐ مقال مميز</span>
+      <span style="font-size:0.78rem;color:var(--text-muted);"><i class="fas fa-calendar"></i> 2026</span>
+      <span style="font-size:0.78rem;color:var(--text-muted);"><i class="fas fa-clock"></i> 5 دقائق قراءة</span>
+    </div>
+    <h2 style="font-size:1.6rem;">بصوتنا نقرر — كيف أثّرت في مجتمعي وأنا في السادسة عشرة؟</h2>
+    <p>كثيراً ما يُقال إن التغيير يحتاج إلى موارد ضخمة ومناصب رفيعة وسنوات طويلة. لكنني أثبتت لنفسي أن التغيير الحقيقي يبدأ من قرار صادق أن تُحدث فارقاً، مهما كان سنّك أو إمكانياتك...</p>
+    <div class="quote-block">
+      <p>"التغيير لا يبدأ من القمة دائماً. أحياناً يبدأ من طالب في السادسة عشرة يؤمن أنه يستطيع."</p>
+    </div>
+    <a href="blog-post.html?id=b1" class="btn btn-primary"><i class="fas fa-book-open"></i> اقرأ المقال كاملاً</a>
+  </div>
+
+  <!-- عنوان قسم المقالات الديناميكية -->
+  <h2 style="font-size:1.4rem;font-weight:800;color:var(--text-primary);margin-bottom:1.5rem;">
+    <i class="fas fa-pen neon-cyan"></i> مقالاتي
+  </h2>
+
+  <!-- كروت المقالات من blog.json -->
+  <div class="blog-grid" id="blogPostsContainer">
+    <!-- تُملأ ديناميكياً -->
+  </div>
+
+  <div class="neon-divider"></div>
+
+  <!-- Subscribe -->
+  <div class="text-section" style="text-align:center;">
+    <h2 style="justify-content:center;"><i class="fas fa-bell neon-cyan"></i> ابقَ على اطلاع</h2>
+    <p style="max-width:500px;margin:0 auto 2rem;color:var(--text-secondary);">تواصل معنا لتحصل على آخر مقالات وأخبار مبادرة وعينا مباشرة إلى بريدك.</p>
+    <a href="contact.html" class="btn btn-primary"><i class="fas fa-envelope"></i> تواصل معنا</a>
+  </div>
+
+</div>
+
+<script src="components.js"></script>
+<script src="page-scripts.js"></script>
+<script>
+/* ── تحميل مقالات المدونة من /api/posts?type=admin ── */
+async function loadBlogPosts() {
+  const container = document.getElementById('blogPostsContainer');
+
+  try {
+    const res   = await fetch('/api/posts?type=admin');
+    if (!res.ok) throw new Error('Network error');
+    const posts = await res.json();
+
+    if (posts.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-muted);text-align:center;grid-column:1/-1;">لا توجد مقالات منشورة حالياً.</p>';
+      return;
+    }
+
+    container.innerHTML = posts.map(post => `
+      <div class="blog-card">
+        <div class="blog-card-img"
+             style="background:linear-gradient(135deg,rgba(0,229,255,0.12),rgba(0,230,118,0.06));">
+          <i class="fas fa-pen-fancy"
+             style="font-size:3rem;color:var(--neon-cyan);text-shadow:0 0 20px var(--neon-cyan);"></i>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-meta">
+            <span class="blog-cat"
+                  style="background:rgba(0,229,255,0.1);color:var(--neon-cyan);
+                         border:1px solid rgba(0,229,255,0.2);">مقالاتي</span>
+            <span class="blog-date"><i class="fas fa-calendar"></i> ${post.date || ''}</span>
+          </div>
+          <h3>${post.title}</h3>
+          <p>${post.excerpt || ''}</p>
+          <a href="blog-post.html?id=${post.id}" class="blog-read-more">
+            اقرأ المزيد <i class="fas fa-arrow-left"></i>
+          </a>
+        </div>
+      </div>
+    `).join('');
+
+  } catch (err) {
+    console.error('خطأ في تحميل مقالات البلوج:', err);
+    container.innerHTML = '<p style="color:var(--neon-violet);text-align:center;grid-column:1/-1;">تعذّر تحميل المقالات — تأكد من تشغيل السيرفر.</p>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadBlogPosts);
+</script>
+</body>
+</html>

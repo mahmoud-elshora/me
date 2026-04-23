@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>المهارات | محمود الشوري</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="page-common.css"/>
+  <style>
+    .skill-icon-card { background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:2rem 1.5rem;text-align:center;transition:all 0.3s ease;position:relative;overflow:hidden; }
+    .skill-icon-card:hover { border-color:var(--border-hover);transform:translateY(-6px);box-shadow:0 15px 40px rgba(0,229,255,0.1); }
+    .skill-icon-card::after { content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--grad);opacity:0;transition:opacity 0.3s; }
+    .skill-icon-card:hover::after { opacity:1; }
+    .skill-icon { font-size:2.5rem;margin-bottom:1rem;display:block; }
+    .skill-icon-card h3 { font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:0.5rem; }
+    .skill-icon-card p { font-size:0.82rem;color:var(--text-secondary);line-height:1.6; }
+    .skill-level { display:flex;gap:4px;justify-content:center;margin-top:0.75rem; }
+    .skill-level-dot { width:8px;height:8px;border-radius:50%;background:var(--border-color);transition:background 0.3s; }
+    .skill-level-dot.filled { background:currentColor; }
+  </style>
+</head>
+<body>
+<div id="loader" class="loader">
+  <div class="loader-inner">
+    <div class="loader-logo" style="font-size:1.5rem;"><i class="fas fa-star"></i></div>
+    <div class="loader-bar"><span></span></div>
+  </div>
+</div>
+
+<section class="page-hero">
+  <div class="page-hero-glow"></div>
+  <div class="page-hero-badge"><i class="fas fa-star"></i> قدراتي</div>
+  <h1>المهارات والكفاءات</h1>
+  <p>مجموعة متنوعة من المهارات القيادية والتقنية والإبداعية اكتسبتها من خلال التجربة والممارسة</p>
+  <div class="breadcrumb">
+    <a href="index.html">الرئيسية</a>
+    <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+    <span>المهارات</span>
+  </div>
+</section>
+
+<div class="page-content">
+
+  <!-- Leadership Skills -->
+  <h2 style="font-size:1.6rem;font-weight:800;color:var(--text-primary);margin-bottom:1.5rem;">
+    <i class="fas fa-crown neon-cyan"></i> <span class="neon-cyan">مهارات</span> القيادة والإدارة
+  </h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin-bottom:3rem;">
+
+    <div class="skill-icon-card" style="--grad:linear-gradient(90deg,var(--neon-cyan),#0099bb);" data-delay="0">
+      <span class="skill-icon neon-cyan"><i class="fas fa-users-cog"></i></span>
+      <h3>القيادة</h3>
+      <p>إدارة الفرق وتحفيز الأعضاء وتحقيق الأهداف المشتركة</p>
+      <div class="skill-level" style="color:var(--neon-cyan);">
+        <div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div>
+      </div>
+    </div>
+
+    <div class="skill-icon-card" style="--grad:linear-gradient(90deg,var(--neon-green),#00aa55);" data-delay="100">
+      <span class="skill-icon neon-green"><i class="fas fa-microphone-alt"></i></span>
+      <h3>الخطابة والتقديم</h3>
+      <p>التحدث أمام الجمهور وتقديم الأفكار بأسلوب مقنع وجذاب</p>
+      <div class="skill-level" style="color:var(--neon-green);">
+        <div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div>
+      </div>
+    </div>
+
+    <div class="skill-icon-card" style="--grad:linear-gradient(90deg,var(--neon-violet),#9900cc);" data-delay="200">
+      <span class="skill-icon neon-violet"><i class="fas fa-calendar-alt"></i></span>
+      <h3>تنظيم الفعاليات</h3>
+      <p>التخطيط والتنظيم والتنفيذ للفعاليات والبرامج المختلفة</p>
+      <div class="skill-level" style="color:var(--neon-violet);">
+        <div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot"></div>
+      </div>
+    </div>
+
+    <div class="skill-icon-card" style="--grad:linear-gradient(90deg,var(--neon-cyan),#0099bb);" data-delay="300">
+      <span class="skill-icon neon-cyan"><i class="fas fa-handshake"></i></span>
+      <h3>العمل الجماعي</h3>
+      <p>التعاون مع الآخرين وبناء علاقات إيجابية ومثمرة</p>
+      <div class="skill-level" style="color:var(--neon-cyan);">
+        <div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Technical Skills -->
+  <h2 style="font-size:1.6rem;font-weight:800;color:var(--text-primary);margin-bottom:1.5rem;">
+    <i class="fas fa-code neon-green"></i> <span class="neon-green">المهارات</span> التقنية
+  </h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:3rem;">
+    <div class="text-section">
+      <h2 style="font-size:1.1rem;"><i class="fas fa-globe neon-cyan"></i> تطوير الويب</h2>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-header"><span>HTML5</span><span class="pct">88%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill cyan" data-pct="88"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-header"><span>CSS3 & Design</span><span class="pct">82%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill green" data-pct="82"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-header"><span>JavaScript</span><span class="pct">72%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill violet" data-pct="72"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-header"><span>Responsive Design</span><span class="pct">85%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill cyan" data-pct="85"></div></div>
+      </div>
+    </div>
+    <div class="text-section">
+      <h2 style="font-size:1.1rem;"><i class="fas fa-flask neon-green"></i> العلوم والتكنولوجيا</h2>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-header"><span>الإلكترونيات</span><span class="pct">68%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill green" data-pct="68"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-header"><span>IoT & Smart Systems</span><span class="pct">65%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill violet" data-pct="65"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-header"><span>التفكير العلمي</span><span class="pct">90%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill cyan" data-pct="90"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-header"><span>Microsoft Office</span><span class="pct">80%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill green" data-pct="80"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Soft Skills -->
+  <h2 style="font-size:1.6rem;font-weight:800;color:var(--text-primary);margin-bottom:1.5rem;">
+    <i class="fas fa-heart neon-violet"></i> <span class="neon-violet">المهارات</span> الشخصية
+  </h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;">
+    <div class="skill-icon-card" data-delay="0">
+      <span class="skill-icon neon-violet"><i class="fas fa-brain"></i></span>
+      <h3>التفكير النقدي</h3>
+      <p>تحليل المشكلات من زوايا متعددة والوصول لحلول مبتكرة</p>
+      <div class="skill-level" style="color:var(--neon-violet);">
+        <div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot"></div>
+      </div>
+    </div>
+    <div class="skill-icon-card" data-delay="100">
+      <span class="skill-icon neon-cyan"><i class="fas fa-lightbulb"></i></span>
+      <h3>الإبداع والابتكار</h3>
+      <p>توليد أفكار جديدة وتطويرها إلى مشاريع ومنتجات حقيقية</p>
+      <div class="skill-level" style="color:var(--neon-cyan);">
+        <div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div>
+      </div>
+    </div>
+    <div class="skill-icon-card" data-delay="200">
+      <span class="skill-icon neon-green"><i class="fas fa-clock"></i></span>
+      <h3>إدارة الوقت</h3>
+      <p>الموازنة بين الدراسة والأنشطة والمشاريع بكفاءة عالية</p>
+      <div class="skill-level" style="color:var(--neon-green);">
+        <div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot"></div>
+      </div>
+    </div>
+    <div class="skill-icon-card" data-delay="300">
+      <span class="skill-icon neon-violet"><i class="fas fa-comments"></i></span>
+      <h3>التواصل الفعّال</h3>
+      <p>التواصل مع مختلف الشخصيات وبناء علاقات ناجحة</p>
+      <div class="skill-level" style="color:var(--neon-violet);">
+        <div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div>
+      </div>
+    </div>
+    <div class="skill-icon-card" data-delay="400">
+      <span class="skill-icon neon-cyan"><i class="fas fa-sync-alt"></i></span>
+      <h3>التكيف والمرونة</h3>
+      <p>التعامل مع التغيير والضغوط بإيجابية وتفاعل سريع</p>
+      <div class="skill-level" style="color:var(--neon-cyan);">
+        <div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot"></div>
+      </div>
+    </div>
+    <div class="skill-icon-card" data-delay="500">
+      <span class="skill-icon neon-green"><i class="fas fa-book-reader"></i></span>
+      <h3>التعلم الذاتي</h3>
+      <p>القدرة على اكتساب مهارات جديدة بشكل مستقل وفعّال</p>
+      <div class="skill-level" style="color:var(--neon-green);">
+        <div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div><div class="skill-level-dot filled"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="components.js"></script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تواصل معنا | محمود الشوري</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="page-common.css"/>
+  <style>
+    .contact-map-placeholder {
+      height: 220px;
+      background: linear-gradient(135deg, rgba(0,229,255,0.05), rgba(0,230,118,0.03));
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .contact-map-placeholder i { font-size: 2.5rem; color: var(--neon-cyan); opacity: 0.5; }
+    .social-links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .social-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .social-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,229,255,0.1);
+    }
+    .social-card i { font-size: 2rem; display: block; margin-bottom: 0.75rem; }
+    .social-card span { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: block; }
+    .social-card small { font-size: 0.75rem; color: var(--text-muted); }
+    .faq-item {
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+      transition: border-color 0.3s;
+    }
+    .faq-item.open { border-color: var(--neon-cyan); }
+    .faq-q {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      background: var(--bg-card);
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.92rem;
+      gap: 1rem;
+    }
+    .faq-q i { color: var(--neon-cyan); transition: transform 0.3s; flex-shrink: 0; }
+    .faq-item.open .faq-q i { transform: rotate(180deg); }
+    .faq-a {
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      background: var(--bg-card);
+    }
+    .faq-item.open .faq-a { max-height: 200px; padding: 1rem 1.5rem 1.25rem; }
+  </style>
+</head>
+<body>
+<div id="loader" class="loader">
+  <div class="loader-inner">
+    <div class="loader-logo" style="font-size:1.5rem;"><i class="fas fa-envelope"></i></div>
+    <div class="loader-bar"><span></span></div>
+  </div>
+</div>
+
+<section class="page-hero">
+  <div class="page-hero-glow"></div>
+  <div class="page-hero-badge"><i class="fas fa-paper-plane"></i> نحن هنا</div>
+  <h1>تواصل معنا</h1>
+  <p>يسعدنا التواصل معك — سواء كنت تريد مقترحاً أو تعاوناً أو مجرد مشاركة فكرة</p>
+  <div class="breadcrumb">
+    <a href="index.html">الرئيسية</a>
+    <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+    <span>تواصل</span>
+  </div>
+</section>
+
+<div class="page-content">
+
+  <div class="contact-page-grid">
+
+    <!-- Left: Info -->
+    <div>
+      <div class="text-section" style="margin-bottom:1.5rem;">
+        <h2><i class="fas fa-map-marker-alt neon-cyan"></i> معلومات التواصل</h2>
+
+        <div style="display:flex;flex-direction:column;gap:1.25rem;margin-top:1rem;">
+          <a href="mailto:1mahmoudelshora1@gmail.com" style="display:flex;align-items:center;gap:1rem;color:var(--text-secondary);transition:color 0.2s;" onmouseover="this.style.color='var(--neon-cyan)'" onmouseout="this.style.color='var(--text-secondary)'">
+            <div style="width:48px;height:48px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;" class="neon-bg-cyan"><i class="fas fa-envelope"></i></div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.2rem;">البريد الإلكتروني</div>
+              <div style="font-weight:600;font-size:0.9rem;word-break:break-all;">1mahmoudelshora1@gmail.com</div>
+            </div>
+          </a>
+
+          <a href="https://wa.link/hpdmcn" target="_blank" style="display:flex;align-items:center;gap:1rem;color:var(--text-secondary);transition:color 0.2s;" onmouseover="this.style.color='var(--neon-green)'" onmouseout="this.style.color='var(--text-secondary)'">
+            <div style="width:48px;height:48px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:font-size:1.1rem;" class="neon-bg-green"><i class="fab fa-whatsapp" style="margin:auto;font-size:1.1rem;"></i></div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.2rem;">واتساب</div>
+              <div style="font-weight:600;font-size:0.9rem;">01070116170</div>
+            </div>
+          </a>
+
+          <a href="https://sites.google.com/view/wa3yna/الصفحة-الرئيسية" target="_blank" style="display:flex;align-items:center;gap:1rem;color:var(--text-secondary);transition:color 0.2s;" onmouseover="this.style.color='var(--neon-violet)'" onmouseout="this.style.color='var(--text-secondary)'">
+            <div style="width:48px;height:48px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;" class="neon-bg-violet"><i class="fas fa-globe"></i></div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.2rem;">موقع المبادرة</div>
+              <div style="font-weight:600;font-size:0.9rem;">wa3yna – Google Sites</div>
+            </div>
+          </a>
+
+          <div style="display:flex;align-items:center;gap:1rem;color:var(--text-secondary);">
+            <div style="width:48px;height:48px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;" class="neon-bg-cyan"><i class="fas fa-map-marker-alt"></i></div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.2rem;">الموقع</div>
+              <div style="font-weight:600;font-size:0.9rem;">سيدي سالم، كفر الشيخ، مصر</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map placeholder -->
+      <div class="contact-map-placeholder">
+        <i class="fas fa-map-marked-alt"></i>
+        <span>سيدي سالم، كفر الشيخ</span>
+        <small>مصر 🇪🇬</small>
+      </div>
+
+      <!-- Social -->
+      <div class="social-links-grid">
+        <a href="mailto:1mahmoudelshora1@gmail.com" class="social-card" style="text-decoration:none;">
+          <i class="fas fa-envelope" style="color:#ea4335;"></i>
+          <span>Gmail</span>
+          <small>البريد الإلكتروني</small>
+        </a>
+        <a href="https://wa.link/hpdmcn" target="_blank" class="social-card" style="text-decoration:none;">
+          <i class="fab fa-whatsapp" style="color:#25d366;"></i>
+          <span>WhatsApp</span>
+          <small>01070116170</small>
+        </a>
+        <a href="https://sites.google.com/view/wa3yna/الصفحة-الرئيسية" target="_blank" class="social-card" style="text-decoration:none;">
+          <i class="fab fa-google" style="color:var(--neon-cyan);"></i>
+          <span>Google Sites</span>
+          <small>موقع المبادرة</small>
+        </a>
+        <a href="https://lasting-effect--1mahmoudelshora.replit.app/" target="_blank" class="social-card" style="text-decoration:none;">
+          <i class="fas fa-globe" style="color:var(--neon-green);"></i>
+          <span>Replit</span>
+          <small>النسخة السابقة</small>
+        </a>
+      </div>
+    </div>
+
+    <!-- Right: Form -->
+    <div>
+      <div class="text-section" style="height:100%;">
+        <h2><i class="fas fa-envelope-open-text neon-green"></i> أرسل رسالتك</h2>
+        <p style="color:var(--text-secondary);font-size:0.88rem;margin-bottom:1.5rem;">هل لديك مقترح أو فكرة أو تريد التعاون معنا في مبادرة وعينا؟ نحن سعداء بسماعك!</p>
+
+        <div class="form-group">
+          <label>الاسم الكامل <span style="color:var(--neon-cyan);">*</span></label>
+          <input type="text" class="form-input" id="cName" placeholder="اسمك الكريم"/>
+        </div>
+        <div class="form-group">
+          <label>البريد الإلكتروني <span style="color:var(--neon-cyan);">*</span></label>
+          <input type="email" class="form-input" id="cEmail" placeholder="بريدك الإلكتروني"/>
+        </div>
+        <div class="form-group">
+          <label>رقم الهاتف (اختياري)</label>
+          <input type="tel" class="form-input" id="cPhone" placeholder="رقم هاتفك"/>
+        </div>
+        <div class="form-group">
+          <label>موضوع الرسالة</label>
+          <select class="form-input" id="cSubject">
+            <option value="">اختر الموضوع</option>
+            <option value="مقترح للمبادرة">مقترح للمبادرة</option>
+            <option value="طلب تعاون">طلب تعاون</option>
+            <option value="استفسار عام">استفسار عام</option>
+            <option value="تواصل إعلامي">تواصل إعلامي</option>
+            <option value="شهادة أو رأي">شهادة أو رأي</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>رسالتك <span style="color:var(--neon-cyan);">*</span></label>
+          <textarea class="form-input form-textarea" id="cMsg" placeholder="اكتب رسالتك هنا بالتفصيل..." style="min-height:150px;"></textarea>
+        </div>
+
+        <button class="btn btn-primary btn-full" onclick="sendContactForm()" style="margin-bottom:1rem;">
+          <i class="fas fa-paper-plane"></i> إرسال الرسالة
+        </button>
+        <p style="text-align:center;font-size:0.78rem;color:var(--text-muted);">
+          <i class="fas fa-lock"></i> بياناتك في أمان تام ولن تُشارك مع أي طرف ثالث
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="neon-divider"></div>
+
+  <!-- FAQ -->
+  <h2 style="font-size:1.8rem;font-weight:900;color:var(--text-primary);margin-bottom:2rem;text-align:center;">
+    الأسئلة <span class="neon-cyan">الشائعة</span>
+  </h2>
+
+  <div style="max-width:800px;margin:0 auto;">
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">كيف يمكنني الانضمام إلى مبادرة وعينا؟ <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a">يمكنك التواصل معنا عبر البريد الإلكتروني أو واتساب وإبداء رغبتك في المشاركة. المبادرة مفتوحة للطلاب المهتمين بالتطوير والتغيير الإيجابي.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">هل يمكنني التعاون مع محمود في مشاريع تقنية؟ <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a">نعم! محمود منفتح على فرص التعاون في مشاريع تطوير الويب والمبادرات التعليمية. تواصل معه مباشرة وسيرد في أقرب وقت.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">ما هو وقت الرد المتوقع على الرسائل؟ <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a">عادةً يتم الرد خلال 24-48 ساعة. في حالات الاستعجال يُفضل التواصل عبر واتساب للرد الأسرع.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">هل يقبل محمود دعوات المحاضرات والفعاليات؟ <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a">نعم، محمود سعيد بالمشاركة في الفعاليات والمحاضرات المدرسية والتعليمية. يرجى التواصل مسبقاً لتحديد المواعيد المناسبة.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">كيف يمكنني دعم مبادرة وعينا؟ <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a">يمكنك دعم المبادرة بالمشاركة في أنشطتها، ونشر مبادئها، وتقديم المقترحات والأفكار الجديدة. كل مساهمة تُحدث فارقاً!</div>
+    </div>
+  </div>
+
+</div>
+
+<script src="components.js"></script>
+<script>
+  async function sendContactForm() {
+    const name = document.getElementById('cName').value.trim();
+    const email = document.getElementById('cEmail').value.trim();
+    const phone = document.getElementById('cPhone').value.trim();
+    const subject = document.getElementById('cSubject').value || 'رسالة عامة';
+    const msg = document.getElementById('cMsg').value.trim();
+  
+    if (!name || !email || !msg) { 
+      showToast('⚠️ يرجى ملء الحقول المطلوبة'); 
+      return; 
+    }
+  
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, phone, subject, message: msg })
+      });
+  
+      if (response.ok) {
+        showToast('✅ تم إرسال مقترحك بنجاح وسنتواصل معك');
+        // مسح الحقول بعد الإرسال
+        ['cName','cEmail','cPhone','cMsg'].forEach(id => document.getElementById(id).value = '');
+      } else {
+        showToast('❌ حدث خطأ في السيرفر، حاول مرة أخرى');
+      }
+    } catch (error) {
+      showToast('❌ فشل الاتصال بالسيرفر، تأكد من تشغيله');
+    }
+  }
+  
+  function toggleFaq(item) {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+  </script>
+</body>
+</html>

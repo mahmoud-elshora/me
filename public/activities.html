@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الأنشطة | مبادرة وعينا</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="page-common.css"/>
+  <style>
+    .activity-full-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    .activity-full-card:hover {
+      border-color: var(--border-hover);
+      transform: translateX(-4px);
+      box-shadow: 4px 0 20px rgba(0,229,255,0.08);
+    }
+    .act-icon-big {
+      width: 80px; height: 80px;
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    .act-number {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    .act-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+    }
+    .act-desc {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 1rem;
+      font-size: 0.92rem;
+    }
+    .act-meta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .act-badge {
+      padding: 0.3rem 0.9rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+    @media(max-width:600px){.activity-full-card{grid-template-columns:1fr;}.act-icon-big{width:60px;height:60px;}}
+  </style>
+</head>
+<body>
+<div id="loader" class="loader">
+  <div class="loader-inner">
+    <div class="loader-logo" style="font-size:2rem;">الأنشطة</div>
+    <div class="loader-bar"><span></span></div>
+  </div>
+</div>
+
+<section class="page-hero">
+  <div class="page-hero-glow"></div>
+  <div class="page-hero-badge"><i class="fas fa-calendar-check"></i> ما نفعله</div>
+  <h1>أنشطة المبادرة</h1>
+  <p>مجموعة متنوعة من الأنشطة والبرامج التوعوية التي تقدمها مبادرة وعينا لبناء جيل واعٍ ومتميز</p>
+  <div class="breadcrumb">
+    <a href="index.html">الرئيسية</a>
+    <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+    <span>الأنشطة</span>
+  </div>
+</section>
+
+<div class="page-content">
+
+  <!-- Filter -->
+  <div class="activities-filter">
+    <button class="filter-btn active" onclick="filterActivities('all', this)">الكل</button>
+    <button class="filter-btn" onclick="filterActivities('اعلام', this)">إعلام</button>
+    <button class="filter-btn" onclick="filterActivities('تعليم', this)">تعليم</button>
+    <button class="filter-btn" onclick="filterActivities('توعية', this)">توعية</button>
+    <button class="filter-btn" onclick="filterActivities('ابداع', this)">إبداع</button>
+    <button class="filter-btn" onclick="filterActivities('بحث', this)">بحث</button>
+  </div>
+
+  <!-- Activities List -->
+  <div id="activitiesList">
+
+    <div class="activity-full-card reveal" data-cat="توثيق" data-delay="0">
+      <div class="act-icon-big neon-bg-cyan"><i class="fas fa-book-open"></i></div>
+      <div>
+        <div class="act-number">ACTIVITY 01</div>
+        <div class="act-title">ملف المبادرة</div>
+        <p class="act-desc">توثيق شامل ومتكامل لجميع أنشطة وبرامج مبادرة وعينا، يشمل تفاصيل كل نشاط وأهدافه ونتائجه وأثره على الطلاب والمجتمع المدرسي. يُعد هذا الملف مرجعاً أساسياً يعكس مسيرة المبادرة ومدى تحقيقها لأهدافها.</p>
+        <div class="act-meta">
+          <span class="act-badge"><i class="fas fa-tag"></i> توثيق</span>
+          <span class="act-badge"><i class="fas fa-users"></i> جماعي</span>
+        
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-full-card reveal" data-cat="اعلام" data-delay="100">
+      <div class="act-icon-big neon-bg-green"><i class="fas fa-broadcast-tower"></i></div>
+      <div>
+        <div class="act-number">ACTIVITY 02</div>
+        <div class="act-title">الإذاعات المدرسية المتنوعة</div>
+        <p class="act-desc">سلسلة من الإذاعات المدرسية المتنوعة التي تنشر الوعي وتعزز القيم الإيجابية وتعبر عن مواضيع متنوعة تخدم الطلاب والمجتمع المدرسي. تتميز هذه الإذاعات بمحتواها المتجدد وأسلوبها الجذاب الذي يستهدف شرائح مختلفة من الطلاب.</p>
+        <div class="act-meta">
+          <span class="act-badge"><i class="fas fa-tag"></i> إعلام</span>
+          <span class="act-badge"><i class="fas fa-microphone"></i> صوتي</span>
+        
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-full-card reveal" data-cat="تعليم" data-delay="200">
+      <div class="act-icon-big neon-bg-violet"><i class="fas fa-chalkboard"></i></div>
+      <div>
+        <div class="act-number">ACTIVITY 03</div>
+        <div class="act-title">المحاضرات التثقيفية المتنوعة</div>
+        <p class="act-desc">محاضرات تثقيفية وتوعوية متنوعة تهدف إلى تطوير مهارات الطلاب وبناء شخصياتهم المتكاملة. تتناول المحاضرات موضوعات متعددة تشمل التنمية الذاتية، والمهارات الحياتية، والوعي الاجتماعي، والتوجيه الأكاديمي والمهني.</p>
+        <div class="act-meta">
+          <span class="act-badge"><i class="fas fa-tag"></i> تعليم</span>
+          <span class="act-badge"><i class="fas fa-users"></i> جماهيري</span>
+        
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-full-card reveal" data-cat="ابداع" data-delay="300">
+      <div class="act-icon-big neon-bg-cyan"><i class="fas fa-newspaper"></i></div>
+      <div>
+        <div class="act-number">ACTIVITY 04</div>
+        <div class="act-title">مجلات الحائط الإبداعية</div>
+        <p class="act-desc">مجلات حائطية إبداعية تعكس توجهات المبادرة وتنشر ثقافة الوعي في أرجاء المدرسة. تتميز هذه المجلات بتصاميمها الجذابة ومحتواها القيّم الذي يجمع بين الإبداع البصري والمعلومة الهادفة، مما يجعلها أداة فعّالة للتواصل مع الطلاب.</p>
+        <div class="act-meta">
+          <span class="act-badge"><i class="fas fa-tag"></i> إبداع</span>
+          <span class="act-badge"><i class="fas fa-paint-brush"></i> تصميم</span>
+         
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-full-card reveal" data-cat="توعية" data-delay="400">
+      <div class="act-icon-big neon-bg-green"><i class="fas fa-share-alt"></i></div>
+      <div>
+        <div class="act-number">ACTIVITY 05</div>
+        <div class="act-title">منشورات بث الوعي</div>
+        <p class="act-desc">منشورات رقمية وورقية متنوعة تهدف إلى بث الوعي بين الطلاب والمجتمع المدرسي حول قضايا مختلفة. تتناول هذه المنشورات موضوعات الصحة النفسية، والتوعية البيئية، والمشاركة المجتمعية، والحقوق والواجبات.</p>
+        <div class="act-meta">
+          <span class="act-badge"><i class="fas fa-tag"></i> توعية</span>
+          <span class="act-badge"><i class="fas fa-globe"></i> رقمي</span>
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-full-card reveal" data-cat="اعلام" data-delay="500">
+      <div class="act-icon-big neon-bg-violet"><i class="fas fa-video"></i></div>
+      <div>
+        <div class="act-number">ACTIVITY 06</div>
+        <div class="act-title">برنامج wa3yk in a minute</div>
+        <p class="act-desc">برنامج فيديو قصير ومكثّف يلخص الرسائل التوعوية والمعلومات القيمة في دقيقة واحدة مؤثرة. يستهدف البرنامج الجيل الرقمي الذي يفضل المحتوى القصير والموجز، ويتناول موضوعات متنوعة بأسلوب عصري وجذاب.</p>
+        <div class="act-meta">
+          <span class="act-badge"><i class="fas fa-tag"></i> إعلام</span>
+          <span class="act-badge"><i class="fas fa-clock"></i> دقيقة واحدة</span>
+         
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-full-card reveal" data-cat="ابداع" data-delay="600">
+      <div class="act-icon-big neon-bg-cyan"><i class="fas fa-scroll"></i></div>
+      <div>
+        <div class="act-number">ACTIVITY 07</div>
+        <div class="act-title">المطويات التثقيفية</div>
+        <p class="act-desc">مطويات تثقيفية متنوعة ومتعددة الموضوعات تتناول قضايا الوعي والتطوير الشخصي والصحة والبيئة. تتميز المطويات بتصميمها الجذاب وأسلوبها السهل والمبسط الذي يناسب جميع الفئات، وتُوزع على الطلاب في المناسبات والفعاليات المختلفة.</p>
+        <div class="act-meta">
+          <span class="act-badge"><i class="fas fa-tag"></i> إبداع</span>
+          <span class="act-badge"><i class="fas fa-print"></i> مطبوع</span>
+        
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-full-card reveal" data-cat="بحث" data-delay="700">
+      <div class="act-icon-big neon-bg-green"><i class="fas fa-search"></i></div>
+      <div>
+        <div class="act-number">ACTIVITY 08</div>
+        <div class="act-title">بحث الموضوع المحوري</div>
+        <p class="act-desc">أبحاث علمية وأكاديمية تناقش القضايا المحورية في التعليم والمجتمع وتقترح حلولاً عملية. تعتمد هذه الأبحاث على المنهج العلمي الدقيق في دراسة المشكلات وتحليلها وصياغة التوصيات التي يمكن تطبيقها لتحسين العملية التعليمية.</p>
+        <div class="act-meta">
+          <span class="act-badge"><i class="fas fa-tag"></i> بحث</span>
+          <span class="act-badge"><i class="fas fa-flask"></i> علمي</span>
+       
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-full-card reveal" data-cat="تعليم" data-delay="800">
+      <div class="act-icon-big neon-bg-violet"><i class="fas fa-desktop"></i></div>
+      <div>
+        <div class="act-number">ACTIVITY 09</div>
+        <div class="act-title">العروض التقديمية للمشاريع</div>
+        <p class="act-desc">عروض تقديمية احترافية ومتقنة لعرض مشاريع وأنشطة المبادرة أمام الجمهور من طلاب ومعلمين ومسؤولين. تتميز هذه العروض بمستواها العالي وتنظيمها الدقيق وقدرتها على إيصال الرسالة بوضوح وفعالية.</p>
+        <div class="act-meta">
+          <span class="act-badge"><i class="fas fa-tag"></i> تعليم</span>
+          <span class="act-badge"><i class="fas fa-star"></i> احترافي</span>
+       
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="components.js"></script>
+<script>
+function filterActivities(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.activity-full-card').forEach(card => {
+    if (cat === 'all' || card.getAttribute('data-cat') === cat) {
+      card.style.display = 'grid';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+</script>
+</body>
+</html>

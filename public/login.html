@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تسجيل الدخول</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div style="max-width:400px;margin:100px auto;text-align:center;">
+  <h2>تسجيل دخول الأدمن</h2>
+
+  <input id="user" placeholder="👤 اسم المستخدم" class="form-input">
+  <input id="pass" type="password" placeholder="🔒 كلمة المرور" class="form-input">
+
+  <button onclick="login()" class="btn btn-primary" style="margin-top:10px;">
+    دخول
+  </button>
+</div>
+
+<script>
+    const btn = document.querySelector("button");
+    
+    // لو مسجل قبل كده → يدخل الأدمن مباشرة
+    if (localStorage.getItem("admin-token")) {
+      window.location.href = "admin.html";
+    }
+    
+    async function login() {
+      const username = document.getElementById('user').value.trim();
+      const password = document.getElementById('pass').value.trim();
+    
+      // تحقق من البيانات
+      if (!username || !password) {
+        alert("اكتب اسم المستخدم وكلمة المرور");
+        return;
+      }
+    
+      try {
+        // تعطيل الزر أثناء الإرسال
+        btn.disabled = true;
+        btn.innerText = "جاري الدخول...";
+    
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+    
+        const data = await res.json();
+    
+        if (res.ok && data.success) {
+          localStorage.setItem("admin-token", data.token);
+    
+          // تحويل للأدمن
+          window.location.href = "admin.html";
+        } else {
+          alert(data.message || "❌ بيانات غير صحيحة");
+        }
+    
+      } catch (err) {
+        alert("❌ مشكلة في الاتصال بالسيرفر");
+      } finally {
+        // رجع الزر زي ما كان
+        btn.disabled = false;
+        btn.innerText = "دخول";
+      }
+    }
+    </script>
+
+</body>
+</html>

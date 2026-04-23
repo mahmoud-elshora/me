@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الشهادات والآراء | محمود الشوري</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="page-common.css"/>
+</head>
+<body>
+<div id="loader" class="loader">
+  <div class="loader-inner">
+    <div class="loader-logo" style="font-size:2.5rem;">"</div>
+    <div class="loader-bar"><span></span></div>
+  </div>
+</div>
+
+<section class="page-hero">
+  <div class="page-hero-glow"></div>
+  <div class="page-hero-badge"><i class="fas fa-quote-right"></i> آراء الآخرين</div>
+  <h1>شهادات ومراجع</h1>
+  <p>ما يقوله المعلمون والزملاء ومن عملوا معه عن محمود أحمد الشوري ومبادرة وعينا</p>
+  <div class="breadcrumb">
+    <a href="index.html">الرئيسية</a>
+    <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+    <span>الشهادات</span>
+  </div>
+</section>
+
+<div class="page-content testimonials-grid">
+
+
+  
+</div>
+
+  <div class="neon-divider"></div>
+
+  <!-- Add Testimonial -->
+  <div class="text-section" style="text-align:center;">
+    <h2 style="justify-content:center;"><i class="fas fa-plus-circle neon-green"></i> شاركنا رأيك</h2>
+    <p style="max-width:500px;margin:0 auto 2rem;color:var(--text-secondary);">هل سبق وتعاملت مع محمود أو استفدت من مبادرة وعينا؟ شاركنا تجربتك!</p>
+    <div style="max-width:600px;margin:0 auto;">
+      <div class="form-group"><label>اسمك</label><input type="text" class="form-input" id="tName" placeholder="اسمك الكريم"/></div>
+      <div class="form-group"><label>صفتك</label><input type="text" class="form-input" id="tRole" placeholder="طالب / معلم / ..."/></div>
+      <div class="form-group"><label>رأيك وشهادتك</label><textarea class="form-input form-textarea" id="tText" placeholder="اكتب تجربتك هنا..."></textarea></div>
+      <button class="btn btn-primary btn-full" onclick="submitTestimonial()">
+        <i class="fas fa-paper-plane"></i> إرسال الشهادة
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script src="components.js"></script>
+<script>
+async function loadTestimonials() {
+  try {
+    const response = await fetch('/api/testimonials');
+    const data = await response.json();
+    
+    // الحاوية التي سنضع فيها الشهادات
+    const container = document.querySelector('.testimonials-grid'); 
+    if (!container) return;
+
+    if (data.length === 0) {
+      container.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:var(--text-muted);">لا توجد شهادات معروضة حالياً. جرب إضافة شهادة وتفعيلها من السيرفر.</p>';
+      return;
+    }
+
+    container.innerHTML = data.map((t, index) => `
+      <div class="testimonial-card" data-delay="${450 + (index * 150)}">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"${t.message}"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar ${index % 2 === 0 ? 'neon-bg-cyan' : 'neon-bg-violet'}">
+            ${t.name.charAt(0)}
+          </div>
+          <div class="testimonial-author-info">
+            <strong>${t.name}</strong>
+            <span>${t.role}</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  } catch (error) {
+    console.error('Error loading testimonials:', error);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadTestimonials);
+async function submitTestimonial() {
+  const name = document.getElementById('tName').value;
+  const role = document.getElementById('tRole').value;
+  const message = document.getElementById('tText').value;
+
+  // التحقق من الحقول واستخدام showToast للتحذير
+  if (!name || !message) {
+    if (typeof showToast === 'function') {
+      showToast('يرجى كتابة الاسم والرسالة على الأقل', 'error');
+    } else {
+      alert('يرجى كتابة الاسم والرسالة على الأقل');
+    }
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/testimonials', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, role, message })
+    });
+
+    const result = await response.json();
+
+    if (result.ok) {
+      // استخدام التوست للنجاح
+      if (typeof showToast === 'function') {
+        showToast('تم إرسال شهادتك بنجاح! ستظهر بعد المراجعة.', 'success');
+      }
+      
+      // تفريغ الحقول
+      document.getElementById('tName').value = '';
+      document.getElementById('tRole').value = '';
+      document.getElementById('tText').value = '';
+    } else {
+      if (typeof showToast === 'function') {
+        showToast('حدث خطأ أثناء الإرسال، حاول لاحقاً', 'error');
+      }
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    if (typeof showToast === 'function') {
+      showToast('تعذر الاتصال بالسيرفر، تأكد من تشغيله', 'error');
+    }
+  }
+}
+  </script>
+</body>
+</html>

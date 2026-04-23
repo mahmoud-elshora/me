@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>مجتمع وعينا | محمود الشوري</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="page-common.css"/>
+</head>
+<body data-page="community">
+  <div id="loader" class="loader">
+    <div class="loader-inner">
+      <div class="loader-logo" style="font-size:1.5rem;">00</div>
+      <div class="loader-bar"><span></span></div>
+    </div>
+  </div>
+<section class="page-hero">
+  <div class="page-hero-glow"></div>
+  <div class="page-hero-badge"><i class="fas fa-users"></i> صوت المجتمع</div>
+  <h1>مجتمع وعينا</h1>
+  <p>شارك أفكارك وتجاربك مع مجتمع وعينا — كل صوت يُحدث فارقاً</p>
+  <div class="breadcrumb">
+    <a href="index.html">الرئيسية</a>
+    <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+    <span>المجتمع</span>
+  </div>
+</section>
+
+<div class="page-content">
+
+  <div class="neon-divider"></div>
+
+
+  <!-- مقالات المجتمع من community.json -->
+  <h2 style="font-size:1.4rem;font-weight:800;color:var(--text-primary);margin-bottom:1.5rem;">
+    <i class="fas fa-newspaper neon-violet"></i> مقالات الأعضاء
+  </h2>
+
+  <div class="blog-grid" id="communityGrid">
+    <!-- تُملأ ديناميكياً -->
+  </div>
+
+  <div class="neon-divider"></div>
+
+  <div class="page-content" style="padding-bottom: 0;">
+    <div class="text-section" style="text-align: center; margin-bottom: 2rem;">
+      <h2 class="neon-text-cyan"><i class="fas fa-plus-circle"></i> شارك بمقالك</h2>
+      <p style="color:var(--text-secondary);">ساهم في إثراء مجتمع "وعينا" بأفكارك وتجاربك.</p>
+    </div>
+    
+    <div style="max-width:800px; margin:0 auto; background:var(--bg-glass); border:1px solid var(--border-color); padding:2rem; border-radius:15px;">
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+        <div class="form-group"><label>عنوان المقال</label><input type="text" class="form-input" id="pTitle" placeholder="عنوان جذاب..."></div>
+        <div class="form-group"><label>اسمك</label><input type="text" class="form-input" id="pAuthor" placeholder="اسم الكاتب"></div>
+      </div>
+      <div class="form-group" style="margin-top:1rem;"><label>نبذة مختصرة</label><input type="text" class="form-input" id="pExcerpt" placeholder="وصف قصير يظهر في الخارج"></div>
+      <div class="form-group" style="margin-top:1rem;"><label>محتوى المقال</label><textarea class="form-input" id="pContent" style="height:200px" placeholder="اكتب مقالك كاملاً هنا..."></textarea></div>
+      <button class="btn btn-primary btn-full" onclick="submitPost()" style="margin-top:1.5rem;">
+        <i class="fas fa-upload"></i> إرسال للمراجعة
+      </button>
+    </div>
+  </div>
+
+  <div class="neon-divider"></div>
+
+  <div class="text-section" style="text-align:center;">
+    <h2 style="justify-content:center;"><i class="fas fa-bell neon-cyan"></i> ابقَ على اطلاع</h2>
+    <p style="max-width:500px;margin:0 auto 2rem;color:var(--text-secondary);">
+      تواصل معنا لتحصل على آخر أخبار مبادرة وعينا مباشرة إلى بريدك.
+    </p>
+    <a href="contact.html" class="btn btn-primary"><i class="fas fa-envelope"></i> تواصل معنا</a>
+  </div>
+
+</div>
+
+<script src="components.js"></script>
+<script>
+/* ── تحميل مقالات المجتمع ── */
+async function loadCommunityPosts() {
+  const container = document.getElementById('communityGrid');
+
+  try {
+    const res   = await fetch('/api/posts?type=guest');
+    if (!res.ok) throw new Error('Network error');
+    const posts = await res.json();
+
+    if (posts.length === 0) {
+      container.innerHTML = `
+        <p style="color:var(--text-muted);text-align:center;grid-column:1/-1;padding:3rem 0;">
+          لا توجد مقالات في المجتمع بعد — كن أول من يشارك! 🚀
+        </p>`;
+      return;
+    }
+
+    container.innerHTML = posts.map(post => `
+      <div class="blog-card">
+        <div class="blog-card-img"
+             style="background:linear-gradient(135deg,rgba(213,0,249,0.12),rgba(0,229,255,0.06));">
+          <i class="fas fa-user-edit"
+             style="font-size:3rem;color:var(--neon-violet);text-shadow:0 0 20px var(--neon-violet);"></i>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-meta">
+            <span class="blog-cat"
+                  style="background:rgba(213,0,249,0.1);color:var(--neon-violet);
+                         border:1px solid rgba(213,0,249,0.2);">
+              بقلم: ${post.author || 'زائر'}
+            </span>
+            <span class="blog-date"><i class="fas fa-calendar"></i> ${post.date || ''}</span>
+          </div>
+          <h3>${post.title}</h3>
+          <p>${post.excerpt || 'لا يوجد وصف مختصر.'}</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <a href="community-post.html?id=${post.id}" class="blog-read-more">
+              اقرأ المزيد <i class="fas fa-arrow-left"></i>
+            </a>
+            <button onclick="copyPostLink('${post.id}')"
+                    style="background:transparent;border:none;color:var(--neon-cyan);
+                           cursor:pointer;font-size:0.8rem;display:flex;align-items:center;gap:4px;">
+              <i class="fas fa-share-alt"></i> نسخ الرابط
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+  } catch (err) {
+    console.error('خطأ في تحميل مقالات المجتمع:', err);
+    container.innerHTML = `
+      <p style="color:var(--neon-violet);text-align:center;grid-column:1/-1;">
+        تعذّر تحميل المقالات — تأكد من تشغيل السيرفر.
+      </p>`;
+  }
+}
+
+/* ── نسخ رابط المقال ── */
+function copyPostLink(id) {
+  const url = `${window.location.origin}/pages/community-post.html?id=${id}`;
+  navigator.clipboard.writeText(url)
+    .then(() => showToast('✅ تم نسخ رابط المقال!'))
+    .catch(() => showToast('⚠️ تعذّر النسخ'));
+}
+async function submitPost() {
+  const postData = {
+    title: document.getElementById('pTitle').value.trim(),
+    author: document.getElementById('pAuthor').value.trim(),
+    excerpt: document.getElementById('pExcerpt').value.trim(),
+    content: document.getElementById('pContent').value.trim()
+  };
+
+  // validation
+  if (!postData.title || !postData.content) {
+    showToast("⚠️ لازم تكتب العنوان والمحتوى");
+    return;
+  }
+
+  try {
+    showToast("⏳ جاري إرسال المقال...");
+
+    const res = await fetch('/api/community-submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(postData)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "فشل الإرسال");
+    }
+
+    // success
+    showToast("✅ تم إرسال المقال بنجاح وسيتم مراجعته");
+
+    // clear inputs
+    document.getElementById('pTitle').value = "";
+    document.getElementById('pAuthor').value = "";
+    document.getElementById('pExcerpt').value = "";
+    document.getElementById('pContent').value = "";
+
+    // reload posts
+    loadCommunityPosts();
+
+  } catch (err) {
+    console.error(err);
+    showToast("❌ حصل خطأ أثناء الإرسال");
+  }
+}
+document.addEventListener('DOMContentLoaded', loadCommunityPosts);
+</script>
+</body>
+</html>

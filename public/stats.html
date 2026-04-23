@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الإحصائيات | محمود الشوري</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="page-common.css"/>
+  <style>
+    .donut-wrap { display:flex;align-items:center;gap:2rem;margin-bottom:2rem;padding:1.5rem;background:var(--bg-glass);border:1px solid var(--border-color);border-radius:14px;transition:all 0.3s; }
+    .donut-wrap:hover { border-color:var(--border-hover); }
+    .donut { width:80px;height:80px;border-radius:50%;background:conic-gradient(var(--neon-color) var(--pct), var(--bg-card) 0);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative; }
+    .donut::before { content:'';position:absolute;inset:10px;border-radius:50%;background:var(--bg-primary); }
+    .donut span { position:relative;z-index:1;font-family:'Orbitron',monospace;font-size:0.8rem;font-weight:700;color:var(--neon-color); }
+    .donut-info h4 { font-weight:700;color:var(--text-primary);margin-bottom:0.25rem; }
+    .donut-info p { font-size:0.83rem;color:var(--text-secondary); }
+    .kpi-row { display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem; }
+    .kpi-card { background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:1.5rem;display:flex;align-items:center;gap:1rem;transition:all 0.3s; }
+    .kpi-card:hover { border-color:var(--border-hover);transform:translateY(-3px); }
+    .kpi-icon { width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0; }
+    .kpi-num { font-family:'Orbitron',monospace;font-size:1.5rem;font-weight:900;display:block;line-height:1; }
+    .kpi-lbl { font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem; }
+  </style>
+</head>
+<body>
+<div id="loader" class="loader">
+  <div class="loader-inner">
+    <div class="loader-logo" style="font-size:1.2rem;">STATS</div>
+    <div class="loader-bar"><span></span></div>
+  </div>
+</div>
+
+<section class="page-hero">
+  <div class="page-hero-glow"></div>
+  <div class="page-hero-badge"><i class="fas fa-chart-pie"></i> بيانات وتحليل</div>
+  <h1>الإحصائيات التفصيلية</h1>
+  <p>نظرة تحليلية شاملة على مسيرة محمود الشوري وإنجازات مبادرة وعينا بالأرقام والبيانات</p>
+  <div class="breadcrumb">
+    <a href="index.html">الرئيسية</a>
+    <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+    <span>الإحصائيات</span>
+  </div>
+</section>
+
+<div class="page-content">
+
+  <!-- KPI Row -->
+  <div class="kpi-row" style="margin-bottom:3rem;">
+    <div class="kpi-card">
+      <div class="kpi-icon neon-bg-cyan"><i class="fas fa-trophy"></i></div>
+      <div><span class="kpi-num neon-cyan" data-count="3">0</span><span class="kpi-lbl">جوائز وتكريمات</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon neon-bg-green"><i class="fas fa-project-diagram"></i></div>
+      <div><span class="kpi-num neon-green" data-count="4">0</span><span class="kpi-lbl">مشاريع مكتملة</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon neon-bg-violet"><i class="fas fa-tasks"></i></div>
+      <div><span class="kpi-num neon-violet" data-count="9">0</span><span class="kpi-lbl">أنشطة منفّذة</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon neon-bg-cyan"><i class="fas fa-users"></i></div>
+      <div><span class="kpi-num neon-cyan" data-count="100" data-suffix="+">0</span><span class="kpi-lbl">طالب استفاد</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon neon-bg-green"><i class="fas fa-calendar-check"></i></div>
+      <div><span class="kpi-num neon-green" data-count="12">0</span><span class="kpi-lbl">شهر نشاط مستمر</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon neon-bg-violet"><i class="fas fa-globe"></i></div>
+      <div><span class="kpi-num neon-violet" data-count="2">0</span><span class="kpi-lbl">مواقع إلكترونية</span></div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+
+    <!-- Achievement Distribution -->
+    <div class="text-section">
+      <h2><i class="fas fa-chart-pie neon-cyan"></i> توزيع الإنجازات</h2>
+      <div class="donut-wrap">
+        <div class="donut" style="--neon-color:var(--neon-cyan);--pct:100deg;background:conic-gradient(var(--neon-cyan) 100deg,var(--bg-card) 0);"><span>28%</span></div>
+        <div class="donut-info"><h4>الإنجازات الأكاديمية</h4><p>التميز الدراسي والجوائز العلمية</p></div>
+      </div>
+      <div class="donut-wrap">
+        <div class="donut" style="--neon-color:var(--neon-green);--pct:90deg;background:conic-gradient(var(--neon-green) 90deg,var(--bg-card) 0);"><span>25%</span></div>
+        <div class="donut-info"><h4>المشاريع التقنية</h4><p>مواقع الويب والاختراعات العلمية</p></div>
+      </div>
+      <div class="donut-wrap">
+        <div class="donut" style="--neon-color:var(--neon-violet);--pct:80deg;background:conic-gradient(var(--neon-violet) 80deg,var(--bg-card) 0);"><span>22%</span></div>
+        <div class="donut-info"><h4>المناصب القيادية</h4><p>اتحاد الطلاب والجماعات المدرسية</p></div>
+      </div>
+      <div class="donut-wrap">
+        <div class="donut" style="--neon-color:#ff9800;--pct:90deg;background:conic-gradient(#ff9800 90deg,var(--bg-card) 0);"><span>25%</span></div>
+        <div class="donut-info"><h4>أنشطة المبادرة</h4><p>برامج وفعاليات مبادرة وعينا</p></div>
+      </div>
+    </div>
+
+    <!-- Growth Timeline -->
+    <div class="text-section">
+      <h2><i class="fas fa-chart-line neon-green"></i> مسار النمو</h2>
+      <div class="sub-timeline">
+        <div class="sub-tl-item">
+          <div class="tl-label">2023</div>
+          <h3>الانطلاقة الكبرى</h3>
+          <p>المركز الأول جمهورياً في مسابقة دوري المكاتب التنفيذية — أول إنجاز كبير يُثبت القدرة والتميز.</p>
+        </div>
+        <div class="sub-tl-item green">
+          <div class="tl-label">2024</div>
+          <h3>عام المناصب والمشاريع</h3>
+          <p>أمين اتحاد طلاب إدارة سيدي سالم + أول موقع ويب (YLF) + اختراع المولد الكهربائي + نظام الري الذكي.</p>
+        </div>
+        <div class="sub-tl-item violet">
+          <div class="tl-label">2025</div>
+          <h3>الطالب المثالي والتوسع</h3>
+          <p>لقب الطالب المثالي على مستوى المحافظة + إطلاق موقع وعينا المتكامل + الترشح للمستوى الجمهوري.</p>
+        </div>
+        <div class="sub-tl-item">
+          <div class="tl-label">المستقبل</div>
+          <h3>آفاق أوسع</h3>
+          <p>الطالب المثالي جمهورياً + توسيع مبادرة وعينا + مشاريع تقنية أكبر على المستوى الوطني.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="neon-divider"></div>
+
+  <!-- Activity Stats -->
+  <h2 style="text-align:center;font-size:1.8rem;font-weight:900;color:var(--text-primary);margin-bottom:2rem;">إحصائيات <span class="neon-violet">الأنشطة</span></h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;">
+    <div class="stat-box"><span class="num neon-cyan" data-count="6">0</span><span class="lbl">إذاعات مدرسية</span></div>
+    <div class="stat-box"><span class="num neon-green" data-count="4">0</span><span class="lbl">محاضرات تثقيفية</span></div>
+    <div class="stat-box"><span class="num neon-violet" data-count="8">0</span><span class="lbl">مجلات حائطية</span></div>
+    <div class="stat-box"><span class="num neon-cyan" data-count="12">0</span><span class="lbl">مطوية توعوية</span></div>
+    <div class="stat-box"><span class="num neon-green" data-count="20" data-suffix="+">0</span><span class="lbl">منشور توعوي</span></div>
+    <div class="stat-box"><span class="num neon-violet" data-count="5">0</span><span class="lbl">حلقات برنامج</span></div>
+    <div class="stat-box"><span class="num neon-cyan" data-count="3">0</span><span class="lbl">أبحاث محورية</span></div>
+    <div class="stat-box"><span class="num neon-green" data-count="5">0</span><span class="lbl">عروض تقديمية</span></div>
+  </div>
+
+</div>
+
+<script src="components.js"></script>
+</body>
+</html>

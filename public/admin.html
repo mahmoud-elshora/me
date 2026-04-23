@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>لوحة التحكم | وعينا</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="page-common.css"/>
+</head>
+
+<body data-page="admin">
+
+<!-- LOGOUT -->
+<button onclick="logout()"
+style="position:fixed;bottom:15px;left:15px;z-index:0;
+background:red;color:#fff;border:none;padding:10px 14px;border-radius:10px;">
+تسجيل خروج
+</button>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="page-hero-glow"></div>
+  <h1>لوحة التحكم</h1>
+  <p>إدارة الموقع بالكامل</p>
+</section>
+
+<div class="page-content">
+
+<div class="neon-divider"></div>
+
+<!-- ================= BLOG ================= -->
+<h2>📄 المقالات</h2>
+
+<div style="max-width:800px;margin:auto;
+background:var(--bg-glass);
+border:1px solid var(--border-color);
+padding:2rem;border-radius:15px;">
+
+  <input id="title" class="form-input" placeholder="عنوان المقال">
+  <input id="excerpt" class="form-input" placeholder="نبذة مختصرة">
+  <textarea id="content" class="form-input" placeholder="المحتوى" style="height:150px"></textarea>
+
+  <button class="btn btn-primary btn-full" onclick="addBlog()">نشر المقال</button>
+</div>
+
+<div id="blogGrid" class="blog-grid"></div>
+
+<div class="neon-divider"></div>
+
+<!-- ================= COMMUNITY ================= -->
+<h2>👥 مقالات المجتمع</h2>
+<div id="communityGrid" class="blog-grid"></div>
+
+<div class="neon-divider"></div>
+
+<!-- ================= TESTIMONIALS ================= -->
+<h2>⭐ الشهادات (تعديل مباشر)</h2>
+<div id="testimonialsGrid" class="blog-grid"></div>
+
+<div class="neon-divider"></div>
+
+<!-- ================= CONTACT ================= -->
+<h2>📩 الرسائل</h2>
+<div id="contactsGrid" class="blog-grid"></div>
+
+</div>
+
+<script src="components.js"></script>
+
+<script>
+
+/* ================= AUTH ================= */
+if (!localStorage.getItem("admin-token")) {
+  window.location.href = "login.html";
+}
+
+const token = localStorage.getItem("admin-token");
+
+/* ================= BLOG ================= */
+async function loadBlogs(){
+  const res = await fetch('/api/posts?type=admin');
+  const data = await res.json();
+
+  document.getElementById('blogGrid').innerHTML = data.map(p=>`
+    <div class="blog-card">
+      <div class="blog-card-body">
+        <h3>${p.title}</h3>
+        <p>${p.excerpt || ''}</p>
+
+        <button class="blog-read-more" style="color:red"
+        onclick="deleteBlog('${p.id}')">
+          🗑 حذف
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function addBlog(){
+  const title=document.getElementById('title').value;
+  const excerpt=document.getElementById('excerpt').value;
+  const content=document.getElementById('content').value;
+
+  if(!title || !content){
+    showToast("اكتب البيانات");
+    return;
+  }
+
+  await fetch('/api/blog',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':token
+    },
+    body:JSON.stringify({title,excerpt,content})
+  });
+
+  showToast("تم النشر");
+  loadBlogs();
+}
+
+async function deleteBlog(id){
+  await fetch('/api/blog/'+id,{
+    method:'DELETE',
+    headers:{'Authorization':token}
+  });
+
+  showToast("تم الحذف");
+  loadBlogs();
+}
+
+/* ================= COMMUNITY ================= */
+async function loadCommunity(){
+  const res = await fetch('/api/posts?type=guest');
+  const data = await res.json();
+
+  document.getElementById('communityGrid').innerHTML = data.map(p=>`
+    <div class="blog-card">
+      <div class="blog-card-body">
+
+        <div class="blog-meta">
+          <span class="blog-cat">بقلم: ${p.author || 'زائر'}</span>
+        </div>
+
+        <h3>${p.title}</h3>
+        <p>${p.excerpt || ''}</p>
+
+        <div style="display:flex;gap:10px;margin-top:10px;">
+          <button class="blog-read-more" onclick="approvePost('${p.id}')">
+            ✔ موافقة
+          </button>
+
+          <button class="blog-read-more" style="color:red"
+          onclick="deleteCommunity('${p.id}')">
+            🗑 حذف
+          </button>
+        </div>
+
+      </div>
+    </div>
+  `).join('');
+}
+
+async function approvePost(id){
+  await fetch('/api/community/approve/'+id,{
+    method:'PUT',
+    headers:{'Authorization':token}
+  });
+
+  showToast("تمت الموافقة");
+  loadCommunity();
+}
+
+async function deleteCommunity(id){
+  await fetch('/api/community/'+id,{
+    method:'DELETE',
+    headers:{'Authorization':token}
+  });
+
+  showToast("تم الحذف");
+  loadCommunity();
+}
+
+/* ================= TESTIMONIALS (EDITABLE) ================= */
+async function loadTestimonials(){
+  const res = await fetch('/api/testimonials');
+  const data = await res.json();
+
+  document.getElementById('testimonialsGrid').innerHTML = data.map(t=>`
+    <div class="blog-card">
+      <div class="blog-card-body">
+
+        <input class="form-input" id="name-${t.id}" value="${t.name || ''}">
+        <textarea class="form-input" id="msg-${t.id}">${t.message || ''}</textarea>
+
+        <div style="display:flex;gap:10px;margin-top:10px;">
+          <button class="blog-read-more" onclick="updateTestimonial('${t.id}')">
+            ✏️ تعديل
+          </button>
+
+          <button class="blog-read-more" style="color:red"
+          onclick="deleteTestimonial('${t.id}')">
+            🗑 حذف
+          </button>
+        </div>
+
+      </div>
+    </div>
+  `).join('');
+}
+
+async function updateTestimonial(id){
+  const name=document.getElementById('name-'+id).value;
+  const message=document.getElementById('msg-'+id).value;
+
+  await fetch('/api/testimonials/'+id,{
+    method:'PUT',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({name,message})
+  });
+
+  showToast("تم التعديل");
+  loadTestimonials();
+}
+
+async function deleteTestimonial(id){
+  await fetch('/api/testimonials/'+id,{method:'DELETE'});
+  loadTestimonials();
+}
+
+/* ================= CONTACT ================= */
+async function loadContacts(){
+  const res = await fetch('/api/contacts');
+  const data = await res.json();
+
+  document.getElementById('contactsGrid').innerHTML = data.map(c=>`
+    <div class="blog-card">
+      <div class="blog-card-body">
+        <h3>${c.name || ""}</h3>
+        <p>${c.message || ""}</p>
+        <small>${c.email || ""}</small>
+
+        <button class="blog-read-more" style="color:red"
+        onclick="deleteContact('${c.id}')">
+          🗑 حذف
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function deleteContact(id){
+  await fetch('/api/contact/'+id,{method:'DELETE'});
+  loadContacts();
+}
+
+/* ================= LOGOUT ================= */
+function logout(){
+  localStorage.removeItem("admin-token");
+  window.location.href="login.html";
+}
+
+/* ================= INIT ================= */
+document.addEventListener('DOMContentLoaded',()=>{
+  loadBlogs();
+  loadCommunity();
+  loadTestimonials();
+  loadContacts();
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الأرقام والإنجازات | محمود الشوري</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="page-common.css"/>
+  <style>
+    .chart-bar-group { margin-bottom: 2rem; }
+    .chart-bar-label { font-size:0.88rem;font-weight:600;color:var(--text-secondary);margin-bottom:0.5rem;display:flex;justify-content:space-between; }
+    .chart-bar-outer { height:40px;background:var(--bg-glass);border-radius:8px;overflow:hidden;border:1px solid var(--border-color); }
+    .chart-bar-inner { height:100%;border-radius:8px;display:flex;align-items:center;padding:0 1rem;font-family:'Orbitron',monospace;font-size:0.8rem;font-weight:700;color:#030a14;width:0;transition:width 1.5s cubic-bezier(0.16,1,0.3,1); }
+    .milestone-row { display:flex;align-items:center;gap:1.5rem;padding:1.25rem 0;border-bottom:1px solid var(--border-color); }
+    .milestone-row:last-child { border-bottom:none; }
+    .milestone-year { font-family:'Orbitron',monospace;font-size:1rem;font-weight:900;color:var(--neon-cyan);min-width:60px; }
+    .milestone-dot { width:10px;height:10px;border-radius:50%;flex-shrink:0; }
+    .milestone-info h4 { font-size:0.95rem;font-weight:700;color:var(--text-primary);margin-bottom:0.2rem; }
+    .milestone-info p { font-size:0.82rem;color:var(--text-secondary); }
+  </style>
+</head>
+<body>
+<div id="loader" class="loader">
+  <div class="loader-inner">
+    <div class="loader-logo" style="font-size:1.5rem;">00</div>
+    <div class="loader-bar"><span></span></div>
+  </div>
+</div>
+
+<section class="page-hero">
+  <div class="page-hero-glow"></div>
+  <div class="page-hero-badge"><i class="fas fa-chart-bar"></i> إحصائيات</div>
+  <h1>الأرقام تتحدث</h1>
+  <p>إنجازات بالأرقام — كل رقم يحكي قصة جهد وتميز وإصرار على النجاح</p>
+  <div class="breadcrumb">
+    <a href="index.html">الرئيسية</a>
+    <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+    <span>الأرقام</span>
+  </div>
+</section>
+
+<div class="page-content">
+
+  <!-- Big Stats -->
+  <div class="numbers-hero-stats">
+    <div class="big-stat-card cyan">
+      <div class="big-stat-num neon-cyan" data-count="1" data-suffix="#">#</div>
+      <div class="big-stat-label">مركز أول جمهوري</div>
+      <div class="big-stat-sub">مسابقة المكاتب التنفيذية</div>
+    </div>
+    <div class="big-stat-card green">
+      <div class="big-stat-num neon-green" data-count="4">0</div>
+      <div class="big-stat-label">مشاريع مبتكرة</div>
+      <div class="big-stat-sub">مواقع + اختراعات علمية</div>
+    </div>
+    <div class="big-stat-card violet">
+      <div class="big-stat-num neon-violet" data-count="9">0</div>
+      <div class="big-stat-label">أنشطة متنوعة</div>
+      <div class="big-stat-sub">ضمن مبادرة وعينا</div>
+    </div>
+    <div class="big-stat-card cyan">
+      <div class="big-stat-num neon-cyan" data-count="3">0</div>
+      <div class="big-stat-label">مناصب قيادية</div>
+      <div class="big-stat-sub">في الاتحاد والجماعات</div>
+    </div>
+    <div class="big-stat-card green">
+      <div class="big-stat-num neon-green" data-count="16">0</div>
+      <div class="big-stat-label">سنة عمر</div>
+      <div class="big-stat-sub">بالتحقيق يبدأ الطموح</div>
+    </div>
+    <div class="big-stat-card violet">
+      <div class="big-stat-num neon-violet" data-count="2">0</div>
+      <div class="big-stat-label">ترشيح جمهوري</div>
+      <div class="big-stat-sub">للطالب المثالي</div>
+    </div>
+  </div>
+
+  <div class="neon-divider"></div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+
+    <!-- Achievement Chart -->
+    <div class="text-section">
+      <h2><i class="fas fa-chart-bar neon-cyan"></i> مستوى الإنجازات</h2>
+      <div class="chart-bar-group">
+        <div class="chart-bar-label"><span>التحصيل الأكاديمي</span><span class="neon-cyan">95%</span></div>
+        <div class="chart-bar-outer"><div class="chart-bar-inner" data-width="95" style="background:linear-gradient(90deg,var(--neon-cyan),#0099bb);">95%</div></div>
+      </div>
+      <div class="chart-bar-group">
+        <div class="chart-bar-label"><span>القيادة والإدارة</span><span class="neon-green">92%</span></div>
+        <div class="chart-bar-outer"><div class="chart-bar-inner" data-width="92" style="background:linear-gradient(90deg,var(--neon-green),#00aa55);">92%</div></div>
+      </div>
+      <div class="chart-bar-group">
+        <div class="chart-bar-label"><span>الابتكار والإبداع</span><span class="neon-violet">90%</span></div>
+        <div class="chart-bar-outer"><div class="chart-bar-inner" data-width="90" style="background:linear-gradient(90deg,var(--neon-violet),#9900cc);">90%</div></div>
+      </div>
+      <div class="chart-bar-group">
+        <div class="chart-bar-label"><span>العمل التطوعي</span><span class="neon-cyan">88%</span></div>
+        <div class="chart-bar-outer"><div class="chart-bar-inner" data-width="88" style="background:linear-gradient(90deg,var(--neon-cyan),#0099bb);">88%</div></div>
+      </div>
+      <div class="chart-bar-group">
+        <div class="chart-bar-label"><span>تطوير الويب</span><span class="neon-green">80%</span></div>
+        <div class="chart-bar-outer"><div class="chart-bar-inner" data-width="80" style="background:linear-gradient(90deg,var(--neon-green),#00aa55);">80%</div></div>
+      </div>
+    </div>
+
+    <!-- Milestones -->
+    <div class="text-section">
+      <h2><i class="fas fa-flag-checkered neon-green"></i> محطات بارزة</h2>
+      <div class="milestone-row">
+        <div class="milestone-year">2025</div>
+        <div class="milestone-dot" style="background:var(--neon-cyan);box-shadow:0 0 8px var(--neon-cyan);"></div>
+        <div class="milestone-info">
+          <h4>الطالب المثالي على مستوى المحافظة</h4>
+          <p>مرشح للطالب المثالي على مستوى الجمهورية</p>
+        </div>
+      </div>
+      <div class="milestone-row">
+        <div class="milestone-year">2025</div>
+        <div class="milestone-dot" style="background:var(--neon-green);box-shadow:0 0 8px var(--neon-green);"></div>
+        <div class="milestone-info">
+          <h4>إطلاق موقع مبادرة وعينا</h4>
+          <p>موقع متكامل بوضعين ولغتين</p>
+        </div>
+      </div>
+      <div class="milestone-row">
+        <div class="milestone-year">2024</div>
+        <div class="milestone-dot" style="background:var(--neon-violet);box-shadow:0 0 8px var(--neon-violet);"></div>
+        <div class="milestone-info">
+          <h4>أمين اتحاد طلاب إدارة سيدي سالم</h4>
+          <p>منصب قيادي رفيع على مستوى الإدارة</p>
+        </div>
+      </div>
+      <div class="milestone-row">
+        <div class="milestone-year">2024</div>
+        <div class="milestone-dot" style="background:var(--neon-cyan);box-shadow:0 0 8px var(--neon-cyan);"></div>
+        <div class="milestone-info">
+          <h4>موقع مؤسسة YLF</h4>
+          <p>أول مشروع برمجي ناجح</p>
+        </div>
+      </div>
+      <div class="milestone-row">
+        <div class="milestone-year">2023</div>
+        <div class="milestone-dot" style="background:var(--neon-green);box-shadow:0 0 8px var(--neon-green);"></div>
+        <div class="milestone-info">
+          <h4>المركز الأول جمهورياً</h4>
+          <p>مسابقة دوري المكاتب التنفيذية</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="neon-divider"></div>
+
+  <!-- Activity Numbers -->
+  <h2 style="text-align:center;font-size:1.8rem;font-weight:900;color:var(--text-primary);margin-bottom:2rem;">أرقام <span class="neon-cyan">مبادرة وعينا</span></h2>
+  <div class="stat-boxes">
+    <div class="stat-box"><span class="num neon-cyan" data-count="9">0</span><span class="lbl">أنشطة ومبادرات</span></div>
+    <div class="stat-box"><span class="num neon-green" data-count="100" data-suffix="+">0</span><span class="lbl">طالب استفاد</span></div>
+    <div class="stat-box"><span class="num neon-violet" data-count="6">0</span><span class="lbl">برامج توعوية</span></div>
+    <div class="stat-box"><span class="num neon-cyan" data-count="3">0</span><span class="lbl">اختراعات علمية</span></div>
+    <div class="stat-box"><span class="num neon-green" data-count="2">0</span><span class="lbl">مواقع إلكترونية</span></div>
+    <div class="stat-box"><span class="num neon-violet" data-count="1">0</span><span class="lbl">سنة نشاط مستمر</span></div>
+  </div>
+
+</div>
+
+<script src="components.js"></script>
+<script>
+// Animate chart bars
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const w = e.target.getAttribute('data-width');
+          e.target.style.width = w + '%';
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.chart-bar-inner').forEach(b => obs.observe(b));
+  }, 500);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>مقال المجتمع | وعينا</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="page-common.css"/>
+  <style>
+    .post-hero { padding:100px 2rem 50px; background:var(--gradient-hero); position:relative; }
+    .post-hero::before { content:''; position:absolute; inset:0;
+      background-image:linear-gradient(rgba(213,0,249,0.03) 1px,transparent 1px),
+                       linear-gradient(90deg,rgba(213,0,249,0.03) 1px,transparent 1px);
+      background-size:60px 60px; pointer-events:none; }
+    .post-container  { max-width:820px; margin:0 auto; padding:0 2rem; }
+    .post-meta-bar   { display:flex; gap:1.5rem; flex-wrap:wrap; align-items:center;
+                       margin-bottom:1.5rem; font-size:0.82rem; color:var(--text-muted); }
+    .post-cat-badge  { padding:0.3rem 0.9rem; border-radius:50px; font-size:0.75rem; font-weight:700;
+                       background:rgba(213,0,249,0.1); border:1px solid rgba(213,0,249,0.25);
+                       color:var(--neon-violet); }
+    .post-title      { font-size:clamp(1.8rem,4vw,2.8rem); font-weight:900; line-height:1.25;
+                       color:var(--text-primary); margin-bottom:1.5rem; }
+    .post-author     { display:flex; align-items:center; gap:1rem; padding:1.25rem;
+                       background:var(--bg-glass); border:1px solid var(--border-dim);
+                       border-radius:12px; margin-bottom:3rem; }
+    .post-author-avatar { width:52px; height:52px; border-radius:50%;
+                          background:linear-gradient(135deg,var(--neon-violet),var(--neon-cyan));
+                          display:flex; align-items:center; justify-content:center;
+                          font-size:1.8rem; flex-shrink:0; }
+    .post-author-name { font-weight:700; color:var(--text-primary); font-size:0.95rem; }
+    .post-author-role { font-size:0.78rem; color:var(--text-muted); }
+    .post-body       { font-size:1rem; color:var(--text-secondary); line-height:1.9; }
+    .post-body h2    { font-size:1.4rem; font-weight:800; color:var(--text-primary); margin:2.5rem 0 1rem; }
+    .post-body h3    { font-size:1.15rem; font-weight:700; color:var(--neon-violet); margin:2rem 0 0.75rem; }
+    .post-body p     { margin-bottom:1.25rem; }
+    .post-body ul,ol { padding-right:1.5rem; margin-bottom:1.25rem; }
+    .post-body li    { margin-bottom:0.6rem; }
+    .post-body li::marker { color:var(--neon-violet); }
+    .post-share      { margin-top:3rem; padding-top:2rem; border-top:1px solid var(--border-dim);
+                       display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+    .post-share span { font-weight:700; color:var(--text-primary); }
+    .share-btn       { width:40px; height:40px; border-radius:10px; border:1px solid var(--border-dim);
+                       background:var(--bg-glass); display:flex; align-items:center;
+                       justify-content:center; font-size:1rem; cursor:pointer; transition:all 0.2s; }
+    .share-btn:hover { border-color:var(--neon-violet); color:var(--neon-violet); }
+    .skeleton        { background:var(--bg-glass); border-radius:8px;
+                       animation:pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
+  </style>
+</head>
+<body data-page="community-post">
+  <div id="loader" class="loader">
+    <div class="loader-inner">
+      <div class="loader-logo" style="font-size:1.5rem;">00</div>
+      <div class="loader-bar"><span></span></div>
+    </div>
+  </div>
+<!-- Post Hero -->
+<div class="post-hero">
+  <div class="post-container">
+    <div class="breadcrumb" style="justify-content:flex-start;margin-bottom:2rem;">
+      <a href="index.html">الرئيسية</a>
+      <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+      <a href="community.html">المجتمع</a>
+      <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+      <span id="postBreadcrumb">المقال</span>
+    </div>
+    <div class="post-meta-bar">
+      <span class="post-cat-badge">مجتمع وعينا</span>
+      <span><i class="fas fa-calendar"></i> <span id="postDate">—</span></span>
+      <span><i class="fas fa-user"></i> <span id="postAuthorMeta">—</span></span>
+    </div>
+    <h1 class="post-title" id="postTitle">جاري تحميل المقال...</h1>
+  </div>
+</div>
+
+<!-- Post Content -->
+<div class="post-container" style="padding-top:3rem;padding-bottom:6rem;">
+
+  <!-- Author Card -->
+  <div class="post-author">
+    <div class="post-author-avatar">✍️</div>
+    <div>
+      <div class="post-author-name" id="postAuthorName">جاري التحميل...</div>
+      <div class="post-author-role">عضو في مجتمع وعينا</div>
+    </div>
+  </div>
+
+  <!-- Body — يُملأ ديناميكياً -->
+  <div class="post-body" id="postBody">
+    <p class="skeleton" style="height:1rem;width:80%;margin-bottom:1rem;"></p>
+    <p class="skeleton" style="height:1rem;width:95%;margin-bottom:1rem;"></p>
+    <p class="skeleton" style="height:1rem;width:65%;margin-bottom:1rem;"></p>
+  </div>
+
+  <!-- Share -->
+  <div class="post-share">
+    <span>شارك المقال:</span>
+    <a id="shareWa" href="#" target="_blank"
+       class="share-btn" style="color:#25d366;border-color:rgba(37,211,102,0.3);">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+    <button class="share-btn" onclick="copyLink()"><i class="fas fa-link"></i></button>
+  </div>
+
+  <!-- Back -->
+  <div style="margin-top:3rem;">
+    <a href="community.html" class="btn btn-secondary">
+      <i class="fas fa-arrow-right"></i> العودة للمجتمع
+    </a>
+  </div>
+
+</div>
+
+<script src="components.js"></script>
+<script src="page-scripts.js"></script>
+<script>
+async function loadFullPost() {
+  const postId = new URLSearchParams(window.location.search).get('id');
+
+  if (!postId) {
+    document.getElementById('postTitle').textContent = 'لم يُحدَّد معرّف المقال';
+    document.getElementById('postBody').innerHTML =
+      '<p style="color:var(--neon-violet);">الرابط غير صحيح — يرجى العودة للمجتمع.</p>';
+    return;
+  }
+
+  try {
+    const res  = await fetch(`/api/post-details/${postId}`);
+    if (!res.ok) throw new Error('not found');
+    const post = await res.json();
+
+    /* ── تحديث الصفحة بالكامل ── */
+    document.title = post.title + ' | مجتمع وعينا';
+
+    document.getElementById('postTitle').textContent       = post.title;
+    document.getElementById('postBreadcrumb').textContent  = post.title.slice(0, 30) + '…';
+    document.getElementById('postDate').textContent        = post.date || '';
+    document.getElementById('postAuthorMeta').textContent  = post.author || 'زائر';
+    document.getElementById('postAuthorName').textContent  = post.author || 'زائر';
+    document.getElementById('postBody').innerHTML          = post.content || '<p>لا يوجد محتوى.</p>';
+
+    /* ── رابط واتساب ── */
+    const waText = encodeURIComponent(`اقرأ هذا المقال من مجتمع وعينا: ${post.title}\n${window.location.href}`);
+    document.getElementById('shareWa').href = `https://wa.me/?text=${waText}`;
+
+  } catch (err) {
+    console.error('Error loading community post:', err);
+    document.getElementById('postTitle').textContent = 'تعذّر تحميل المقال';
+    document.getElementById('postBody').innerHTML    =
+      '<p style="color:var(--neon-violet);">تأكد من تشغيل السيرفر وصحة الرابط.</p>';
+  }
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href)
+    .then(() => showToast('✅ تم نسخ الرابط!'))
+    .catch(() => showToast('⚠️ تعذّر النسخ'));
+}
+
+document.addEventListener('DOMContentLoaded', loadFullPost);
+</script>
+</body>
+</html>
