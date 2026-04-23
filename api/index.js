@@ -39,7 +39,7 @@ app.get('/api/posts', async (req, res) => {
     const db   = await getDB();
     const coll = req.query.type === 'admin' ? 'blog' : 'community';
     const posts = await db.collection(coll)
-      .find({ published: true })
+      .find({})
       .sort({ date: -1 })
       .toArray();
     res.json(posts);
