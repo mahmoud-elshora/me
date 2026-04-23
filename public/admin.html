@@ -1,75 +1,151 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-theme="dark">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>لوحة التحكم | وعينا</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>لوحة التحكم | وعينا</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="stylesheet" href="page-common.css"/>
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="page-common.css"/>
 
-  <style>
-    .tabs {
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom:20px;
-    }
+<style>
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.tab-btn{padding:10px 14px;border-radius:10px;border:1px solid #333;background:#111;color:#fff;cursor:pointer}
+.tab-btn.active{background:cyan;color:#000;font-weight:bold}
+.section{display:none}
+.section.active{display:block}
+.admin-box{max-width:800px;margin:auto;padding:20px;background:#111;border-radius:12px;margin-bottom:20px}
+:root{
+  --card:#0f1720;
+  --card2:#111827;
+  --border:rgba(255,255,255,0.08);
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --accent:#00e5ff;
+}
 
-    .tab-btn{
-      padding:10px 15px;
-      border-radius:10px;
-      border:1px solid var(--border-color);
-      background:var(--bg-glass);
-      cursor:pointer;
-      color:var(--text-primary);
-    }
+/* ===== GENERAL ===== */
+body{
+  font-family:"Cairo",sans-serif;
+}
 
-    .tab-btn.active{
-      background:var(--neon-cyan);
-      color:#000;
-      font-weight:bold;
-    }
+/* ===== INPUTS ===== */
+.form-input{
+  width:100%;
+  padding:12px 14px;
+  margin-bottom:10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+  outline:none;
+  transition:.2s;
+}
 
-    .section{display:none;}
-    .section.active{display:block;}
+.form-input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(0,229,255,0.15);
+}
 
-    .admin-box{
-      max-width:800px;
-      margin:auto;
-      background:var(--bg-glass);
-      border:1px solid var(--border-color);
-      padding:2rem;
-      border-radius:15px;
-      margin-bottom:20px;
-    }
-  </style>
+/* ===== ADMIN BOX ===== */
+.admin-box{
+  max-width:800px;
+  margin:auto;
+  padding:20px;
+  border-radius:16px;
+  background:linear-gradient(145deg,var(--card),var(--card2));
+  border:1px solid var(--border);
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* ===== BUTTONS ===== */
+button{
+  cursor:pointer;
+  transition:.2s;
+}
+
+.btn{
+  padding:12px 16px;
+  border:none;
+  border-radius:12px;
+  font-weight:600;
+}
+
+.btn-primary{
+  background:linear-gradient(135deg,#00e5ff,#00c6ff);
+  color:#000;
+  box-shadow:0 10px 20px rgba(0,229,255,0.15);
+}
+
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 15px 25px rgba(0,229,255,0.25);
+}
+
+/* ===== BLOG CARDS ===== */
+.blog-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  transition:.25s;
+  box-shadow:0 5px 20px rgba(0,0,0,0.3);
+}
+
+.blog-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(0,229,255,0.3);
+}
+
+/* ===== ACTION BUTTONS ===== */
+.blog-card button{
+  padding:7px 10px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--text);
+  font-size:13px;
+}
+
+.blog-card button:hover{
+  background:rgba(255,255,255,0.05);
+  border-color:var(--accent);
+}
+
+/* delete button */
+.blog-card button[style*="red"]{
+  border-color:rgba(255,0,0,0.3);
+}
+
+.blog-card button[style*="red"]:hover{
+  background:rgba(255,0,0,0.1);
+}
+</style>
+
 </head>
 
 <body data-page="admin">
 
 <button onclick="logout()"
-style="position:fixed;bottom:15px;left:15px;z-index:999;
-background:red;color:#fff;border:none;padding:10px 14px;border-radius:10px;">
+style="position:fixed;bottom:15px;left:15px;background:red;color:#fff;padding:10px;border:none;border-radius:10px;z-index:999">
 تسجيل خروج
 </button>
 
 <section class="page-hero">
-  <h1>لوحة التحكم</h1>
-  <p>إدارة الموقع بالكامل</p>
+<h1>لوحة التحكم</h1>
+<p>إدارة كاملة للموقع</p>
 </section>
 
 <div class="page-content">
 
 <!-- TABS -->
 <div class="tabs">
-  <button class="tab-btn active" onclick="showTab('blog')">📝 Blog</button>
-  <button class="tab-btn" onclick="showTab('community')">👥 Community</button>
-  <button class="tab-btn" onclick="showTab('testimonials')">⭐ Testimonials</button>
-  <button class="tab-btn" onclick="showTab('contacts')">📩 Contacts</button>
+<button class="tab-btn active" onclick="showTab('blog')">📝 Blog</button>
+<button class="tab-btn" onclick="showTab('community')">👥 Community</button>
+<button class="tab-btn" onclick="showTab('testimonials')">⭐ Testimonials</button>
 </div>
 
 <!-- ================= BLOG ================= -->
@@ -78,207 +154,174 @@ background:red;color:#fff;border:none;padding:10px 14px;border-radius:10px;">
 <h2>إدارة المقالات</h2>
 
 <div class="admin-box">
-  <input id="title" class="form-input" placeholder="عنوان المقال">
-  <input id="excerpt" class="form-input" placeholder="نبذة">
-  <input id="icon" class="form-input" placeholder="icon fas fa-code">
-  <textarea id="content" class="form-input" placeholder="المحتوى"></textarea>
+<input id="title" class="form-input" placeholder="العنوان">
+<input id="excerpt" class="form-input" placeholder="نبذة">
+<input id="icon" class="form-input" placeholder="icon fas fa-code">
+<textarea id="content" class="form-input" placeholder="المحتوى"></textarea>
 
-  <button class="btn btn-primary btn-full" onclick="saveBlog()">➕ حفظ</button>
+<button class="btn btn-primary" onclick="saveBlog()">حفظ</button>
 </div>
 
 <div id="blogGrid" class="blog-grid"></div>
-
 </div>
 
 <!-- ================= COMMUNITY ================= -->
 <div id="community" class="section">
-  <h2>مقالات المجتمع</h2>
-  <div id="communityGrid" class="blog-grid"></div>
+<h2>Community</h2>
+<div id="communityGrid" class="blog-grid"></div>
 </div>
 
 <!-- ================= TESTIMONIALS ================= -->
 <div id="testimonials" class="section">
-  <h2>الشهادات</h2>
-  <div id="testimonialsGrid" class="blog-grid"></div>
-</div>
-
-<!-- ================= CONTACT ================= -->
-<div id="contacts" class="section">
-  <h2>الرسائل</h2>
-  <div id="contactsGrid" class="blog-grid"></div>
+<h2>Testimonials</h2>
+<div id="testimonialsGrid" class="blog-grid"></div>
 </div>
 
 </div>
 
 <script>
+
 if(!localStorage.getItem("admin-token")){
-  window.location.href="login.html";
+location.href="login.html";
 }
 
 const token = localStorage.getItem("admin-token");
-let editId = null;
+let editId=null;
 
 /* ================= TABS ================= */
-function showTab(tab){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+function showTab(id){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
 
-  document.getElementById(tab).classList.add('active');
-  event.target.classList.add('active');
+document.getElementById(id).classList.add('active');
+event.target.classList.add('active');
 }
 
 /* ================= BLOG ================= */
 async function loadBlogs(){
-  const res = await fetch('/api/posts?type=admin');
-  const data = await res.json();
+const res=await fetch('/api/posts?type=admin');
+const data=await res.json();
 
-  document.getElementById('blogGrid').innerHTML = data.map(p=>`
-    <div class="blog-card">
-      <div class="blog-card-img">
-        <i class="${p.icon || 'fas fa-pen-fancy'}"></i>
-      </div>
-
-      <div class="blog-card-body">
-        <h3>${p.title}</h3>
-        <p>${p.excerpt}</p>
-
-        <button onclick="editBlog('${p.id}','${p.title}','${p.excerpt}','${p.content}','${p.icon || ''}')">✏️</button>
-        <button style="color:red" onclick="deleteBlog('${p.id}')">🗑</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function editBlog(id,t,e,c,i){
-  editId=id;
-  title.value=t;
-  excerpt.value=e;
-  content.value=c;
-  icon.value=i;
-}
-
-async function saveBlog(){
-  const body={
-    title:title.value,
-    excerpt:excerpt.value,
-    content:content.value,
-    icon:icon.value
-  };
-
-  const url = editId ? `/api/blog/${editId}` : '/api/blog';
-  const method = editId ? 'PUT' : 'POST';
-
-  await fetch(url,{
-    method,
-    headers:{
-      'Content-Type':'application/json',
-      'Authorization':token
-    },
-    body:JSON.stringify(body)
-  });
-
-  editId=null;
-  loadBlogs();
+blogGrid.innerHTML=data.map(itemCard('blog')).join('');
 }
 
 /* ================= COMMUNITY ================= */
 async function loadCommunity(){
-  const res = await fetch('/api/posts?type=guest');
-  const data = await res.json();
+const res=await fetch('/api/posts?type=guest');
+const data=await res.json();
 
-  document.getElementById('communityGrid').innerHTML = data.map(p=>`
-    <div class="blog-card">
-      <h3>${p.title}</h3>
-      <p>${p.excerpt}</p>
-
-      <button onclick="approve('${p.id}')">✔</button>
-      <button style="color:red" onclick="deleteC('${p.id}')">🗑</button>
-    </div>
-  `).join('');
-}
-
-async function approve(id){
-  await fetch('/api/community/approve/'+id,{method:'PUT',headers:{Authorization:token}});
-  loadCommunity();
-}
-
-async function deleteC(id){
-  await fetch('/api/community/'+id,{method:'DELETE',headers:{Authorization:token}});
-  loadCommunity();
+communityGrid.innerHTML=data.map(itemCard('community')).join('');
 }
 
 /* ================= TESTIMONIALS ================= */
 async function loadTestimonials(){
-  const res = await fetch('/api/testimonials');
-  const data = await res.json();
+const res=await fetch('/api/testimonials');
+const data=await res.json();
 
-  document.getElementById('testimonialsGrid').innerHTML = data.map(t=>`
-    <div class="blog-card">
-      <input id="n-${t.id}" value="${t.name}">
-      <textarea id="m-${t.id}">${t.message}</textarea>
-
-      <button onclick="updateT('${t.id}')">✏️</button>
-      <button style="color:red" onclick="deleteT('${t.id}')">🗑</button>
-    </div>
-  `).join('');
+testimonialsGrid.innerHTML=data.map(itemCard('testimonials')).join('');
 }
 
-async function updateT(id){
-  await fetch('/api/testimonials/'+id,{
-    method:'PUT',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      name:document.getElementById('n-'+id).value,
-      message:document.getElementById('m-'+id).value
-    })
-  });
+/* ================= CARD SYSTEM ================= */
+function itemCard(type){
+return function(item){
+return `
+<div class="blog-card">
 
-  loadTestimonials();
+<h3>${item.title || item.name}</h3>
+<p>${item.excerpt || item.message || ''}</p>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+
+<button onclick="editItem('${type}','${item.id}')">✏️</button>
+<button onclick="deleteItem('${type}','${item.id}')" style="color:red">🗑</button>
+<button onclick="approveItem('${type}','${item.id}')">✔</button>
+<button onclick="togglePublish('${type}','${item.id}',${item.published})">👁</button>
+
+</div>
+</div>
+`;
+}
 }
 
-/* ================= CONTACTS ================= */
-async function loadContacts(){
-  const res = await fetch('/api/contacts');
-  const data = await res.json();
+/* ================= BLOG SAVE ================= */
+async function saveBlog(){
 
-  document.getElementById('contactsGrid').innerHTML = data.map(c=>`
-    <div class="blog-card">
-      <h3>${c.name}</h3>
-      <p>${c.message}</p>
+const body={
+title:title.value,
+excerpt:excerpt.value,
+content:content.value,
+icon:icon.value,
+published:true
+};
 
-      <button style="color:red" onclick="deleteContact('${c.id}')">🗑</button>
-    </div>
-  `).join('');
-}
+const url=editId?`/api/blog/${editId}`:'/api/blog';
+const method=editId?'PUT':'POST';
 
-/* ================= DELETE ================= */
-async function deleteBlog(id){
-  await fetch('/api/blog/'+id,{method:'DELETE',headers:{Authorization:token}});
-  loadBlogs();
-}
-
-async function deleteT(id){
-  await fetch('/api/testimonials/'+id,{method:'DELETE'});
-  loadTestimonials();
-}
-
-async function deleteContact(id){
-  await fetch('/api/contact/'+id,{method:'DELETE'});
-  loadContacts();
-}
-
-function logout(){
-  localStorage.removeItem("admin-token");
-  location.href="login.html";
-}
-
-/* INIT */
-document.addEventListener('DOMContentLoaded',()=>{
-  loadBlogs();
-  loadCommunity();
-  loadTestimonials();
-  loadContacts();
+await fetch(url,{
+method,
+headers:{
+'Content-Type':'application/json',
+'Authorization':token
+},
+body:JSON.stringify(body)
 });
+
+editId=null;
+loadBlogs();
+}
+
+/* ================= ACTIONS ================= */
+async function deleteItem(type,id){
+await fetch(`/api/${type}/${id}`,{
+method:'DELETE',
+headers:{Authorization:token}
+});
+reload();
+}
+
+async function approveItem(type,id){
+await fetch(`/api/${type}/approve/${id}`,{
+method:'PUT',
+headers:{Authorization:token}
+});
+reload();
+}
+
+async function togglePublish(type,id,state){
+await fetch(`/api/${type}/${id}`,{
+method:'PUT',
+headers:{
+'Content-Type':'application/json',
+Authorization:token
+},
+body:JSON.stringify({published:!state})
+});
+reload();
+}
+
+/* ================= EDIT ================= */
+function editItem(type,id){
+alert("ضيف logic edit لو حابب نكمله");
+}
+
+/* ================= RELOAD ================= */
+function reload(){
+loadBlogs();
+loadCommunity();
+loadTestimonials();
+}
+
+/* ================= LOGOUT ================= */
+function logout(){
+localStorage.removeItem("admin-token");
+location.href="login.html";
+}
+
+/* ================= INIT ================= */
+document.addEventListener('DOMContentLoaded',()=>{
+reload();
+});
+
 </script>
 
 </body>
