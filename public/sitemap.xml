@@ -2,77 +2,83 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
-    <loc>https://mahmoud-elshoragithubio-production.up.railway.app/</loc>
+    <loc>https://mahmoudelshora.vercel.app/</loc>
     <lastmod>2026-04-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.00</priority>
   </url>
 
   <url>
-    <loc>https://mahmoud-elshoragithubio-production.up.railway.app/pages/initiative.html</loc>
+    <loc>https://mahmoudelshora.vercel.app/initiative.html</loc>
     <lastmod>2026-04-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.90</priority>
   </url>
 
   <url>
-    <loc>https://mahmoud-elshoragithubio-production.up.railway.app/pages/projects.html</loc>
+    <loc>https://mahmoudelshora.vercel.app/projects.html</loc>
     <lastmod>2026-04-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.90</priority>
   </url>
 
   <url>
-    <loc>https://mahmoud-elshoragithubio-production.up.railway.app/pages/activities.html</loc>
+    <loc>https://mahmoudelshora.vercel.app/activities.html</loc>
     <lastmod>2026-04-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
 
   <url>
-    <loc>https://mahmoud-elshoragithubio-production.up.railway.app/pages/blog.html</loc>
+    <loc>https://mahmoudelshora.vercel.app/blog.html</loc>
     <lastmod>2026-04-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
 
   <url>
-    <loc>https://mahmoud-elshoragithubio-production.up.railway.app/pages/cv.html</loc>
+    <loc>https://mahmoudelshora.vercel.app/cv.html</loc>
     <lastmod>2026-04-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
 
   <url>
-    <loc>https://mahmoud-elshoragithubio-production.up.railway.app/pages/achivements.html</loc>
+    <loc>https://mahmoudelshora.vercel.app/achivments.html</loc>
     <lastmod>2026-04-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
 
   <url>
-    <loc>https://mahmoud-elshoragithubio-production.up.railway.app/pages/skills.html</loc>
+    <loc>https://mahmoudelshora.vercel.app/skills.html</loc>
     <lastmod>2026-04-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.75</priority>
   </url>
 
   <url>
-    <loc>https://mahmoud-elshoragithubio-production.up.railway.app/pages/community.html</loc>
+    <loc>https://mahmoudelshora.vercel.app/community.html</loc>
     <lastmod>2026-04-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.75</priority>
   </url>
 
   <url>
-    <loc>https://mahmoud-elshoragithubio-production.up.railway.app/pages/testimonials.html</loc>
+    <loc>https://mahmoudelshora.vercel.app/testimonials.html</loc>
     <lastmod>2026-04-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
 
   <url>
-    <loc>https://mahmoud-elshoragithubio-production.up.railway.app/pages/contact.html</loc>
+    <loc>https://mahmoudelshora.vercel.app/contact.html</loc>
+    <lastmod>2026-04-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.60</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudelshora.vercel.app/stats.html</loc>
     <lastmod>2026-04-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.60</priority>
