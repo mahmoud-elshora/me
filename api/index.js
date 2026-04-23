@@ -31,17 +31,19 @@ function generateId() {
 }
 
 /* ================================================================
-   BLOG & COMMUNITY
+   BLOG & COMMUNITY (OLD + ENHANCED)
 ================================================================ */
 
 app.get('/api/posts', async (req, res) => {
   try {
     const db   = await getDB();
     const coll = req.query.type === 'admin' ? 'blog' : 'community';
+
     const posts = await db.collection(coll)
       .find({})
       .sort({ date: -1 })
       .toArray();
+
     res.json(posts);
   } catch (err) {
     res.status(500).json({ error: 'Error fetching posts' });
@@ -52,18 +54,23 @@ app.get('/api/post-details/:id', async (req, res) => {
   try {
     const db = await getDB();
     const id = req.params.id;
+
     let post = await db.collection('blog').findOne({ id });
     if (!post) post = await db.collection('community').findOne({ id });
+
     if (!post) return res.status(404).json({ error: 'Not found' });
+
     res.json(post);
   } catch (err) {
     res.status(500).json({ error: 'Error fetching post' });
   }
 });
 
+/* ================= COMMUNITY SUBMIT ================= */
 app.post('/api/community-submit', async (req, res) => {
   try {
-    const db      = await getDB();
+    const db = await getDB();
+
     const newPost = {
       id:        generateId(),
       title:     req.body.title   || '',
@@ -76,23 +83,24 @@ app.post('/api/community-submit', async (req, res) => {
       date:      new Date().toISOString().split('T')[0],
       createdAt: new Date(),
     };
+
     await db.collection('community').insertOne(newPost);
+
     res.json({ ok: true, id: newPost.id });
+
   } catch (err) {
     res.status(500).json({ error: 'Submit failed' });
   }
 });
 
 /* ================================================================
-   TESTIMONIALS
+   TESTIMONIALS (FULL CRUD FIX)
 ================================================================ */
 
 app.get('/api/testimonials', async (req, res) => {
   try {
-    const db   = await getDB();
-    const data = await db.collection('testimonials')
-      .find({ approved: true })
-      .toArray();
+    const db = await getDB();
+    const data = await db.collection('testimonials').find().toArray();
     res.json(data);
   } catch {
     res.status(500).json([]);
@@ -102,38 +110,89 @@ app.get('/api/testimonials', async (req, res) => {
 app.post('/api/testimonials', async (req, res) => {
   try {
     const db = await getDB();
+
     await db.collection('testimonials').insertOne({
       id: generateId(),
       ...req.body,
       approved: false,
-      date:     new Date().toISOString(),
+      date: new Date().toISOString(),
     });
+
     res.json({ ok: true });
+
+  } catch {
+    res.status(500).json({ ok: false });
+  }
+});
+
+/* ✔ NEW: UPDATE TESTIMONIAL */
+app.put('/api/testimonials/:id', async (req, res) => {
+  try {
+    const db = await getDB();
+
+    await db.collection('testimonials').updateOne(
+      { id: req.params.id },
+      { $set: req.body }
+    );
+
+    res.json({ ok: true });
+
+  } catch {
+    res.status(500).json({ ok: false });
+  }
+});
+
+/* ✔ NEW: DELETE TESTIMONIAL */
+app.delete('/api/testimonials/:id', async (req, res) => {
+  try {
+    const db = await getDB();
+
+    await db.collection('testimonials').deleteOne({ id: req.params.id });
+
+    res.json({ ok: true });
+
   } catch {
     res.status(500).json({ ok: false });
   }
 });
 
 /* ================================================================
-   CONTACT
+   CONTACT (FULL FIX)
 ================================================================ */
 
 app.post('/api/contact', async (req, res) => {
   try {
     const db = await getDB();
+
     await db.collection('contacts').insertOne({
-      id:   generateId(),
+      id: generateId(),
       ...req.body,
       date: new Date().toISOString(),
     });
+
     res.json({ ok: true });
+
+  } catch {
+    res.status(500).json({ ok: false });
+  }
+});
+
+/* ✔ NEW: DELETE CONTACT */
+app.delete('/api/contact/:id', async (req, res) => {
+  try {
+    const db = await getDB();
+
+    await db.collection('contacts').deleteOne({ id: req.params.id });
+
+    res.json({ ok: true });
+
   } catch {
     res.status(500).json({ ok: false });
   }
 });
 
 /* ================================================================
-   ADMIN AUTH
+   ADMIN AUTH (UNCHANGED)
 ================================================================ */
 
 const ADMIN_USER = process.env.ADMIN_USER;
@@ -146,30 +205,36 @@ function verifyAdmin(req, res, next) {
 
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
+
   if (username === ADMIN_USER && password === ADMIN_PASS) {
     return res.json({ success: true, token: 'admin-token' });
   }
+
   res.status(401).json({ success: false });
 });
 
 /* ================================================================
-   BLOG ADMIN
+   BLOG ADMIN (ENHANCED)
 ================================================================ */
 
 app.post('/api/blog', verifyAdmin, async (req, res) => {
   try {
-    const db   = await getDB();
-const post = {
-  id:        generateId(),
-  title:     req.body.title,
-  excerpt:   req.body.excerpt,
-  content:   req.body.content,
-  icon:      req.body.icon || "fas fa-pen-fancy",
-  published: true,
-  date:      new Date().toISOString().split('T')[0],
-};
+    const db = await getDB();
+
+    const post = {
+      id: generateId(),
+      title: req.body.title,
+      excerpt: req.body.excerpt,
+      content: req.body.content,
+      icon: req.body.icon || "fas fa-pen-fancy",
+      published: true,
+      date: new Date().toISOString().split('T')[0],
+    };
+
     await db.collection('blog').insertOne(post);
+
     res.json({ ok: true });
+
   } catch {
     res.status(500).json({ ok: false });
   }
@@ -178,25 +243,48 @@ const post = {
 app.delete('/api/blog/:id', verifyAdmin, async (req, res) => {
   try {
     const db = await getDB();
+
     await db.collection('blog').deleteOne({ id: req.params.id });
+
     res.json({ ok: true });
+
+  } catch {
+    res.status(500).json({ ok: false });
+  }
+});
+
+/* ✔ NEW: UPDATE BLOG */
+app.put('/api/blog/:id', verifyAdmin, async (req, res) => {
+  try {
+    const db = await getDB();
+
+    await db.collection('blog').updateOne(
+      { id: req.params.id },
+      { $set: req.body }
+    );
+
+    res.json({ ok: true });
+
   } catch {
     res.status(500).json({ ok: false });
   }
 });
 
 /* ================================================================
-   COMMUNITY ADMIN
+   COMMUNITY ADMIN (UNCHANGED + SAFE)
 ================================================================ */
 
 app.put('/api/community/approve/:id', verifyAdmin, async (req, res) => {
   try {
     const db = await getDB();
+
     await db.collection('community').updateOne(
       { id: req.params.id },
       { $set: { published: true } }
     );
+
     res.json({ ok: true });
+
   } catch {
     res.status(500).json({ ok: false });
   }
@@ -205,22 +293,28 @@ app.put('/api/community/approve/:id', verifyAdmin, async (req, res) => {
 app.delete('/api/community/:id', verifyAdmin, async (req, res) => {
   try {
     const db = await getDB();
+
     await db.collection('community').deleteOne({ id: req.params.id });
+
     res.json({ ok: true });
+
   } catch {
     res.status(500).json({ ok: false });
   }
 });
 
 /* ================================================================
-   CONTACTS ADMIN
+   CONTACTS ADMIN (VIEW ONLY)
 ================================================================ */
 
 app.get('/api/contacts', verifyAdmin, async (req, res) => {
   try {
-    const db   = await getDB();
+    const db = await getDB();
+
     const data = await db.collection('contacts').find().toArray();
+
     res.json(data);
+
   } catch {
     res.status(500).json([]);
   }
