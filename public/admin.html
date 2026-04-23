@@ -8,8 +8,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
 <style>
-
-/* ================= DESIGN SYSTEM ================= */
 :root{
   --bg:#0b0f14;
   --card:#121821;
@@ -21,7 +19,6 @@
   --ok:#22c55e;
 }
 
-/* ================= BASE ================= */
 body{
   margin:0;
   font-family:"Cairo",sans-serif;
@@ -29,26 +26,32 @@ body{
   color:var(--text);
 }
 
-h2{
-  margin:20px 0;
-  text-align:center;
+.container{max-width:1100px;margin:auto;padding:20px;}
+
+h2{text-align:center;}
+
+.tabs{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
+
+.tabs button{
+  padding:10px 15px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+  cursor:pointer;
 }
 
-/* ================= LAYOUT ================= */
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:20px;
-}
+.tabs button.active{background:var(--accent);color:#000;}
 
-/* ================= GRID ================= */
+.section{display:none;}
+.section.active{display:block;}
+
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
   gap:15px;
 }
 
-/* ================= CARD ================= */
 .card{
   background:var(--card);
   border:1px solid var(--border);
@@ -62,30 +65,28 @@ h2{
   border-color:var(--accent);
 }
 
-/* ================= INPUT ================= */
+.icon{
+  font-size:30px;
+  margin-bottom:10px;
+}
+
 input,textarea{
   width:100%;
   padding:10px;
-  margin-bottom:10px;
+  margin:5px 0;
   border-radius:10px;
   border:1px solid var(--border);
   background:#0f141b;
   color:white;
-  outline:none;
 }
 
-input:focus,textarea:focus{
-  border-color:var(--accent);
-}
-
-/* ================= BUTTONS ================= */
 .btn{
-  padding:8px 12px;
+  padding:6px 10px;
   border-radius:8px;
   border:none;
   cursor:pointer;
   margin:3px;
-  font-size:13px;
+  font-size:12px;
 }
 
 .primary{background:var(--accent);color:#000;}
@@ -93,32 +94,22 @@ input:focus,textarea:focus{
 .ok{background:var(--ok);color:#000;}
 .gray{background:#222;color:#fff;}
 
-/* ================= NAV ================= */
-.tabs{
-  display:flex;
+/* modal */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  display:none;
   justify-content:center;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:20px;
+  align-items:center;
 }
 
-.tabs button{
-  padding:10px 15px;
-  border-radius:10px;
-  border:1px solid var(--border);
+.modal-content{
   background:var(--card);
-  color:var(--text);
+  padding:20px;
+  border-radius:12px;
+  width:400px;
 }
-
-.tabs button.active{
-  background:var(--accent);
-  color:#000;
-}
-
-/* ================= SECTION ================= */
-.section{display:none;}
-.section.active{display:block;}
-
 </style>
 </head>
 
@@ -128,20 +119,19 @@ input:focus,textarea:focus{
 
 <h2>⚙️ Admin Dashboard</h2>
 
-<!-- NAV -->
 <div class="tabs">
-<button onclick="show('blog')" class="active">Blog</button>
-<button onclick="show('community')">Community</button>
-<button onclick="show('testimonials')">Testimonials</button>
-<button onclick="show('contacts')">Contacts</button>
+<button class="active" onclick="show('blog',event)">Blog</button>
+<button onclick="show('community',event)">Community</button>
+<button onclick="show('testimonials',event)">Testimonials</button>
+<button onclick="show('contacts',event)">Contacts</button>
 </div>
 
-<!-- ================= BLOG ================= -->
+<!-- BLOG -->
 <div id="blog" class="section active">
 
 <input id="title" placeholder="Title">
 <input id="excerpt" placeholder="Excerpt">
-<input id="icon" placeholder="Icon">
+<input id="icon" placeholder="Icon (fa-solid fa-...)">
 <textarea id="content" placeholder="Content"></textarea>
 
 <button class="btn primary" onclick="saveBlog()">Save</button>
@@ -149,89 +139,86 @@ input:focus,textarea:focus{
 <div id="blogGrid" class="grid"></div>
 </div>
 
-<!-- ================= COMMUNITY ================= -->
-<div id="community" class="section">
-<div id="communityGrid" class="grid"></div>
+<!-- OTHERS -->
+<div id="community" class="section"><div id="communityGrid" class="grid"></div></div>
+<div id="testimonials" class="section"><div id="testimonialsGrid" class="grid"></div></div>
+<div id="contacts" class="section"><div id="contactsGrid" class="grid"></div></div>
+
 </div>
 
-<!-- ================= TESTIMONIALS ================= -->
-<div id="testimonials" class="section">
-<div id="testimonialsGrid" class="grid"></div>
-</div>
-
-<!-- ================= CONTACTS ================= -->
-<div id="contacts" class="section">
-<div id="contactsGrid" class="grid"></div>
-</div>
-
+<!-- MODAL EDIT -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3>Edit Post</h3>
+    <input id="editTitle">
+    <input id="editExcerpt">
+    <input id="editIcon">
+    <textarea id="editContent"></textarea>
+    <button class="btn primary" onclick="updatePost()">Save</button>
+    <button class="btn gray" onclick="closeModal()">Close</button>
+  </div>
 </div>
 
 <script>
 
-const token=localStorage.getItem("admin-token");
+const token = localStorage.getItem("admin-token");
 
-let editId=null;
+let currentEdit = {type:null,id:null};
 
-/* ================= NAV ================= */
-function show(id){
+/* NAV */
+function show(id,e){
 document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
 document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
 
 document.getElementById(id).classList.add('active');
-event.target.classList.add('active');
+e.target.classList.add('active');
 }
 
-/* ================= BLOG ================= */
-async function loadBlogs(){
-const r=await fetch('/api/posts?type=admin');
-const d=await r.json();
-
-blogGrid.innerHTML=d.map(c=>card('blog',c)).join('');
-}
-
-/* ================= COMMUNITY ================= */
-async function loadCommunity(){
-const r=await fetch('/api/posts?type=guest');
-const d=await r.json();
-
-communityGrid.innerHTML=d.map(c=>card('community',c)).join('');
-}
-
-/* ================= TEST ================= */
-async function loadTestimonials(){
-const r=await fetch('/api/testimonials');
-const d=await r.json();
-
-testimonialsGrid.innerHTML=d.map(c=>card('testimonials',c)).join('');
-}
-
-/* ================= CONTACT ================= */
-async function loadContacts(){
-const r=await fetch('/api/contacts');
-const d=await r.json();
-
-contactsGrid.innerHTML=d.map(c=>card('contacts',c)).join('');
-}
-
-/* ================= CARD SYSTEM ================= */
+/* CARD */
 function card(type,item){
 return `
 <div class="card">
 
-<h3>${item.title||item.name}</h3>
-<p>${item.excerpt||item.message||''}</p>
+<div class="icon"><i class="${item.icon || 'fa-solid fa-file'}"></i></div>
 
-<div>
-<button class="btn ok" onclick="approve('${type}','${item.id}')">✔</button>
-<button class="btn danger" onclick="del('${type}','${item.id}')">🗑</button>
-<button class="btn gray" onclick="toggle('${type}','${item.id}',${item.published})">👁</button>
-</div>
+<h3>${item.title || item.name}</h3>
+<p>${item.excerpt || item.message || ''}</p>
+
+<button class="btn ok" onclick="approve('${type}','${item.id}')">Approve</button>
+<button class="btn danger" onclick="del('${type}','${item.id}')">Delete</button>
+<button class="btn gray" onclick="toggle('${type}','${item.id}',${item.published})">Hide</button>
+<button class="btn primary" onclick='edit("${type}",${JSON.stringify(item)})'>Edit</button>
 
 </div>
 `;
 }
 
-/* ================= ACTIONS ================= */
+/* LOAD */
+async function loadBlogs(){
+let r=await fetch('/api/posts?type=admin');
+let d=await r.json();
+blogGrid.innerHTML=d.map(c=>card('blog',c)).join('');
+}
+
+async function loadCommunity(){
+let r=await fetch('/api/posts?type=guest');
+let d=await r.json();
+communityGrid.innerHTML=d.map(c=>card('community',c)).join('');
+}
+
+async function loadTestimonials(){
+let r=await fetch('/api/testimonials');
+let d=await r.json();
+testimonialsGrid.innerHTML=d.map(c=>card('testimonials',c)).join('');
+}
+
+async function loadContacts(){
+let r=await fetch('/api/contacts');
+let d=await r.json();
+contactsGrid.innerHTML=d.map(c=>card('contacts',c)).join('');
+}
+
+/* ACTIONS */
 async function del(type,id){
 await fetch(`/api/${type}/${id}`,{method:'DELETE',headers:{Authorization:token}});
 reload();
@@ -251,9 +238,8 @@ body:JSON.stringify({published:!val})
 reload();
 }
 
-/* ================= BLOG SAVE ================= */
+/* BLOG SAVE */
 async function saveBlog(){
-
 await fetch('/api/blog',{
 method:'POST',
 headers:{'Content-Type':'application/json',Authorization:token},
@@ -264,11 +250,45 @@ content:content.value,
 icon:icon.value
 })
 });
-
 reload();
 }
 
-/* ================= RELOAD ================= */
+/* EDIT */
+function edit(type,item){
+currentEdit = {type,id:item.id};
+
+editTitle.value = item.title || '';
+editExcerpt.value = item.excerpt || '';
+editIcon.value = item.icon || '';
+editContent.value = item.content || '';
+
+modal.style.display='flex';
+}
+
+function closeModal(){
+modal.style.display='none';
+}
+
+async function updatePost(){
+await fetch(`/api/${currentEdit.type}/${currentEdit.id}`,{
+method:'PUT',
+headers:{
+'Content-Type':'application/json',
+Authorization:token
+},
+body:JSON.stringify({
+title:editTitle.value,
+excerpt:editExcerpt.value,
+icon:editIcon.value,
+content:editContent.value
+})
+});
+
+closeModal();
+reload();
+}
+
+/* RELOAD */
 function reload(){
 loadBlogs();
 loadCommunity();
