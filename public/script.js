@@ -315,6 +315,10 @@ function animateCounter(el, target) {
 
 // ===== NAV ACTIVE STATE =====
 function initNavActiveState() {
+  // ❌ لو الصفحة هي index.html وقف التنفيذ
+  if (window.location.pathname.endsWith("index.html") || window.location.pathname === "/") {
+    return;
+  }
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-link');
 
@@ -322,6 +326,7 @@ function initNavActiveState() {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const id = entry.target.id;
+
         navLinks.forEach(link => {
           link.classList.remove('active');
           if (link.getAttribute('href') === `#${id}`) {
@@ -331,7 +336,6 @@ function initNavActiveState() {
       }
     });
   }, { threshold: 0.4 });
-
   sections.forEach(section => observer.observe(section));
 }
 
@@ -412,3 +416,4 @@ function showToast(message) {
     }, 60);
   }, 5000);
 })();
+

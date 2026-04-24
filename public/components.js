@@ -13,7 +13,7 @@ const NAVBAR_HTML = `
     </a>
 
     <div class="nav-links" id="navLinks">
-    <a href="index.html" class="nav-link active" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
+    <a href="index.html" class="nav-link" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
     <a href="initiative.html" class="nav-link" data-ar="المبادرة" data-en="Initiative">المبادرة</a>
     <a href="activities.html" class="nav-link" data-ar="الأنشطة" data-en="Activities">الأنشطة</a>
     <a href="projects.html" class="nav-link" data-ar="المشاريع" data-en="Projects">المشاريع</a>
