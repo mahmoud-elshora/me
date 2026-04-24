@@ -762,7 +762,26 @@
     </div>
     <div class="footer-glow"></div>
   </footer>
+  <!-- vistor counter -->
+  <div class="visitor-card">
+    👁 الزوار اليوم: <span id="today">0</span><br>
+    🌍 إجمالي الزوار: <span id="total">0</span>
+  </div>
+  
+  <script>
+  async function loadVisitors() {
+    const res = await fetch('/api/visitors');
+    const data = await res.json();
+  
+    document.getElementById('today').innerText = data.today;
+    document.getElementById('total').innerText = data.total;
+  }
+  
+  loadVisitors();
+  setInterval(loadVisitors, 10000);
 
+  
+  </script>
   <!-- Toast notification -->
   <div class="toast" id="toast"></div>
 

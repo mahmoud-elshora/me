@@ -556,3 +556,59 @@ if (require.main === module) {
     console.log('Perfect Claude v17 running on http://localhost:' + PORT);
   });
 }
+// vistors counter 
+app.use(async function (req, res, next) {
+  try {
+    const db = await getDB();
+
+    let visitorId = req.cookies.visitor_id;
+
+    // لو أول زيارة
+    if (!visitorId) {
+      visitorId = generateId();
+
+      res.cookie('visitor_id', visitorId, {
+        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 يوم
+        httpOnly: true,
+      });
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+
+    await db.collection('visitors').updateOne(
+      {
+        visitorId: visitorId,
+        date: today
+      },
+      {
+        $set: {
+          visitorId: visitorId,
+          date: today,
+          lastVisit: new Date()
+        }
+      },
+      { upsert: true }
+    );
+
+  } catch (e) {}
+
+  next();
+});
+app.get('/api/visitors', async (req, res) => {
+  try {
+    const db = await getDB();
+
+    const today = new Date().toISOString().split('T')[0];
+
+    const todayCount = await db.collection('visitors').countDocuments({ date: today });
+    const totalCount = await db.collection('visitors').countDocuments({});
+
+    res.json({
+      today: todayCount,
+      total: totalCount
+    });
+
+  } catch (e) {
+    res.json({ today: 0, total: 0 });
+  }
+});
