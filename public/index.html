@@ -762,26 +762,36 @@
     </div>
     <div class="footer-glow"></div>
   </footer>
-  <!-- vistor counter -->
-  <div class="visitor-card">
-    👁 الزوار اليوم: <span id="today">0</span><br>
-    🌍 إجمالي الزوار: <span id="total">0</span>
-  </div>
-  
-  <script>
-  async function loadVisitors() {
-    const res = await fetch('/api/visitors');
-    const data = await res.json();
-  
-    document.getElementById('today').innerText = data.today;
-    document.getElementById('total').innerText = data.total;
-  }
-  
-  loadVisitors();
-  setInterval(loadVisitors, 10000);
+<!-- ===== VISITOR COUNTER ===== -->
+<div class="visitor-card" id="visitorCard">
 
+  <button class="visitor-close" id="visitorClose">✖</button>
+
+  <div class="visitor-row">
+
+    <div class="visitor-item today">
+      <span class="visitor-title">اليوم</span>
+      <span class="visitor-number" id="today">0</span>
+    </div>
+
+    <div class="visitor-divider"></div>
+
+    <div class="visitor-item total">
+      <span class="visitor-title">الإجمالي</span>
+      <span class="visitor-number" id="total">0</span>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- زر العين (خارج الكارت) -->
+
+<!-- زر العين -->
+<div class="visitor-toggle" id="visitorToggle">
+  <i class="fas fa-eye"></i>
+</div>
   
-  </script>
   <!-- Toast notification -->
   <div class="toast" id="toast"></div>
 
@@ -789,6 +799,23 @@
 
   <!-- v16: admin-overlay (fetches dynamic extras for this page) -->
   <script src="admin-overlay.js" defer></script>
+  <script>
+    const visitorCard = document.getElementById("visitorCard");
+    const visitorToggle = document.getElementById("visitorToggle");
+    const visitorClose = document.getElementById("visitorClose");
+    
+    // إخفاء الكارد
+    visitorClose.addEventListener("click", () => {
+      visitorCard.classList.add("hidden");
+      visitorToggle.classList.add("active");
+    });
+    
+    // إظهار الكارد
+    visitorToggle.addEventListener("click", () => {
+      visitorCard.classList.remove("hidden");
+      visitorToggle.classList.remove("active");
+    });
+    </script>
 
 </body>
 </html>

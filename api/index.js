@@ -574,17 +574,13 @@ app.use(async function (req, res, next) {
     }
 
     const today = new Date().toISOString().split('T')[0];
-
     await db.collection('visitors').updateOne(
+      { visitorId },
       {
-        visitorId: visitorId,
-        date: today
-      },
-      {
-        $set: {
-          visitorId: visitorId,
-          date: today,
-          lastVisit: new Date()
+        $set: { lastVisit: new Date() },
+        $setOnInsert: {
+          visitorId,
+          firstVisit: new Date()
         }
       },
       { upsert: true }
@@ -601,11 +597,12 @@ app.get('/api/visitors', async (req, res) => {
     const today = new Date().toISOString().split('T')[0];
 
     const todayCount = await db.collection('visitors').countDocuments({ date: today });
-    const totalCount = await db.collection('visitors').countDocuments({});
+
+    const totalCount = await db.collection('visitors').distinct('visitorId');
 
     res.json({
       today: todayCount,
-      total: totalCount
+      total: totalCount.length
     });
 
   } catch (e) {

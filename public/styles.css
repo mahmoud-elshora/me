@@ -1549,3 +1549,143 @@ body::before {
   align-items: center;
   gap: 1rem;
 }
+/* ===== VISITOR CONTAINER ===== */
+.visitor-card {
+  padding: 14px 16px;
+  border-radius: 14px;
+
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  display: inline-block;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 9999;
+
+  transition: 0.3s ease;
+}
+
+/* الصف الرئيسي */
+.visitor-row {
+  display: flex;
+  align-items: center;
+}
+
+/* كل عنصر */
+.visitor-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 85px;
+}
+
+/* العنوان */
+.visitor-title {
+  font-size: 12px;
+  margin-bottom: 6px;
+  color: rgba(255,255,255,0.65);
+}
+
+/* الرقم */
+.visitor-number {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.today .visitor-number {
+  color: #00e5ff;
+}
+
+.total .visitor-number {
+  color: #8b5cf6;
+}
+
+/* الخط */
+.visitor-divider {
+  width: 1px;
+  height: 28px;
+  margin: 0 12px;
+  background: rgba(255,255,255,0.12);
+}
+
+/* ===== CLOSE BUTTON ===== */
+.visitor-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.5);
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.visitor-close:hover {
+  color: #fff;
+}
+
+/* ===== TOGGLE BUTTON (مخفي افتراضيًا) ===== */
+.visitor-toggle {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(135deg, #00ffff, #6366f1);
+  color: #fff;
+
+  cursor: pointer;
+  box-shadow: 0 0 18px rgba(0,255,255,0.35);
+
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+
+  transition: 0.3s ease;
+}
+
+/* يظهر لما الكارت يختفي */
+.visitor-toggle.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+  z-index: 100000000000000;
+}
+
+/* ===== HIDDEN STATE ===== */
+.visitor-card.hidden {
+  opacity: 0;
+  transform: translateY(20px) scale(0.92);
+  pointer-events: none;
+  visibility: hidden;
+}
+.visitor-toggle.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+}
+.visitor-card,
+.visitor-toggle {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s ease;
+}
+
+.loaded .visitor-card,
+.loaded .visitor-toggle {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}

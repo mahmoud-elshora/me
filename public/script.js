@@ -416,4 +416,69 @@ function showToast(message) {
     }, 60);
   }, 5000);
 })();
+// vistiors counter
+function animateNumber(element, newValue) {
+  let start = 0;
+  const duration = 500;
+  const step = Math.ceil(newValue / (duration / 16));
 
+  const interval = setInterval(() => {
+    start += step;
+    if (start >= newValue) {
+      element.innerText = newValue;
+      clearInterval(interval);
+    } else {
+      element.innerText = start;
+    }
+  }, 16);
+}
+
+async function loadVisitors() {
+  const res = await fetch('/api/visitors');
+  const data = await res.json();
+
+  animateNumber(document.getElementById('today'), data.today);
+  animateNumber(document.getElementById('total'), data.total);
+}
+
+loadVisitors();
+setInterval(loadVisitors, 10000);
+
+document.addEventListener("DOMContentLoaded", () => {
+  const visitorCard = document.getElementById("visitorCard");
+  const visitorToggle = document.getElementById("visitorToggle");
+  const visitorClose = document.getElementById("visitorClose");
+
+  // الحالة الابتدائية
+  visitorToggle.style.opacity = "0";
+  visitorToggle.style.pointerEvents = "none";
+
+  visitorClose.addEventListener("click", () => {
+    visitorCard.classList.add("hidden");
+
+    // إظهار العين
+    visitorToggle.style.opacity = "1";
+    visitorToggle.style.pointerEvents = "auto";
+  });
+
+  visitorToggle.addEventListener("click", () => {
+    visitorCard.classList.remove("hidden");
+
+    // إخفاء العين
+    visitorToggle.style.opacity = "0";
+    visitorToggle.style.pointerEvents = "none";
+    
+  });
+});
+visitorClose.addEventListener("click", () => {
+  visitorCard.classList.add("hidden");
+});
+
+visitorToggle.addEventListener("click", () => {
+  visitorCard.classList.remove("hidden");
+});
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.body.classList.add("loaded");
+  }, 1200); // اختياري للتأثير
+});
