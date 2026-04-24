@@ -1,3 +1,5 @@
+require('dotenv').config({ path: '.env' });
+
 'use strict';
 /* ============================================================
    PERFECT CLAUDE v17 — API
@@ -26,21 +28,26 @@ var DB_NAME     = process.env.DB_NAME || 'wa3yna';
 var _db = null, _client = null;
 
 function getDB() {
+  if (!MONGODB_URI) {
+    throw new Error("MONGODB_URI missing in env");
+  }
+
   if (_db) return Promise.resolve(_db);
-  if (!MONGODB_URI) return Promise.reject(new Error('MONGODB_URI is not set'));
+
   if (!_client) {
     _client = new MongoClient(MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 8000
+      serverSelectionTimeoutMS: 5000
     });
   }
-  return _client.connect().then(function () {
-    _db = _client.db(DB_NAME);
-    return _db;
-  });
-}
 
+  return _client.connect()
+    .then(() => {
+      _db = _client.db(DB_NAME);
+      return _db;
+    });
+}
 /* ---------- Middleware ---------- */
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '2mb' }));
@@ -556,47 +563,6 @@ if (require.main === module) {
     console.log('Perfect Claude v17 running on http://localhost:' + PORT);
   });
 }
-// ===== VISITORS MIDDLEWARE =====
-app.use(async (req, res, next) => {
-  try {
-    const db = await getDB();
-
-    let visitorId = req.cookies.visitor_id;
-
-    const today = new Date().toISOString().split('T')[0];
-
-    // أول زيارة
-    if (!visitorId) {
-      visitorId = generateId();
-
-      res.cookie('visitor_id', visitorId, {
-        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 يوم
-        httpOnly: true,
-      });
-    }
-
-    // تسجيل/تحديث الزيارة اليومية
-    await db.collection('visitors').updateOne(
-      { visitorId, date: today },
-      {
-        $setOnInsert: {
-          visitorId,
-          date: today,
-          firstVisit: new Date()
-        },
-        $set: {
-          lastVisit: new Date()
-        }
-      },
-      { upsert: true }
-    );
-
-  } catch (e) {
-    console.error("VISITOR MIDDLEWARE ERROR:", e);
-  }
-
-  next();
-});
 // ===== VISITORS API =====
 app.get('/api/visitors', async (req, res) => {
   try {
@@ -604,23 +570,65 @@ app.get('/api/visitors', async (req, res) => {
 
     const today = new Date().toISOString().split('T')[0];
 
-    // عدد زوار اليوم
     const todayCount = await db.collection('visitors').countDocuments({
       date: today
     });
 
-    // إجمالي الزوار (unique visitors)
-    const totalVisitors = await db.collection('visitors').distinct('visitorId');
+    const totalVisitors = await db.collection('visitors')
+      .distinct('visitorId');
 
-    res.json({
+    return res.status(200).json({
       today: todayCount,
       total: totalVisitors.length
     });
 
   } catch (e) {
-    console.error("VISITORS API ERROR:", e);
-    res.status(500).json({
-      error: "internal server error"
+    console.error("VISITORS ERROR:", e);
+
+    return res.status(500).json({
+      error: "DB connection failed",
+      details: process.env.NODE_ENV === "production" ? undefined : e.message
     });
   }
 });
+    // ===== VISITORS MIDDLEWARE =====
+    app.use(async (req, res, next) => {
+      try {
+        const db = await getDB();
+    
+        let visitorId = req.cookies.visitor_id;
+    
+        const today = new Date().toISOString().split('T')[0];
+    
+        // أول زيارة
+        if (!visitorId) {
+          visitorId = generateId();
+    
+          res.cookie('visitor_id', visitorId, {
+            maxAge: 1000 * 60 * 60 * 24 * 30, // 30 يوم
+            httpOnly: true,
+          });
+        }
+    
+        // تسجيل/تحديث الزيارة اليومية
+        await db.collection('visitors').updateOne(
+          { visitorId, date: today },
+          {
+            $setOnInsert: {
+              visitorId,
+              date: today,
+              firstVisit: new Date()
+            },
+            $set: {
+              lastVisit: new Date()
+            }
+          },
+          { upsert: true }
+        );
+    
+      } catch (e) {
+        console.error("VISITOR MIDDLEWARE ERROR:", e);
+      }
+    
+      next();
+    });
