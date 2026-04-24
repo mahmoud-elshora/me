@@ -1,304 +1,736 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Admin Dashboard</title>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لوحة التحكم — Perfect Claude v17</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#0b0f14;
-  --card:#121821;
-  --border:rgba(255,255,255,0.08);
-  --text:#e5e7eb;
-  --muted:#9ca3af;
-  --accent:#00e5ff;
-  --danger:#ff3b3b;
-  --ok:#22c55e;
-}
-
-body{
-  margin:0;
-  font-family:"Cairo",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-
-.container{max-width:1100px;margin:auto;padding:20px;}
-
-h2{text-align:center;}
-
-.tabs{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
-
-.tabs button{
-  padding:10px 15px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  background:var(--card);
-  color:var(--text);
-  cursor:pointer;
-}
-
-.tabs button.active{background:var(--accent);color:#000;}
-
-.section{display:none;}
-.section.active{display:block;}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:15px;
-}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:15px;
-  transition:.2s;
-}
-
-.card:hover{
-  transform:translateY(-4px);
-  border-color:var(--accent);
-}
-
-.icon{
-  font-size:30px;
-  margin-bottom:10px;
-}
-
-input,textarea{
-  width:100%;
-  padding:10px;
-  margin:5px 0;
-  border-radius:10px;
-  border:1px solid var(--border);
-  background:#0f141b;
-  color:white;
-}
-
-.btn{
-  padding:6px 10px;
-  border-radius:8px;
-  border:none;
-  cursor:pointer;
-  margin:3px;
-  font-size:12px;
-}
-
-.primary{background:var(--accent);color:#000;}
-.danger{background:var(--danger);color:#fff;}
-.ok{background:var(--ok);color:#000;}
-.gray{background:#222;color:#fff;}
-
-/* modal */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.7);
-  display:none;
-  justify-content:center;
-  align-items:center;
-}
-
-.modal-content{
-  background:var(--card);
-  padding:20px;
-  border-radius:12px;
-  width:400px;
-}
+  *{box-sizing:border-box}
+  body{background:linear-gradient(135deg,#0a0e27 0%,#1a1a3e 50%,#0a0e27 100%);min-height:100vh;color:#fff;font-family:Cairo,sans-serif;padding:20px;margin:0}
+  .admin-wrap{max-width:1320px;margin:0 auto}
+  .admin-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:24px;padding:18px 26px;background:rgba(15,23,42,.65);backdrop-filter:blur(14px);border:1px solid rgba(0,240,255,.25);border-radius:18px}
+  .admin-head h1{font-family:Orbitron;font-size:1.6rem;color:#00f0ff;margin:0;text-shadow:0 0 18px #00f0ff}
+  .admin-head .who{font-size:.9rem;opacity:.75}
+  .admin-head .acts{display:flex;gap:10px;flex-wrap:wrap}
+  .admin-head a,.admin-head button{padding:9px 16px;border-radius:10px;border:1px solid rgba(0,240,255,.4);background:transparent;color:#00f0ff;font-weight:700;cursor:pointer;text-decoration:none;font-family:Cairo}
+  .admin-head button.danger{border-color:#ef4444;color:#ef4444}
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+  .tab{padding:11px 20px;background:rgba(15,23,42,.55);border:1px solid rgba(0,240,255,.2);color:#fff;border-radius:12px;cursor:pointer;font-weight:600;font-family:Cairo;transition:.25s}
+  .tab.active{background:#00f0ff;color:#000;border-color:#00f0ff;box-shadow:0 0 24px rgba(0,240,255,.5)}
+  .panel{background:rgba(15,23,42,.6);backdrop-filter:blur(14px);border:1px solid rgba(0,240,255,.2);border-radius:18px;padding:26px;margin-bottom:22px;display:none}
+  .panel.active{display:block}
+  .panel h2{font-family:Orbitron;color:#00f0ff;font-size:1.3rem;margin:0 0 16px}
+  .panel .subhead{opacity:.7;margin:-6px 0 14px;font-size:.92rem;line-height:1.7}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .form-grid.full{grid-template-columns:1fr}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field label{font-size:.85rem;color:#9bd0ff;font-weight:700}
+  .field input,.field select,.field textarea{background:rgba(0,0,0,.45);border:1px solid rgba(0,240,255,.25);color:#fff;padding:11px 13px;border-radius:10px;font-family:Cairo;font-size:.95rem}
+  .field textarea{min-height:90px;resize:vertical}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#00f0ff;box-shadow:0 0 12px rgba(0,240,255,.4)}
+  .btn{padding:11px 22px;border-radius:10px;border:none;cursor:pointer;font-weight:700;font-family:Cairo;font-size:.95rem;transition:.25s}
+  .btn-primary{background:#00f0ff;color:#000;box-shadow:0 0 20px rgba(0,240,255,.4)}
+  .btn-primary:hover{transform:translateY(-2px)}
+  .btn-warn{background:#facc15;color:#000}
+  .btn-danger{background:#ef4444;color:#fff}
+  .btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.2)}
+  table{width:100%;border-collapse:collapse;margin-top:14px;font-size:.9rem}
+  table th,table td{padding:12px 10px;text-align:right;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:middle}
+  table th{color:#00f0ff;font-weight:700;background:rgba(0,240,255,.05)}
+  table tr:hover{background:rgba(0,240,255,.04)}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700}
+  .b-ok{background:rgba(0,255,136,.2);color:#00ff88}
+  .b-no{background:rgba(239,68,68,.2);color:#ef4444}
+  .b-warn{background:rgba(250,204,21,.2);color:#facc15}
+  .row-actions{display:flex;gap:6px;flex-wrap:wrap}
+  .row-actions button{padding:6px 12px;font-size:.78rem;border-radius:8px;border:none;cursor:pointer;font-family:Cairo;font-weight:700}
+  .swatch{display:inline-block;width:18px;height:18px;border-radius:50%;vertical-align:middle;margin-inline-end:6px;border:2px solid rgba(255,255,255,.15)}
+  .msg{padding:12px 16px;border-radius:10px;margin:10px 0;display:none;font-weight:600}
+  .msg.ok{background:rgba(0,255,136,.15);color:#00ff88;border:1px solid #00ff88;display:block}
+  .msg.err{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid #ef4444;display:block}
+  .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:#00f0ff;border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .small-help{font-size:.78rem;opacity:.6;margin-top:4px}
+  .modal-back{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px;backdrop-filter:blur(6px)}
+  .modal-back.show{display:flex}
+  .modal{background:#0f172a;border:1px solid rgba(0,240,255,.4);border-radius:18px;padding:26px;max-width:760px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  .modal h3{font-family:Orbitron;color:#00f0ff;margin:0 0 14px}
+  .modal-acts{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+  @media(max-width:640px){table{font-size:.78rem}table th,table td{padding:8px 6px}.admin-head h1{font-size:1.2rem}}
 </style>
 </head>
-
 <body>
 
-<div class="container">
+<div class="admin-wrap">
+  <header class="admin-head">
+    <div>
+      <h1>⚙ لوحة التحكم — v17</h1>
+      <div class="who" id="whoami">جارٍ التحقق…</div>
+    </div>
+    <div class="acts">
+      <a href="index.html"><i class="fas fa-home"></i> الموقع</a>
+      <button class="danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> خروج</button>
+    </div>
+  </header>
 
-<h2>⚙️ Admin Dashboard</h2>
+  <div class="tabs">
+    <button class="tab active" data-tab="content"><i class="fas fa-pen-to-square"></i> محتوى الصفحات</button>
+    <button class="tab" data-tab="extras"><i class="fas fa-puzzle-piece"></i> إكستراز الصفحات</button>
+    <button class="tab" data-tab="blog"><i class="fas fa-pen-fancy"></i> المدونة</button>
+    <button class="tab" data-tab="community"><i class="fas fa-users"></i> المجتمع</button>
+    <button class="tab" data-tab="testimonials"><i class="fas fa-star"></i> الشهادات</button>
+    <button class="tab" data-tab="contacts"><i class="fas fa-envelope"></i> الرسائل</button>
+  </div>
 
-<div class="tabs">
-<button class="active" onclick="show('blog',event)">Blog</button>
-<button onclick="show('community',event)">Community</button>
-<button onclick="show('testimonials',event)">Testimonials</button>
-<button onclick="show('contacts',event)">Contacts</button>
+  <!-- ============ CONTENT OVERRIDES (NEW v17) ============ -->
+  <section class="panel active" id="panel-content">
+    <h2>تعديل المحتوى الأصلي للصفحات</h2>
+    <p class="subhead">
+      عدّل أي نص أو صورة موجودة في صفحات الموقع الستاتيك بدون لمس الكود.<br>
+      اختر الصفحة، ثم نوع التعديل، ثم <b>محدد العنصر (CSS Selector)</b> مثل:
+      <code>#about h2</code> أو <code>.hero-title</code> أو <code>section#initiative p:first-of-type</code>،
+      ثم القيمة الجديدة. تُطبق فوراً لكل الزوار.
+    </p>
+    <div class="msg" id="ov-msg"></div>
+
+    <input type="hidden" id="ov-edit-id">
+
+    <div class="form-grid">
+      <div class="field">
+        <label>الصفحة</label>
+        <select id="ov-page"></select>
+      </div>
+      <div class="field">
+        <label>نوع التعديل</label>
+        <select id="ov-type">
+          <option value="text">نص (Text)</option>
+          <option value="html">HTML كامل</option>
+          <option value="image">صورة (src أو خلفية)</option>
+          <option value="hide">إخفاء العنصر</option>
+          <option value="attr">تعديل خاصية (attribute)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>محدد العنصر (CSS Selector)</label>
+        <input id="ov-selector" placeholder="#about h2  أو  .hero-title">
+        <span class="small-help">يمكن استخدام أي محدد CSS صالح. افتح صفحة الموقع → كليك يمين → فحص لتعرف المحدد.</span>
+      </div>
+      <div class="field">
+        <label>الترتيب</label>
+        <input type="number" id="ov-order" value="0">
+      </div>
+      <div class="field">
+        <label>الحالة</label>
+        <select id="ov-visible"><option value="true">مفعّل</option><option value="false">معطّل</option></select>
+      </div>
+      <div class="field">
+        <label>ملاحظة (لك فقط)</label>
+        <input id="ov-note" placeholder="مثلاً: عنوان قسم المبادرة">
+      </div>
+    </div>
+
+    <div class="form-grid" id="ov-text-fields" style="margin-top:14px">
+      <div class="field"><label>القيمة (عربي)</label><textarea id="ov-val-ar" rows="3"></textarea></div>
+      <div class="field"><label>القيمة (English)</label><textarea id="ov-val-en" rows="3"></textarea></div>
+    </div>
+
+    <div class="form-grid full" id="ov-image-fields" style="margin-top:14px;display:none">
+      <div class="field">
+        <label>رابط الصورة الجديد</label>
+        <input id="ov-val-single" placeholder="https://…">
+        <span class="small-help">إذا العنصر &lt;img&gt; سيُغيّر src. وإلا ستوضع كخلفية.</span>
+      </div>
+    </div>
+
+    <div class="form-grid" id="ov-attr-fields" style="margin-top:14px;display:none">
+      <div class="field"><label>اسم الخاصية</label><input id="ov-attr-name" placeholder="href / src / class …"></div>
+      <div class="field"><label>القيمة الجديدة</label><input id="ov-val-single2" placeholder="…"></div>
+    </div>
+
+    <div class="modal-acts" style="margin-top:18px">
+      <button class="btn btn-ghost" id="ov-reset"><i class="fas fa-rotate"></i> تفريغ</button>
+      <button class="btn btn-primary" id="ov-save"><i class="fas fa-save"></i> حفظ</button>
+    </div>
+
+    <h2 style="margin-top:34px">قائمة التعديلات</h2>
+    <div class="form-grid" style="margin-bottom:8px">
+      <div class="field"><label>تصفية حسب الصفحة</label><select id="ov-filter"></select></div>
+    </div>
+    <div id="ov-list"><div class="spinner"></div></div>
+  </section>
+
+  <!-- ============ EXTRAS ============ -->
+  <section class="panel" id="panel-extras">
+    <h2>إضافة بلوكات ديناميكية للصفحات</h2>
+    <p class="subhead">تضاف فوق محتوى الصفحة الستاتيك بألوان وأنميشن وتخطيطات مختلفة، دون كسر التصميم.</p>
+    <div class="msg" id="extras-msg"></div>
+
+    <input type="hidden" id="ex-edit-id">
+
+    <div class="form-grid">
+      <div class="field"><label>الصفحة</label><select id="ex-page"></select></div>
+      <div class="field"><label>الموضع داخل الصفحة</label>
+        <select id="ex-zone">
+          <option value="bottom">أسفل المحتوى</option>
+          <option value="after-hero">بعد القسم الرئيسي</option>
+          <option value="top">أعلى الصفحة</option>
+          <option value="before-footer">قبل الفوتر</option>
+        </select>
+      </div>
+      <div class="field"><label>التخطيط</label>
+        <select id="ex-layout">
+          <option value="card">بطاقة</option><option value="split">مقسومة</option>
+          <option value="banner">بانر</option><option value="grid">شبكة</option>
+        </select>
+      </div>
+      <div class="field"><label>اللون</label>
+        <select id="ex-color">
+          <option value="cyan">سماوي</option><option value="green">أخضر</option>
+          <option value="violet">بنفسجي</option><option value="orange">برتقالي</option>
+          <option value="blue">أزرق</option><option value="pink">وردي</option>
+          <option value="red">أحمر</option><option value="yellow">أصفر</option>
+        </select>
+      </div>
+      <div class="field"><label>الأنميشن</label>
+        <select id="ex-anim">
+          <option value="fade-up">Fade Up</option><option value="fade-in">Fade In</option>
+          <option value="zoom-in">Zoom In</option><option value="slide-right">Slide Right</option>
+          <option value="slide-left">Slide Left</option><option value="bounce">Bounce</option>
+          <option value="none">بدون</option>
+        </select>
+      </div>
+      <div class="field"><label>شكل الصورة</label>
+        <select id="ex-shape">
+          <option value="rounded">مدوّر</option><option value="circle">دائرة</option>
+          <option value="square">مربع</option><option value="hex">سداسي</option>
+        </select>
+      </div>
+      <div class="field"><label>موضع الصورة</label>
+        <select id="ex-pos">
+          <option value="right">يمين</option><option value="left">يسار</option>
+          <option value="top">فوق</option><option value="bottom">تحت</option>
+        </select>
+      </div>
+      <div class="field"><label>الترتيب</label><input type="number" id="ex-order" value="0"></div>
+      <div class="field"><label>أيقونة (FontAwesome)</label><input id="ex-icon" placeholder="fas fa-star"></div>
+      <div class="field"><label>رابط الصورة</label><input id="ex-image" placeholder="https://…"></div>
+      <div class="field"><label>الحالة</label><select id="ex-visible"><option value="true">ظاهر</option><option value="false">مخفي</option></select></div>
+    </div>
+
+    <div class="form-grid" style="margin-top:14px">
+      <div class="field"><label>العنوان (عربي)</label><input id="ex-title-ar"></div>
+      <div class="field"><label>العنوان (English)</label><input id="ex-title-en"></div>
+    </div>
+    <div class="form-grid full" style="margin-top:14px">
+      <div class="field"><label>المحتوى (عربي)</label><textarea id="ex-body-ar" rows="4"></textarea></div>
+      <div class="field"><label>المحتوى (English)</label><textarea id="ex-body-en" rows="4"></textarea></div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>رابط CTA</label><input id="ex-link" placeholder="https://…"></div>
+      <div class="field"><label>نص الزر (عربي)</label><input id="ex-link-ar"></div>
+      <div class="field"><label>نص الزر (English)</label><input id="ex-link-en"></div>
+    </div>
+
+    <div class="modal-acts" style="margin-top:18px">
+      <button class="btn btn-ghost" id="ex-reset">تفريغ</button>
+      <button class="btn btn-primary" id="ex-save">حفظ</button>
+    </div>
+
+    <h2 style="margin-top:34px">القائمة</h2>
+    <div class="form-grid" style="margin-bottom:8px">
+      <div class="field"><label>تصفية</label><select id="ex-filter"></select></div>
+    </div>
+    <div id="ex-list-wrap"><div class="spinner"></div></div>
+  </section>
+
+  <!-- ============ BLOG ============ -->
+  <section class="panel" id="panel-blog">
+    <h2>إضافة مقال جديد</h2>
+    <div class="msg" id="blog-msg"></div>
+    <div class="form-grid">
+      <div class="field"><label>العنوان</label><input id="bl-title"></div>
+      <div class="field"><label>الأيقونة</label><input id="bl-icon" placeholder="fas fa-pen-fancy"></div>
+    </div>
+    <div class="form-grid full" style="margin-top:12px">
+      <div class="field"><label>المقتطف</label><textarea id="bl-excerpt" rows="2"></textarea></div>
+      <div class="field"><label>المحتوى الكامل</label><textarea id="bl-content" rows="6"></textarea></div>
+    </div>
+    <div class="modal-acts"><button class="btn btn-primary" id="bl-save">نشر</button></div>
+
+    <h2 style="margin-top:30px">المقالات</h2>
+    <div id="bl-list"><div class="spinner"></div></div>
+  </section>
+
+  <!-- ============ COMMUNITY ============ -->
+  <section class="panel" id="panel-community">
+    <h2>منشورات المجتمع</h2>
+    <p class="subhead">يمكنك تعديل أي منشور، إخفاؤه مؤقتاً، اعتماده للنشر، أو حذفه نهائياً.</p>
+    <div id="cm-list"><div class="spinner"></div></div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section class="panel" id="panel-testimonials">
+    <h2>الشهادات</h2>
+    <p class="subhead">عدّل، اعتمد، أخفِ أو احذف أي شهادة.</p>
+    <div id="ts-list"><div class="spinner"></div></div>
+  </section>
+
+  <!-- ============ CONTACTS ============ -->
+  <section class="panel" id="panel-contacts">
+    <h2>رسائل التواصل</h2>
+    <div id="ct-list"><div class="spinner"></div></div>
+  </section>
 </div>
 
-<!-- BLOG -->
-<div id="blog" class="section active">
-
-<input id="title" placeholder="Title">
-<input id="excerpt" placeholder="Excerpt">
-<input id="icon" placeholder="Icon (fa-solid fa-...)">
-<textarea id="content" placeholder="Content"></textarea>
-
-<button class="btn primary" onclick="saveBlog()">Save</button>
-
-<div id="blogGrid" class="grid"></div>
-</div>
-
-<!-- OTHERS -->
-<div id="community" class="section"><div id="communityGrid" class="grid"></div></div>
-<div id="testimonials" class="section"><div id="testimonialsGrid" class="grid"></div></div>
-<div id="contacts" class="section"><div id="contactsGrid" class="grid"></div></div>
-
-</div>
-
-<!-- MODAL EDIT -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <h3>Edit Post</h3>
-    <input id="editTitle">
-    <input id="editExcerpt">
-    <input id="editIcon">
-    <textarea id="editContent"></textarea>
-    <button class="btn primary" onclick="updatePost()">Save</button>
-    <button class="btn gray" onclick="closeModal()">Close</button>
+<!-- ============ EDIT MODAL ============ -->
+<div class="modal-back" id="modal">
+  <div class="modal">
+    <h3 id="modal-title">تعديل</h3>
+    <div id="modal-body"></div>
+    <div class="modal-acts">
+      <button class="btn btn-ghost" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-primary" id="modal-save">حفظ</button>
+    </div>
   </div>
 </div>
 
 <script>
+'use strict';
 
-const token = localStorage.getItem("admin-token");
+/* ============ TOKEN ============ */
+var TOKEN = localStorage.getItem('admin-token');
+if (!TOKEN) location.href = 'login.html';
 
-let currentEdit = {type:null,id:null};
-
-/* NAV */
-function show(id,e){
-document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
-
-document.getElementById(id).classList.add('active');
-e.target.classList.add('active');
+function authFetch(url, opts) {
+  opts = opts || {};
+  opts.credentials = 'same-origin';
+  opts.headers = opts.headers || {};
+  opts.headers['Authorization'] = TOKEN === 'admin-token' ? 'admin-token' : ('Bearer ' + TOKEN);
+  if (opts.body && typeof opts.body !== 'string' && !(opts.body instanceof FormData)) {
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(opts.body);
+  }
+  return fetch(url, opts);
 }
 
-/* CARD */
-function card(type,item){
-return `
-<div class="card">
-
-<div class="icon"><i class="${item.icon || 'fa-solid fa-file'}"></i></div>
-
-<h3>${item.title || item.name}</h3>
-<p>${item.excerpt || item.message || ''}</p>
-
-<button class="btn ok" onclick="approve('${type}','${item.id}')">Approve</button>
-<button class="btn danger" onclick="del('${type}','${item.id}')">Delete</button>
-<button class="btn gray" onclick="toggle('${type}','${item.id}',${item.published})">Hide</button>
-<button class="btn primary" onclick='edit("${type}",${JSON.stringify(item)})'>Edit</button>
-
-</div>
-`;
+function showMsg(id, txt, ok) {
+  var el = document.getElementById(id);
+  if (!el) { alert(txt); return; }
+  el.textContent = txt;
+  el.className = 'msg ' + (ok ? 'ok' : 'err');
+  setTimeout(function () { el.className = 'msg'; }, 4500);
 }
 
-/* LOAD */
-async function loadBlogs(){
-let r=await fetch('/api/posts?type=admin');
-let d=await r.json();
-blogGrid.innerHTML=d.map(c=>card('blog',c)).join('');
+function logout() {
+  fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }).finally(function () {
+    localStorage.removeItem('admin-token');
+    location.href = 'login.html';
+  });
 }
 
-async function loadCommunity(){
-let r=await fetch('/api/posts?type=guest');
-let d=await r.json();
-communityGrid.innerHTML=d.map(c=>card('community',c)).join('');
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
 }
 
-async function loadTestimonials(){
-let r=await fetch('/api/testimonials');
-let d=await r.json();
-testimonialsGrid.innerHTML=d.map(c=>card('testimonials',c)).join('');
-}
-
-async function loadContacts(){
-let r=await fetch('/api/contacts');
-let d=await r.json();
-contactsGrid.innerHTML=d.map(c=>card('contacts',c)).join('');
-}
-
-/* ACTIONS */
-async function del(type,id){
-await fetch(`/api/${type}/${id}`,{method:'DELETE',headers:{Authorization:token}});
-reload();
-}
-
-async function approve(type,id){
-await fetch(`/api/${type}/approve/${id}`,{method:'PUT',headers:{Authorization:token}});
-reload();
-}
-
-async function toggle(type,id,val){
-await fetch(`/api/${type}/${id}`,{
-method:'PUT',
-headers:{'Content-Type':'application/json',Authorization:token},
-body:JSON.stringify({published:!val})
-});
-reload();
-}
-
-/* BLOG SAVE */
-async function saveBlog(){
-await fetch('/api/blog',{
-method:'POST',
-headers:{'Content-Type':'application/json',Authorization:token},
-body:JSON.stringify({
-title:title.value,
-excerpt:excerpt.value,
-content:content.value,
-icon:icon.value
-})
-});
-reload();
-}
-
-/* EDIT */
-function edit(type,item){
-currentEdit = {type,id:item.id};
-
-editTitle.value = item.title || '';
-editExcerpt.value = item.excerpt || '';
-editIcon.value = item.icon || '';
-editContent.value = item.content || '';
-
-modal.style.display='flex';
-}
-
-function closeModal(){
-modal.style.display='none';
-}
-
-async function updatePost(){
-await fetch(`/api/${currentEdit.type}/${currentEdit.id}`,{
-method:'PUT',
-headers:{
-'Content-Type':'application/json',
-Authorization:token
-},
-body:JSON.stringify({
-title:editTitle.value,
-excerpt:editExcerpt.value,
-icon:editIcon.value,
-content:editContent.value
-})
+/* ============ TABS ============ */
+document.querySelectorAll('.tab').forEach(function (t) {
+  t.addEventListener('click', function () {
+    document.querySelectorAll('.tab').forEach(function (x) { x.classList.remove('active'); });
+    document.querySelectorAll('.panel').forEach(function (x) { x.classList.remove('active'); });
+    t.classList.add('active');
+    document.getElementById('panel-' + t.dataset.tab).classList.add('active');
+  });
 });
 
-closeModal();
-reload();
+/* ============ MODAL ============ */
+var modalSaveHandler = null;
+function openModal(title, bodyHTML, onSave) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = bodyHTML;
+  document.getElementById('modal').classList.add('show');
+  modalSaveHandler = onSave;
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+  modalSaveHandler = null;
+}
+document.getElementById('modal-save').onclick = function () {
+  if (modalSaveHandler) modalSaveHandler();
+};
+document.getElementById('modal').addEventListener('click', function (e) {
+  if (e.target.id === 'modal') closeModal();
+});
+window.closeModal = closeModal;
+
+/* ============ PAGES LIST ============ */
+var PAGES = [];
+function loadPages() {
+  return fetch('/api/pages-list').then(function (r) { return r.json(); }).then(function (rows) {
+    PAGES = rows;
+    ['ex-page','ov-page'].forEach(function (id) {
+      var s = document.getElementById(id);
+      s.innerHTML = '';
+      rows.forEach(function (p) { s.innerHTML += '<option value="' + p.slug + '">' + p.ar + ' (' + p.slug + ')</option>'; });
+    });
+    ['ex-filter','ov-filter'].forEach(function (id) {
+      var s = document.getElementById(id);
+      s.innerHTML = '<option value="">— الكل —</option>';
+      rows.forEach(function (p) { s.innerHTML += '<option value="' + p.slug + '">' + p.ar + '</option>'; });
+    });
+  });
 }
 
-/* RELOAD */
-function reload(){
-loadBlogs();
-loadCommunity();
-loadTestimonials();
-loadContacts();
+/* ============ CONTENT OVERRIDES ============ */
+function ovTypeChanged() {
+  var t = document.getElementById('ov-type').value;
+  document.getElementById('ov-text-fields').style.display  = (t === 'text' || t === 'html') ? '' : 'none';
+  document.getElementById('ov-image-fields').style.display = (t === 'image') ? '' : 'none';
+  document.getElementById('ov-attr-fields').style.display  = (t === 'attr')  ? '' : 'none';
+}
+document.getElementById('ov-type').onchange = ovTypeChanged;
+
+function gatherOverride() {
+  var t = document.getElementById('ov-type').value;
+  var d = {
+    page:     document.getElementById('ov-page').value,
+    type:     t,
+    selector: document.getElementById('ov-selector').value.trim(),
+    order:    parseInt(document.getElementById('ov-order').value, 10) || 0,
+    visible:  document.getElementById('ov-visible').value === 'true',
+    note:     document.getElementById('ov-note').value
+  };
+  if (t === 'text' || t === 'html') {
+    d.value_ar = document.getElementById('ov-val-ar').value;
+    d.value_en = document.getElementById('ov-val-en').value;
+  } else if (t === 'image') {
+    d.value = document.getElementById('ov-val-single').value.trim();
+  } else if (t === 'attr') {
+    d.attr_name = document.getElementById('ov-attr-name').value.trim();
+    d.value     = document.getElementById('ov-val-single2').value;
+  }
+  return d;
 }
 
-reload();
+function fillOverride(o) {
+  document.getElementById('ov-edit-id').value = o.id || '';
+  document.getElementById('ov-page').value     = o.page || 'index';
+  document.getElementById('ov-type').value     = o.type || 'text';
+  document.getElementById('ov-selector').value = o.selector || '';
+  document.getElementById('ov-order').value    = o.order || 0;
+  document.getElementById('ov-visible').value  = (o.visible !== false) ? 'true' : 'false';
+  document.getElementById('ov-note').value     = o.note || '';
+  document.getElementById('ov-val-ar').value   = o.value_ar || '';
+  document.getElementById('ov-val-en').value   = o.value_en || '';
+  document.getElementById('ov-val-single').value  = o.value || '';
+  document.getElementById('ov-attr-name').value   = o.attr_name || '';
+  document.getElementById('ov-val-single2').value = o.value || '';
+  ovTypeChanged();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
+function resetOverride() {
+  document.getElementById('ov-edit-id').value = '';
+  ['ov-selector','ov-note','ov-val-ar','ov-val-en','ov-val-single','ov-attr-name','ov-val-single2']
+    .forEach(function (i) { document.getElementById(i).value = ''; });
+  document.getElementById('ov-order').value = 0;
+}
+
+function saveOverride() {
+  var d = gatherOverride();
+  if (!d.selector) return showMsg('ov-msg', 'محدد العنصر مطلوب', false);
+  if (d.type === 'attr' && !d.attr_name) return showMsg('ov-msg', 'اسم الخاصية مطلوب', false);
+  var id = document.getElementById('ov-edit-id').value;
+  var url = id ? ('/api/admin/content-overrides/' + id) : '/api/admin/content-overrides';
+  authFetch(url, { method: id ? 'PUT' : 'POST', body: d }).then(function (r) { return r.json(); }).then(function (j) {
+    if (j.ok || j.id) {
+      showMsg('ov-msg', id ? 'تم التحديث ✓' : 'تمت الإضافة ✓', true);
+      resetOverride();
+      loadOverrides();
+    } else showMsg('ov-msg', j.error || 'فشل', false);
+  }).catch(function () { showMsg('ov-msg', 'خطأ في الاتصال', false); });
+}
+
+function loadOverrides() {
+  var f = document.getElementById('ov-filter').value;
+  var url = '/api/admin/content-overrides' + (f ? '?page=' + encodeURIComponent(f) : '');
+  document.getElementById('ov-list').innerHTML = '<div class="spinner"></div>';
+  authFetch(url).then(function (r) { return r.json(); }).then(function (rows) {
+    if (!rows.length) { document.getElementById('ov-list').innerHTML = '<p style="opacity:.6;padding:14px">لا توجد تعديلات بعد.</p>'; return; }
+    var html = '<table><thead><tr><th>الصفحة</th><th>النوع</th><th>المحدد</th><th>القيمة</th><th>ملاحظة</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody>';
+    rows.forEach(function (o) {
+      var pageAr = (PAGES.find(function (p) { return p.slug === o.page; }) || {}).ar || o.page;
+      var preview = o.type === 'hide' ? '—' : esc((o.value_ar || o.value_en || o.value || '').slice(0, 60));
+      html += '<tr>' +
+        '<td>' + pageAr + '</td>' +
+        '<td><span class="badge b-warn">' + o.type + '</span></td>' +
+        '<td><code style="background:#000;padding:2px 6px;border-radius:4px;font-size:.8rem">' + esc(o.selector) + '</code></td>' +
+        '<td>' + preview + '</td>' +
+        '<td style="opacity:.7">' + esc(o.note || '') + '</td>' +
+        '<td><span class="badge ' + (o.visible !== false ? 'b-ok' : 'b-no') + '">' + (o.visible !== false ? 'مفعّل' : 'معطّل') + '</span></td>' +
+        '<td class="row-actions">' +
+          '<button class="btn-warn" onclick="toggleOv(\'' + o.id + '\',' + (o.visible === false) + ')">' + (o.visible === false ? 'تفعيل' : 'تعطيل') + '</button>' +
+          '<button class="btn-primary" onclick="editOv(\'' + o.id + '\')">تعديل</button>' +
+          '<button class="btn-danger" onclick="delOv(\'' + o.id + '\')">حذف</button>' +
+        '</td></tr>';
+    });
+    html += '</tbody></table>';
+    document.getElementById('ov-list').innerHTML = html;
+    window._ovs = rows;
+  });
+}
+window.editOv = function (id) {
+  var o = (window._ovs || []).find(function (x) { return x.id === id; });
+  if (o) fillOverride(o);
+};
+window.delOv = function (id) {
+  if (!confirm('حذف هذا التعديل؟')) return;
+  authFetch('/api/admin/content-overrides/' + id, { method: 'DELETE' }).then(loadOverrides);
+};
+window.toggleOv = function (id, makeVisible) {
+  var o = (window._ovs || []).find(function (x) { return x.id === id; });
+  if (!o) return;
+  o.visible = !!makeVisible;
+  authFetch('/api/admin/content-overrides/' + id, { method: 'PUT', body: o }).then(loadOverrides);
+};
+document.getElementById('ov-save').onclick = saveOverride;
+document.getElementById('ov-reset').onclick = resetOverride;
+document.getElementById('ov-filter').onchange = loadOverrides;
+
+/* ============ EXTRAS (نفس v16 — مختصر) ============ */
+function gatherExtra() {
+  return {
+    page:document.getElementById('ex-page').value,
+    target_zone:document.getElementById('ex-zone').value,
+    layout:document.getElementById('ex-layout').value,
+    color:document.getElementById('ex-color').value,
+    animation:document.getElementById('ex-anim').value,
+    image_shape:document.getElementById('ex-shape').value,
+    image_pos:document.getElementById('ex-pos').value,
+    order:parseInt(document.getElementById('ex-order').value,10)||0,
+    icon:document.getElementById('ex-icon').value.trim(),
+    image_url:document.getElementById('ex-image').value.trim(),
+    title_ar:document.getElementById('ex-title-ar').value,
+    title_en:document.getElementById('ex-title-en').value,
+    body_ar:document.getElementById('ex-body-ar').value,
+    body_en:document.getElementById('ex-body-en').value,
+    link_url:document.getElementById('ex-link').value.trim(),
+    link_text_ar:document.getElementById('ex-link-ar').value,
+    link_text_en:document.getElementById('ex-link-en').value,
+    visible:document.getElementById('ex-visible').value==='true'
+  };
+}
+function fillExtra(e) {
+  document.getElementById('ex-edit-id').value=e.id||'';
+  ['page','zone','layout','color','anim','shape','pos','order','icon','image','title-ar','title-en','body-ar','body-en','link','link-ar','link-en','visible'].forEach(function(){});
+  document.getElementById('ex-page').value=e.page||'index';
+  document.getElementById('ex-zone').value=e.target_zone||'bottom';
+  document.getElementById('ex-layout').value=e.layout||'card';
+  document.getElementById('ex-color').value=e.color||'cyan';
+  document.getElementById('ex-anim').value=e.animation||'fade-up';
+  document.getElementById('ex-shape').value=e.image_shape||'rounded';
+  document.getElementById('ex-pos').value=e.image_pos||'right';
+  document.getElementById('ex-order').value=e.order||0;
+  document.getElementById('ex-icon').value=e.icon||'';
+  document.getElementById('ex-image').value=e.image_url||'';
+  document.getElementById('ex-title-ar').value=e.title_ar||'';
+  document.getElementById('ex-title-en').value=e.title_en||'';
+  document.getElementById('ex-body-ar').value=e.body_ar||'';
+  document.getElementById('ex-body-en').value=e.body_en||'';
+  document.getElementById('ex-link').value=e.link_url||'';
+  document.getElementById('ex-link-ar').value=e.link_text_ar||'';
+  document.getElementById('ex-link-en').value=e.link_text_en||'';
+  document.getElementById('ex-visible').value=(e.visible!==false)?'true':'false';
+  window.scrollTo({top:document.getElementById('panel-extras').offsetTop,behavior:'smooth'});
+}
+function resetExtra(){document.getElementById('ex-edit-id').value='';['ex-icon','ex-image','ex-title-ar','ex-title-en','ex-body-ar','ex-body-en','ex-link','ex-link-ar','ex-link-en'].forEach(function(i){document.getElementById(i).value='';});document.getElementById('ex-order').value=0;}
+function saveExtra(){
+  var d=gatherExtra();
+  if(!d.title_ar&&!d.title_en&&!d.body_ar&&!d.body_en&&!d.image_url) return showMsg('extras-msg','أدخل عنواناً أو محتوى أو صورة',false);
+  var id=document.getElementById('ex-edit-id').value;
+  authFetch(id?'/api/admin/page-extras/'+id:'/api/admin/page-extras',{method:id?'PUT':'POST',body:d})
+    .then(function(r){return r.json();}).then(function(j){
+      if(j.ok||j.id){showMsg('extras-msg',id?'تم التحديث ✓':'تمت الإضافة ✓',true);resetExtra();loadExtras();}
+      else showMsg('extras-msg',j.error||'فشل',false);
+    });
+}
+function loadExtras(){
+  var f=document.getElementById('ex-filter').value;
+  authFetch('/api/admin/page-extras'+(f?'?page='+f:'')).then(function(r){return r.json();}).then(function(rows){
+    if(!rows.length){document.getElementById('ex-list-wrap').innerHTML='<p style="opacity:.6;padding:14px">لا يوجد</p>';return;}
+    var html='<table><thead><tr><th>الصفحة</th><th>العنوان</th><th>التخطيط</th><th>اللون</th><th>الأنميشن</th><th>الموضع</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody>';
+    rows.forEach(function(e){
+      var pageAr=(PAGES.find(function(p){return p.slug===e.page;})||{}).ar||e.page;
+      html+='<tr><td>'+pageAr+'</td><td>'+esc(e.title_ar||e.title_en||'—')+'</td><td>'+e.layout+'</td>'+
+        '<td><span class="swatch" style="background:'+(e.color||'#888')+'"></span>'+e.color+'</td>'+
+        '<td>'+e.animation+'</td><td>'+e.target_zone+'</td>'+
+        '<td><span class="badge '+(e.visible!==false?'b-ok':'b-no')+'">'+(e.visible!==false?'ظاهر':'مخفي')+'</span></td>'+
+        '<td class="row-actions">'+
+        '<button class="btn-warn" onclick="toggleEx(\''+e.id+'\','+(e.visible===false)+')">'+(e.visible===false?'إظهار':'إخفاء')+'</button>'+
+        '<button class="btn-primary" onclick="editEx(\''+e.id+'\')">تعديل</button>'+
+        '<button class="btn-danger" onclick="delEx(\''+e.id+'\')">حذف</button>'+
+        '</td></tr>';
+    });
+    document.getElementById('ex-list-wrap').innerHTML=html+'</tbody></table>';
+    window._extras=rows;
+  });
+}
+window.editEx=function(id){var e=(window._extras||[]).find(function(x){return x.id===id;});if(e)fillExtra(e);};
+window.delEx=function(id){if(confirm('حذف؟'))authFetch('/api/admin/page-extras/'+id,{method:'DELETE'}).then(loadExtras);};
+window.toggleEx=function(id,vis){var e=(window._extras||[]).find(function(x){return x.id===id;});if(!e)return;e.visible=!!vis;authFetch('/api/admin/page-extras/'+id,{method:'PUT',body:e}).then(loadExtras);};
+document.getElementById('ex-save').onclick=saveExtra;
+document.getElementById('ex-reset').onclick=resetExtra;
+document.getElementById('ex-filter').onchange=loadExtras;
+
+/* ============ BLOG ============ */
+function saveBlog(){
+  var d={title:document.getElementById('bl-title').value,excerpt:document.getElementById('bl-excerpt').value,content:document.getElementById('bl-content').value,icon:document.getElementById('bl-icon').value};
+  if(!d.title||!d.content) return showMsg('blog-msg','العنوان والمحتوى مطلوبان',false);
+  authFetch('/api/blog',{method:'POST',body:d}).then(function(r){return r.json();}).then(function(j){
+    if(j.ok){showMsg('blog-msg','تم النشر ✓',true);['bl-title','bl-excerpt','bl-content','bl-icon'].forEach(function(i){document.getElementById(i).value='';});loadBlog();}
+    else showMsg('blog-msg','فشل',false);
+  });
+}
+document.getElementById('bl-save').onclick=saveBlog;
+
+function loadBlog(){
+  authFetch('/api/admin/blog').then(function(r){return r.json();}).then(function(rows){
+    if(!rows.length){document.getElementById('bl-list').innerHTML='<p style="opacity:.6">لا يوجد</p>';return;}
+    var html='<table><thead><tr><th>التاريخ</th><th>العنوان</th><th>الحالة</th><th>الظهور</th><th>إجراءات</th></tr></thead><tbody>';
+    rows.forEach(function(p){
+      html+='<tr><td>'+(p.date||'-')+'</td><td>'+esc(p.title)+'</td>'+
+            '<td><span class="badge '+(p.published?'b-ok':'b-warn')+'">'+(p.published?'منشور':'مسودة')+'</span></td>'+
+            '<td><span class="badge '+(p.hidden?'b-no':'b-ok')+'">'+(p.hidden?'مخفي':'ظاهر')+'</span></td>'+
+            '<td class="row-actions">'+
+              '<button class="btn-primary" onclick="editBlog(\''+p.id+'\')">تعديل</button>'+
+              '<button class="btn-warn" onclick="toggleBlogHide(\''+p.id+'\','+(!p.hidden)+')">'+(p.hidden?'إظهار':'إخفاء')+'</button>'+
+              '<button class="btn-warn" onclick="toggleBlogPub(\''+p.id+'\','+(!p.published)+')">'+(p.published?'إلغاء النشر':'نشر')+'</button>'+
+              '<button class="btn-danger" onclick="delBlog(\''+p.id+'\')">حذف</button>'+
+            '</td></tr>';
+    });
+    document.getElementById('bl-list').innerHTML=html+'</tbody></table>';
+    window._blog=rows;
+  });
+}
+window.delBlog=function(id){if(confirm('حذف نهائي؟'))authFetch('/api/blog/'+id,{method:'DELETE'}).then(loadBlog);};
+window.toggleBlogHide=function(id,v){authFetch('/api/blog/'+id,{method:'PUT',body:{hidden:v}}).then(loadBlog);};
+window.toggleBlogPub=function(id,v){authFetch('/api/blog/'+id,{method:'PUT',body:{published:v}}).then(loadBlog);};
+window.editBlog=function(id){
+  var p=(window._blog||[]).find(function(x){return x.id===id;});if(!p)return;
+  openModal('تعديل المقال',
+    '<div class="form-grid"><div class="field"><label>العنوان</label><input id="m-title" value="'+esc(p.title||'')+'"></div>'+
+    '<div class="field"><label>الأيقونة</label><input id="m-icon" value="'+esc(p.icon||'')+'"></div></div>'+
+    '<div class="form-grid full" style="margin-top:12px"><div class="field"><label>المقتطف</label><textarea id="m-excerpt" rows="2">'+esc(p.excerpt||'')+'</textarea></div>'+
+    '<div class="field"><label>المحتوى</label><textarea id="m-content" rows="8">'+esc(p.content||'')+'</textarea></div></div>',
+    function(){
+      authFetch('/api/blog/'+id,{method:'PUT',body:{title:document.getElementById('m-title').value,icon:document.getElementById('m-icon').value,excerpt:document.getElementById('m-excerpt').value,content:document.getElementById('m-content').value}}).then(function(){closeModal();loadBlog();});
+    });
+};
+
+/* ============ COMMUNITY ============ */
+function loadCommunity(){
+  authFetch('/api/admin/community').then(function(r){return r.json();}).then(function(rows){
+    if(!rows.length){document.getElementById('cm-list').innerHTML='<p style="opacity:.6">لا يوجد</p>';return;}
+    var html='<table><thead><tr><th>التاريخ</th><th>الكاتب</th><th>العنوان</th><th>الحالة</th><th>الظهور</th><th>إجراءات</th></tr></thead><tbody>';
+    rows.forEach(function(p){
+      html+='<tr><td>'+(p.date||'-')+'</td><td>'+esc(p.author||'-')+'</td><td>'+esc(p.title)+'</td>'+
+            '<td><span class="badge '+(p.published?'b-ok':'b-warn')+'">'+(p.published?'معتمد':'بانتظار')+'</span></td>'+
+            '<td><span class="badge '+(p.hidden?'b-no':'b-ok')+'">'+(p.hidden?'مخفي':'ظاهر')+'</span></td>'+
+            '<td class="row-actions">'+
+              '<button class="btn-primary" onclick="editCm(\''+p.id+'\')">تعديل</button>'+
+              (!p.published?'<button class="btn-warn" onclick="approveCm(\''+p.id+'\')">اعتماد</button>':'')+
+              '<button class="btn-warn" onclick="toggleCmHide(\''+p.id+'\','+(!p.hidden)+')">'+(p.hidden?'إظهار':'إخفاء')+'</button>'+
+              '<button class="btn-danger" onclick="delCm(\''+p.id+'\')">حذف</button>'+
+            '</td></tr>';
+    });
+    document.getElementById('cm-list').innerHTML=html+'</tbody></table>';
+    window._cm=rows;
+  });
+}
+window.approveCm=function(id){authFetch('/api/community/approve/'+id,{method:'PUT'}).then(loadCommunity);};
+window.delCm=function(id){if(confirm('حذف؟'))authFetch('/api/community/'+id,{method:'DELETE'}).then(loadCommunity);};
+window.toggleCmHide=function(id,v){authFetch('/api/community/'+id,{method:'PUT',body:{hidden:v}}).then(loadCommunity);};
+window.editCm=function(id){
+  var p=(window._cm||[]).find(function(x){return x.id===id;});if(!p)return;
+  openModal('تعديل منشور',
+    '<div class="form-grid"><div class="field"><label>العنوان</label><input id="m-title" value="'+esc(p.title||'')+'"></div>'+
+    '<div class="field"><label>الكاتب</label><input id="m-author" value="'+esc(p.author||'')+'"></div>'+
+    '<div class="field"><label>الأيقونة</label><input id="m-icon" value="'+esc(p.icon||'')+'"></div></div>'+
+    '<div class="form-grid full" style="margin-top:12px"><div class="field"><label>المقتطف</label><textarea id="m-excerpt" rows="2">'+esc(p.excerpt||'')+'</textarea></div>'+
+    '<div class="field"><label>المحتوى</label><textarea id="m-content" rows="6">'+esc(p.content||'')+'</textarea></div></div>',
+    function(){
+      authFetch('/api/community/'+id,{method:'PUT',body:{title:document.getElementById('m-title').value,author:document.getElementById('m-author').value,icon:document.getElementById('m-icon').value,excerpt:document.getElementById('m-excerpt').value,content:document.getElementById('m-content').value}}).then(function(){closeModal();loadCommunity();});
+    });
+};
+
+/* ============ TESTIMONIALS ============ */
+function loadTs(){
+  authFetch('/api/admin/testimonials').then(function(r){return r.json();}).then(function(rows){
+    if(!rows.length){document.getElementById('ts-list').innerHTML='<p style="opacity:.6">لا يوجد</p>';return;}
+    var html='<table><thead><tr><th>الاسم</th><th>الوصف</th><th>الرسالة</th><th>الحالة</th><th>الظهور</th><th>إجراءات</th></tr></thead><tbody>';
+    rows.forEach(function(t){
+      html+='<tr><td>'+esc(t.name||'-')+'</td><td>'+esc(t.role||'-')+'</td>'+
+            '<td>'+esc((t.message||'').slice(0,80))+'…</td>'+
+            '<td><span class="badge '+(t.approved?'b-ok':'b-warn')+'">'+(t.approved?'معتمد':'بانتظار')+'</span></td>'+
+            '<td><span class="badge '+(t.hidden?'b-no':'b-ok')+'">'+(t.hidden?'مخفي':'ظاهر')+'</span></td>'+
+            '<td class="row-actions">'+
+              '<button class="btn-primary" onclick="editTs(\''+t.id+'\')">تعديل</button>'+
+              (!t.approved?'<button class="btn-warn" onclick="approveTs(\''+t.id+'\')">اعتماد</button>':'')+
+              '<button class="btn-warn" onclick="toggleTsHide(\''+t.id+'\','+(!t.hidden)+')">'+(t.hidden?'إظهار':'إخفاء')+'</button>'+
+              '<button class="btn-danger" onclick="delTs(\''+t.id+'\')">حذف</button>'+
+            '</td></tr>';
+    });
+    document.getElementById('ts-list').innerHTML=html+'</tbody></table>';
+    window._ts=rows;
+  });
+}
+window.approveTs=function(id){authFetch('/api/testimonials/approve/'+id,{method:'PUT'}).then(loadTs);};
+window.delTs=function(id){if(confirm('حذف؟'))authFetch('/api/testimonials/'+id,{method:'DELETE'}).then(loadTs);};
+window.toggleTsHide=function(id,v){authFetch('/api/testimonials/'+id,{method:'PUT',body:{hidden:v}}).then(loadTs);};
+window.editTs=function(id){
+  var t=(window._ts||[]).find(function(x){return x.id===id;});if(!t)return;
+  openModal('تعديل شهادة',
+    '<div class="form-grid"><div class="field"><label>الاسم</label><input id="m-name" value="'+esc(t.name||'')+'"></div>'+
+    '<div class="field"><label>الوصف</label><input id="m-role" value="'+esc(t.role||'')+'"></div></div>'+
+    '<div class="form-grid full" style="margin-top:12px"><div class="field"><label>الرسالة</label><textarea id="m-message" rows="5">'+esc(t.message||'')+'</textarea></div></div>',
+    function(){
+      authFetch('/api/testimonials/'+id,{method:'PUT',body:{name:document.getElementById('m-name').value,role:document.getElementById('m-role').value,message:document.getElementById('m-message').value}}).then(function(){closeModal();loadTs();});
+    });
+};
+
+/* ============ CONTACTS ============ */
+function loadCt(){
+  authFetch('/api/contacts').then(function(r){return r.json();}).then(function(rows){
+    if(!rows.length){document.getElementById('ct-list').innerHTML='<p style="opacity:.6">لا يوجد</p>';return;}
+    var html='<table><thead><tr><th>التاريخ</th><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>الموضوع</th><th>الرسالة</th><th>إجراء</th></tr></thead><tbody>';
+    rows.forEach(function(c){
+      html+='<tr><td>'+(c.date||'-').slice(0,10)+'</td><td>'+esc(c.name||'-')+'</td><td>'+esc(c.email||'-')+'</td><td>'+esc(c.phone||'-')+'</td><td>'+esc(c.subject||'-')+'</td><td>'+esc((c.message||'').slice(0,100))+'…</td>'+
+            '<td><button class="btn-danger" onclick="delCt(\''+c.id+'\')">حذف</button></td></tr>';
+    });
+    document.getElementById('ct-list').innerHTML=html+'</tbody></table>';
+  });
+}
+window.delCt=function(id){if(confirm('حذف؟'))authFetch('/api/contacts/'+id,{method:'DELETE'}).then(loadCt);};
+
+/* ============ INIT ============ */
+fetch('/api/auth/me',{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(j){
+  if(j.user){document.getElementById('whoami').textContent='مرحباً '+j.user.username;}
+  else if(TOKEN==='admin-token'){document.getElementById('whoami').textContent='وضع توافق (legacy)';}
+  else{localStorage.removeItem('admin-token');location.href='login.html';return;}
+}).catch(function(){document.getElementById('whoami').textContent='متصل';});
+
+loadPages().then(function(){
+  ovTypeChanged();
+  loadOverrides();
+  loadExtras();
+  loadBlog();
+  loadCommunity();
+  loadTs();
+  loadCt();
+});
 </script>
-
 </body>
 </html>
