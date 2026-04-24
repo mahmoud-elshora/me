@@ -480,5 +480,5 @@ visitorToggle.addEventListener("click", () => {
 window.addEventListener("load", () => {
   setTimeout(() => {
     document.body.classList.add("loaded");
-  }, 1200); // اختياري للتأثير
+  }, 1800); // اختياري للتأثير
 });
