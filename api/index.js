@@ -556,14 +556,16 @@ if (require.main === module) {
     console.log('Perfect Claude v17 running on http://localhost:' + PORT);
   });
 }
-// vistors counter 
-app.use(async function (req, res, next) {
+// ===== VISITORS MIDDLEWARE =====
+app.use(async (req, res, next) => {
   try {
     const db = await getDB();
 
     let visitorId = req.cookies.visitor_id;
 
-    // لو أول زيارة
+    const today = new Date().toISOString().split('T')[0];
+
+    // أول زيارة
     if (!visitorId) {
       visitorId = generateId();
 
@@ -573,39 +575,52 @@ app.use(async function (req, res, next) {
       });
     }
 
-    const today = new Date().toISOString().split('T')[0];
+    // تسجيل/تحديث الزيارة اليومية
     await db.collection('visitors').updateOne(
-      { visitorId },
+      { visitorId, date: today },
       {
-        $set: { lastVisit: new Date() },
         $setOnInsert: {
           visitorId,
+          date: today,
           firstVisit: new Date()
+        },
+        $set: {
+          lastVisit: new Date()
         }
       },
       { upsert: true }
     );
 
-  } catch (e) {}
+  } catch (e) {
+    console.error("VISITOR MIDDLEWARE ERROR:", e);
+  }
 
   next();
 });
+// ===== VISITORS API =====
 app.get('/api/visitors', async (req, res) => {
   try {
     const db = await getDB();
 
     const today = new Date().toISOString().split('T')[0];
 
-    const todayCount = await db.collection('visitors').countDocuments({ date: today });
+    // عدد زوار اليوم
+    const todayCount = await db.collection('visitors').countDocuments({
+      date: today
+    });
 
-    const totalCount = await db.collection('visitors').distinct('visitorId');
+    // إجمالي الزوار (unique visitors)
+    const totalVisitors = await db.collection('visitors').distinct('visitorId');
 
     res.json({
       today: todayCount,
-      total: totalCount.length
+      total: totalVisitors.length
     });
 
   } catch (e) {
-    res.json({ today: 0, total: 0 });
+    console.error("VISITORS API ERROR:", e);
+    res.status(500).json({
+      error: "internal server error"
+    });
   }
 });
