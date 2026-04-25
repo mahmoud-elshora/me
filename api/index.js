@@ -4,17 +4,14 @@ require('dotenv').config({ path: '.env' });
 /* ============================================================
    PERFECT CLAUDE v17 — API
    - Node 13.14.0 / CommonJS
-   - MongoDB Atlas (mongodb v3 driver — متوافق مع Node 13)
-   - يحتفظ بكل endpoints v16
-   - جديد:
-     * /api/content-overrides/:page  (public)
-     * /api/admin/content-overrides  CRUD
-     * PUT/PATCH للمدونة، المجتمع، الشهادات (تعديل + إخفاء/إظهار)
+   - MongoDB Atlas (mongodb v3 driver)
+   - إصلاح نظام الزوار: middleware فقط على /api/ وليس كل طلب
+   - الزوار: تسجيل مرة واحدة في الجلسة (cookie) بدون polling
+   - البيانات محفوظة في memory cache لتقليل طلبات MongoDB
 ============================================================ */
 
 var express      = require('express');
 var cors         = require('cors');
-var bcrypt       = require('bcryptjs');
 var jwt          = require('jsonwebtoken');
 var rateLimit    = require('express-rate-limit');
 var cookieParser = require('cookie-parser');
@@ -28,26 +25,21 @@ var DB_NAME     = process.env.DB_NAME || 'wa3yna';
 var _db = null, _client = null;
 
 function getDB() {
-  if (!MONGODB_URI) {
-    throw new Error("MONGODB_URI missing in env");
-  }
-
+  if (!MONGODB_URI) throw new Error('MONGODB_URI missing in env');
   if (_db) return Promise.resolve(_db);
-
   if (!_client) {
     _client = new MongoClient(MONGODB_URI, {
-      useNewUrlParser: true,
+      useNewUrlParser:    true,
       useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000
     });
   }
-
-  return _client.connect()
-    .then(() => {
-      _db = _client.db(DB_NAME);
-      return _db;
-    });
+  return _client.connect().then(function () {
+    _db = _client.db(DB_NAME);
+    return _db;
+  });
 }
+
 /* ---------- Middleware ---------- */
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '2mb' }));
@@ -65,10 +57,10 @@ function s(v, max) {
 }
 
 /* ---------- AUTH ---------- */
-var JWT_SECRET    = process.env.JWT_SECRET    || 'change-me-in-production-please';
-var ADMIN_USER    = process.env.ADMIN_USER    || 'admin';
-var ADMIN_PASS    = process.env.ADMIN_PASS    || 'admin123';
-var TOKEN_AGE_MS  = 7 * 24 * 60 * 60 * 1000;
+var JWT_SECRET   = process.env.JWT_SECRET || 'change-me-in-production-please';
+var ADMIN_USER   = process.env.ADMIN_USER || 'admin';
+var ADMIN_PASS   = process.env.ADMIN_PASS || 'admin123';
+var TOKEN_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
 var loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -96,6 +88,101 @@ function verifyAdmin(req, res, next) {
   }
 }
 
+/* ===========================================================
+   VISITORS — نظام محسّن بدون طلبات زائدة
+   - cache في الذاكرة يُحدَّث كل 5 دقائق فقط
+   - middleware يعمل فقط على طلبات /api/visitors
+   - تسجيل الزائر مرة واحدة في الجلسة (cookie لمدة يوم)
+=========================================================== */
+
+/* Cache في الذاكرة لتجنب استعلام MongoDB في كل طلب */
+var _visitorsCache = { today: 0, total: 0, updatedAt: 0 };
+var CACHE_TTL_MS = 5 * 60 * 1000; /* 5 دقائق */
+
+function getVisitorsCached() {
+  var now = Date.now();
+  /* إذا الكاش حديث، أرجعه مباشرة بدون MongoDB */
+  if (now - _visitorsCache.updatedAt < CACHE_TTL_MS) {
+    return Promise.resolve({ today: _visitorsCache.today, total: _visitorsCache.total });
+  }
+  var today = new Date().toISOString().split('T')[0];
+  return getDB().then(function (db) {
+    return Promise.all([
+      db.collection('visitors').countDocuments({ date: today }),
+      db.collection('visitors').distinct('visitorId')
+    ]);
+  }).then(function (results) {
+    _visitorsCache.today     = results[0];
+    _visitorsCache.total     = results[1].length;
+    _visitorsCache.updatedAt = Date.now();
+    return { today: _visitorsCache.today, total: _visitorsCache.total };
+  });
+}
+
+/* تسجيل الزائر في DB — يُستدعى مرة واحدة فقط عند أول زيارة اليوم */
+function recordVisitor(visitorId) {
+  var today = new Date().toISOString().split('T')[0];
+  return getDB().then(function (db) {
+    return db.collection('visitors').updateOne(
+      { visitorId: visitorId, date: today },
+      {
+        $setOnInsert: { visitorId: visitorId, date: today, firstVisit: new Date() },
+        $set:         { lastVisit: new Date() }
+      },
+      { upsert: true }
+    );
+  }).then(function (result) {
+    /* إذا أُضيف سجل جديد، أبطل الكاش ليُحدَّث في الطلب القادم */
+    if (result.upsertedCount && result.upsertedCount > 0) {
+      _visitorsCache.updatedAt = 0;
+    }
+  }).catch(function (e) {
+    console.error('recordVisitor error:', e.message);
+  });
+}
+
+/*
+  Middleware خاص بالزوار — يعمل فقط على GET /api/visitors
+  لا يعمل على الملفات الستاتيك أو باقي الـ API
+*/
+app.get('/api/visitors', function (req, res) {
+  /* تسجيل الزائر إذا لم يُسجَّل اليوم */
+  var visitorId = req.cookies.visitor_id;
+  var todayCookie = req.cookies.visitor_day;
+  var today = new Date().toISOString().split('T')[0];
+
+  if (!visitorId) {
+    /* زائر جديد تماماً */
+    visitorId = generateId();
+    res.cookie('visitor_id', visitorId, {
+      maxAge:   1000 * 60 * 60 * 24 * 365, /* سنة */
+      httpOnly: true,
+      sameSite: 'lax'
+    });
+  }
+
+  if (todayCookie !== today) {
+    /* تسجيل الزيارة اليومية مرة واحدة */
+    res.cookie('visitor_day', today, {
+      maxAge:   1000 * 60 * 60 * 24, /* يوم */
+      httpOnly: true,
+      sameSite: 'lax'
+    });
+    /* لا ننتظر الـ DB، نسجّل في الخلفية */
+    recordVisitor(visitorId);
+  }
+
+  /* إرجاع البيانات من الكاش */
+  getVisitorsCached().then(function (data) {
+    res.json(data);
+  }).catch(function () {
+    res.json({ today: 0, total: 0 });
+  });
+});
+
+/* ===========================================================
+   AUTH ROUTES
+=========================================================== */
 app.post('/api/login', loginLimiter, function (req, res) {
   var body = req.body || {};
   var username = s(body.username, 100);
@@ -140,9 +227,7 @@ app.get('/api/auth/me', function (req, res) {
 app.get('/api/posts', function (req, res) {
   getDB().then(function (db) {
     var coll = req.query.type === 'admin' ? 'blog' : 'community';
-    var q = { published: true };
-    /* hidden flag (إخفاء بدون حذف) */
-    q.hidden = { $ne: true };
+    var q = { published: true, hidden: { $ne: true } };
     return db.collection(coll).find(q).sort({ date: -1 }).toArray();
   }).then(function (rows) { res.json(rows); })
     .catch(function () { res.status(500).json({ error: 'Error fetching posts' }); });
@@ -156,8 +241,8 @@ app.get('/api/post-details/:id', function (req, res) {
       return db.collection('community').findOne({ id: id });
     });
   }).then(function (post) {
-    if (!post) return res.status(404).json({ error: 'Not found' });
-    if (post.hidden) return res.status(404).json({ error: 'Hidden' });
+    if (!post)        return res.status(404).json({ error: 'Not found' });
+    if (post.hidden)  return res.status(404).json({ error: 'Hidden' });
     res.json(post);
   }).catch(function () { res.status(500).json({ error: 'Error' }); });
 });
@@ -166,16 +251,16 @@ app.post('/api/community-submit', function (req, res) {
   getDB().then(function (db) {
     var b = req.body || {};
     var newPost = {
-      id: generateId(),
-      title:   s(b.title, 300),
-      author:  s(b.author, 100) || 'guest',
-      excerpt: s(b.excerpt, 500),
-      content: s(b.content, 50000),
-      icon:    s(b.icon, 80) || 'fas fa-user-edit',
-      type:    'guest',
+      id:        generateId(),
+      title:     s(b.title, 300),
+      author:    s(b.author, 100) || 'guest',
+      excerpt:   s(b.excerpt, 500),
+      content:   s(b.content, 50000),
+      icon:      s(b.icon, 80) || 'fas fa-user-edit',
+      type:      'guest',
       published: false,
       hidden:    false,
-      date:    new Date().toISOString().split('T')[0],
+      date:      new Date().toISOString().split('T')[0],
       createdAt: new Date()
     };
     return db.collection('community').insertOne(newPost).then(function () {
@@ -185,7 +270,7 @@ app.post('/api/community-submit', function (req, res) {
 });
 
 /* ===========================================================
-   TESTIMONIALS (public + admin)
+   TESTIMONIALS
 =========================================================== */
 app.get('/api/testimonials', function (req, res) {
   getDB().then(function (db) {
@@ -198,21 +283,22 @@ app.post('/api/testimonials', function (req, res) {
   getDB().then(function (db) {
     var b = req.body || {};
     return db.collection('testimonials').insertOne({
-      id: generateId(),
-      name:    s(b.name, 100),
-      role:    s(b.role, 100),
-      message: s(b.message, 2000),
+      id:       generateId(),
+      name:     s(b.name, 100),
+      role:     s(b.role, 100),
+      message:  s(b.message, 2000),
       approved: false,
       hidden:   false,
-      date:    new Date().toISOString()
+      date:     new Date().toISOString()
     });
   }).then(function () { res.json({ ok: true }); })
     .catch(function () { res.status(500).json({ ok: false }); });
 });
 
 app.get('/api/admin/testimonials', verifyAdmin, function (req, res) {
-  getDB().then(function (db) { return db.collection('testimonials').find().sort({ date: -1 }).toArray(); })
-    .then(function (rows) { res.json(rows); })
+  getDB().then(function (db) {
+    return db.collection('testimonials').find().sort({ date: -1 }).toArray();
+  }).then(function (rows) { res.json(rows); })
     .catch(function () { res.status(500).json([]); });
 });
 
@@ -223,15 +309,14 @@ app.put('/api/testimonials/approve/:id', verifyAdmin, function (req, res) {
     .catch(function () { res.status(500).json({ ok: false }); });
 });
 
-/* جديد v17: تعديل شهادة */
 app.put('/api/testimonials/:id', verifyAdmin, function (req, res) {
   var b = req.body || {};
   var $set = {};
-  if (b.name !== undefined)     $set.name    = s(b.name, 100);
-  if (b.role !== undefined)     $set.role    = s(b.role, 100);
-  if (b.message !== undefined)  $set.message = s(b.message, 2000);
-  if (b.approved !== undefined) $set.approved = !!b.approved;
-  if (b.hidden !== undefined)   $set.hidden   = !!b.hidden;
+  if (b.name    !== undefined) $set.name     = s(b.name, 100);
+  if (b.role    !== undefined) $set.role     = s(b.role, 100);
+  if (b.message !== undefined) $set.message  = s(b.message, 2000);
+  if (b.approved!== undefined) $set.approved = !!b.approved;
+  if (b.hidden  !== undefined) $set.hidden   = !!b.hidden;
   getDB().then(function (db) {
     return db.collection('testimonials').updateOne({ id: req.params.id }, { $set: $set });
   }).then(function (r) { res.json({ ok: r.matchedCount > 0 }); })
@@ -239,8 +324,9 @@ app.put('/api/testimonials/:id', verifyAdmin, function (req, res) {
 });
 
 app.delete('/api/testimonials/:id', verifyAdmin, function (req, res) {
-  getDB().then(function (db) { return db.collection('testimonials').deleteOne({ id: req.params.id }); })
-    .then(function () { res.json({ ok: true }); })
+  getDB().then(function (db) {
+    return db.collection('testimonials').deleteOne({ id: req.params.id });
+  }).then(function () { res.json({ ok: true }); })
     .catch(function () { res.status(500).json({ ok: false }); });
 });
 
@@ -251,27 +337,29 @@ app.post('/api/contact', function (req, res) {
   getDB().then(function (db) {
     var b = req.body || {};
     return db.collection('contacts').insertOne({
-      id: generateId(),
+      id:      generateId(),
       name:    s(b.name, 100),
       email:   s(b.email, 200),
       phone:   s(b.phone, 50),
       subject: s(b.subject, 300),
       message: s(b.message, 5000),
-      date: new Date().toISOString()
+      date:    new Date().toISOString()
     });
   }).then(function () { res.json({ ok: true }); })
     .catch(function () { res.status(500).json({ ok: false }); });
 });
 
 app.get('/api/contacts', verifyAdmin, function (req, res) {
-  getDB().then(function (db) { return db.collection('contacts').find().sort({ date: -1 }).toArray(); })
-    .then(function (rows) { res.json(rows); })
+  getDB().then(function (db) {
+    return db.collection('contacts').find().sort({ date: -1 }).toArray();
+  }).then(function (rows) { res.json(rows); })
     .catch(function () { res.status(500).json([]); });
 });
 
 app.delete('/api/contacts/:id', verifyAdmin, function (req, res) {
-  getDB().then(function (db) { return db.collection('contacts').deleteOne({ id: req.params.id }); })
-    .then(function () { res.json({ ok: true }); })
+  getDB().then(function (db) {
+    return db.collection('contacts').deleteOne({ id: req.params.id });
+  }).then(function () { res.json({ ok: true }); })
     .catch(function () { res.status(500).json({ ok: false }); });
 });
 
@@ -279,8 +367,9 @@ app.delete('/api/contacts/:id', verifyAdmin, function (req, res) {
    BLOG ADMIN
 =========================================================== */
 app.get('/api/admin/blog', verifyAdmin, function (req, res) {
-  getDB().then(function (db) { return db.collection('blog').find().sort({ date: -1 }).toArray(); })
-    .then(function (rows) { res.json(rows); })
+  getDB().then(function (db) {
+    return db.collection('blog').find().sort({ date: -1 }).toArray();
+  }).then(function (rows) { res.json(rows); })
     .catch(function () { res.status(500).json([]); });
 });
 
@@ -288,30 +377,29 @@ app.post('/api/blog', verifyAdmin, function (req, res) {
   getDB().then(function (db) {
     var b = req.body || {};
     var post = {
-      id: generateId(),
-      title:   s(b.title, 300),
-      excerpt: s(b.excerpt, 500),
-      content: s(b.content, 100000),
-      icon:    s(b.icon, 80) || 'fas fa-pen-fancy',
+      id:        generateId(),
+      title:     s(b.title, 300),
+      excerpt:   s(b.excerpt, 500),
+      content:   s(b.content, 100000),
+      icon:      s(b.icon, 80) || 'fas fa-pen-fancy',
       published: true,
       hidden:    false,
-      date: new Date().toISOString().split('T')[0]
+      date:      new Date().toISOString().split('T')[0]
     };
     return db.collection('blog').insertOne(post);
   }).then(function () { res.json({ ok: true }); })
     .catch(function () { res.status(500).json({ ok: false }); });
 });
 
-/* جديد v17: تعديل + إخفاء/إظهار + تبديل النشر للمدونة */
 app.put('/api/blog/:id', verifyAdmin, function (req, res) {
   var b = req.body || {};
   var $set = {};
-  if (b.title !== undefined)     $set.title    = s(b.title, 300);
-  if (b.excerpt !== undefined)   $set.excerpt  = s(b.excerpt, 500);
-  if (b.content !== undefined)   $set.content  = s(b.content, 100000);
-  if (b.icon !== undefined)      $set.icon     = s(b.icon, 80);
-  if (b.published !== undefined) $set.published = !!b.published;
-  if (b.hidden !== undefined)    $set.hidden    = !!b.hidden;
+  if (b.title    !== undefined) $set.title    = s(b.title, 300);
+  if (b.excerpt  !== undefined) $set.excerpt  = s(b.excerpt, 500);
+  if (b.content  !== undefined) $set.content  = s(b.content, 100000);
+  if (b.icon     !== undefined) $set.icon     = s(b.icon, 80);
+  if (b.published!== undefined) $set.published= !!b.published;
+  if (b.hidden   !== undefined) $set.hidden   = !!b.hidden;
   getDB().then(function (db) {
     return db.collection('blog').updateOne({ id: req.params.id }, { $set: $set });
   }).then(function (r) { res.json({ ok: r.matchedCount > 0 }); })
@@ -319,8 +407,9 @@ app.put('/api/blog/:id', verifyAdmin, function (req, res) {
 });
 
 app.delete('/api/blog/:id', verifyAdmin, function (req, res) {
-  getDB().then(function (db) { return db.collection('blog').deleteOne({ id: req.params.id }); })
-    .then(function () { res.json({ ok: true }); })
+  getDB().then(function (db) {
+    return db.collection('blog').deleteOne({ id: req.params.id });
+  }).then(function () { res.json({ ok: true }); })
     .catch(function () { res.status(500).json({ ok: false }); });
 });
 
@@ -328,8 +417,9 @@ app.delete('/api/blog/:id', verifyAdmin, function (req, res) {
    COMMUNITY ADMIN
 =========================================================== */
 app.get('/api/admin/community', verifyAdmin, function (req, res) {
-  getDB().then(function (db) { return db.collection('community').find().sort({ date: -1 }).toArray(); })
-    .then(function (rows) { res.json(rows); })
+  getDB().then(function (db) {
+    return db.collection('community').find().sort({ date: -1 }).toArray();
+  }).then(function (rows) { res.json(rows); })
     .catch(function () { res.status(500).json([]); });
 });
 
@@ -340,17 +430,16 @@ app.put('/api/community/approve/:id', verifyAdmin, function (req, res) {
     .catch(function () { res.status(500).json({ ok: false }); });
 });
 
-/* جديد v17: تعديل + إخفاء/إظهار لمنشورات المجتمع */
 app.put('/api/community/:id', verifyAdmin, function (req, res) {
   var b = req.body || {};
   var $set = {};
-  if (b.title !== undefined)     $set.title    = s(b.title, 300);
-  if (b.author !== undefined)    $set.author   = s(b.author, 100);
-  if (b.excerpt !== undefined)   $set.excerpt  = s(b.excerpt, 500);
-  if (b.content !== undefined)   $set.content  = s(b.content, 50000);
-  if (b.icon !== undefined)      $set.icon     = s(b.icon, 80);
-  if (b.published !== undefined) $set.published = !!b.published;
-  if (b.hidden !== undefined)    $set.hidden    = !!b.hidden;
+  if (b.title    !== undefined) $set.title    = s(b.title, 300);
+  if (b.author   !== undefined) $set.author   = s(b.author, 100);
+  if (b.excerpt  !== undefined) $set.excerpt  = s(b.excerpt, 500);
+  if (b.content  !== undefined) $set.content  = s(b.content, 50000);
+  if (b.icon     !== undefined) $set.icon     = s(b.icon, 80);
+  if (b.published!== undefined) $set.published= !!b.published;
+  if (b.hidden   !== undefined) $set.hidden   = !!b.hidden;
   getDB().then(function (db) {
     return db.collection('community').updateOne({ id: req.params.id }, { $set: $set });
   }).then(function (r) { res.json({ ok: r.matchedCount > 0 }); })
@@ -358,19 +447,21 @@ app.put('/api/community/:id', verifyAdmin, function (req, res) {
 });
 
 app.delete('/api/community/:id', verifyAdmin, function (req, res) {
-  getDB().then(function (db) { return db.collection('community').deleteOne({ id: req.params.id }); })
-    .then(function () { res.json({ ok: true }); })
+  getDB().then(function (db) {
+    return db.collection('community').deleteOne({ id: req.params.id });
+  }).then(function () { res.json({ ok: true }); })
     .catch(function () { res.status(500).json({ ok: false }); });
 });
 
 /* ===========================================================
-   PAGE EXTRAS (نفس v16)
+   PAGE EXTRAS
 =========================================================== */
 var ALLOWED_PAGES = [
   'index','initiative','activities','projects','cv',
   'skills','achivments','stats','blog','community',
   'testimonials','contact'
 ];
+
 function safePage(p) {
   p = s(p, 30);
   return ALLOWED_PAGES.indexOf(p) >= 0 ? p : null;
@@ -378,25 +469,25 @@ function safePage(p) {
 
 function buildExtraDoc(b) {
   return {
-    page:        safePage(b.page) || 'index',
-    title_ar:    s(b.title_ar, 300),
-    title_en:    s(b.title_en, 300),
-    body_ar:     s(b.body_ar, 20000),
-    body_en:     s(b.body_en, 20000),
-    image_url:   s(b.image_url, 1000),
-    image_shape: s(b.image_shape, 20) || 'rounded',
-    image_pos:   s(b.image_pos, 20)   || 'right',
-    color:       s(b.color, 30)       || 'cyan',
-    layout:      s(b.layout, 20)      || 'card',
-    animation:   s(b.animation, 30)   || 'fade-up',
-    icon:        s(b.icon, 80),
-    link_url:    s(b.link_url, 1000),
-    link_text_ar:s(b.link_text_ar, 200),
-    link_text_en:s(b.link_text_en, 200),
-    target_zone: s(b.target_zone, 50) || 'bottom',
-    order:       parseInt(b.order, 10) || 0,
-    visible:     b.visible !== false,
-    updated_at:  new Date()
+    page:         safePage(b.page) || 'index',
+    title_ar:     s(b.title_ar, 300),
+    title_en:     s(b.title_en, 300),
+    body_ar:      s(b.body_ar, 20000),
+    body_en:      s(b.body_en, 20000),
+    image_url:    s(b.image_url, 1000),
+    image_shape:  s(b.image_shape, 20) || 'rounded',
+    image_pos:    s(b.image_pos, 20)   || 'right',
+    color:        s(b.color, 30)       || 'cyan',
+    layout:       s(b.layout, 20)      || 'card',
+    animation:    s(b.animation, 30)   || 'fade-up',
+    icon:         s(b.icon, 80),
+    link_url:     s(b.link_url, 1000),
+    link_text_ar: s(b.link_text_ar, 200),
+    link_text_en: s(b.link_text_en, 200),
+    target_zone:  s(b.target_zone, 50) || 'bottom',
+    order:        parseInt(b.order, 10) || 0,
+    visible:      b.visible !== false,
+    updated_at:   new Date()
   };
 }
 
@@ -411,10 +502,7 @@ app.get('/api/page-extras/:page', function (req, res) {
 
 app.get('/api/admin/page-extras', verifyAdmin, function (req, res) {
   var q = {};
-  if (req.query.page) {
-    var p = safePage(req.query.page);
-    if (p) q.page = p;
-  }
+  if (req.query.page) { var p = safePage(req.query.page); if (p) q.page = p; }
   getDB().then(function (db) {
     return db.collection('page_extras').find(q).sort({ page: 1, order: 1 }).toArray();
   }).then(function (rows) { res.json(rows); })
@@ -432,7 +520,7 @@ app.post('/api/admin/page-extras', verifyAdmin, function (req, res) {
 });
 
 app.put('/api/admin/page-extras/:id', verifyAdmin, function (req, res) {
-  var id = s(req.params.id, 50);
+  var id  = s(req.params.id, 50);
   var doc = buildExtraDoc(req.body || {});
   getDB().then(function (db) {
     return db.collection('page_extras').updateOne({ id: id }, { $set: doc });
@@ -449,15 +537,7 @@ app.delete('/api/admin/page-extras/:id', verifyAdmin, function (req, res) {
 });
 
 /* ===========================================================
-   CONTENT OVERRIDES — جديد في v17
-   لتعديل المحتوى الستاتيك الأصلي للصفحات (نص/HTML/صورة/إخفاء)
-   عبر CSS selector لكل عنصر داخل الصفحة.
-   كل سجل:
-   {
-     page, selector, type: 'text|html|image|hide|attr',
-     value_ar, value_en, value, attr_name,
-     visible, order
-   }
+   CONTENT OVERRIDES
 =========================================================== */
 function buildOverrideDoc(b) {
   var t = s(b.type, 20) || 'text';
@@ -468,7 +548,7 @@ function buildOverrideDoc(b) {
     type:       t,
     value_ar:   s(b.value_ar, 20000),
     value_en:   s(b.value_en, 20000),
-    value:      s(b.value, 20000),       /* يستخدم لـ image / attr */
+    value:      s(b.value, 20000),
     attr_name:  s(b.attr_name, 60),
     note:       s(b.note, 200),
     visible:    b.visible !== false,
@@ -477,7 +557,6 @@ function buildOverrideDoc(b) {
   };
 }
 
-/* PUBLIC — تطبيق التعديلات على الصفحة */
 app.get('/api/content-overrides/:page', function (req, res) {
   var p = safePage(req.params.page);
   if (!p) return res.json([]);
@@ -489,10 +568,7 @@ app.get('/api/content-overrides/:page', function (req, res) {
 
 app.get('/api/admin/content-overrides', verifyAdmin, function (req, res) {
   var q = {};
-  if (req.query.page) {
-    var p = safePage(req.query.page);
-    if (p) q.page = p;
-  }
+  if (req.query.page) { var p = safePage(req.query.page); if (p) q.page = p; }
   getDB().then(function (db) {
     return db.collection('content_overrides').find(q).sort({ page: 1, order: 1 }).toArray();
   }).then(function (rows) { res.json(rows); })
@@ -526,7 +602,7 @@ app.delete('/api/admin/content-overrides/:id', verifyAdmin, function (req, res) 
 });
 
 /* ===========================================================
-   PAGES META
+   PAGES META & HEALTH
 =========================================================== */
 app.get('/api/pages-list', function (req, res) {
   res.json([
@@ -563,72 +639,3 @@ if (require.main === module) {
     console.log('Perfect Claude v17 running on http://localhost:' + PORT);
   });
 }
-// ===== VISITORS API =====
-app.get('/api/visitors', async (req, res) => {
-  try {
-    const db = await getDB();
-
-    const today = new Date().toISOString().split('T')[0];
-
-    const todayCount = await db.collection('visitors').countDocuments({
-      date: today
-    });
-
-    const totalVisitors = await db.collection('visitors')
-      .distinct('visitorId');
-
-    return res.status(200).json({
-      today: todayCount,
-      total: totalVisitors.length
-    });
-
-  } catch (e) {
-    console.error("VISITORS ERROR:", e);
-
-    return res.status(500).json({
-      error: "DB connection failed",
-      details: process.env.NODE_ENV === "production" ? undefined : e.message
-    });
-  }
-});
-    // ===== VISITORS MIDDLEWARE =====
-    app.use(async (req, res, next) => {
-      try {
-        const db = await getDB();
-    
-        let visitorId = req.cookies.visitor_id;
-    
-        const today = new Date().toISOString().split('T')[0];
-    
-        // أول زيارة
-        if (!visitorId) {
-          visitorId = generateId();
-    
-          res.cookie('visitor_id', visitorId, {
-            maxAge: 1000 * 60 * 60 * 24 * 30, // 30 يوم
-            httpOnly: true,
-          });
-        }
-    
-        // تسجيل/تحديث الزيارة اليومية
-        await db.collection('visitors').updateOne(
-          { visitorId, date: today },
-          {
-            $setOnInsert: {
-              visitorId,
-              date: today,
-              firstVisit: new Date()
-            },
-            $set: {
-              lastVisit: new Date()
-            }
-          },
-          { upsert: true }
-        );
-    
-      } catch (e) {
-        console.error("VISITOR MIDDLEWARE ERROR:", e);
-      }
-    
-      next();
-    });

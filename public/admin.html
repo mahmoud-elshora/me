@@ -1,305 +1,1038 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>لوحة التحكم — Perfect Claude v17</title>
+<title>لوحة التحكم — وعينا v17</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
-  *{box-sizing:border-box}
-  body{background:linear-gradient(135deg,#0a0e27 0%,#1a1a3e 50%,#0a0e27 100%);min-height:100vh;color:#fff;font-family:Cairo,sans-serif;padding:20px;margin:0}
-  .admin-wrap{max-width:1320px;margin:0 auto}
-  .admin-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:24px;padding:18px 26px;background:rgba(15,23,42,.65);backdrop-filter:blur(14px);border:1px solid rgba(0,240,255,.25);border-radius:18px}
-  .admin-head h1{font-family:Orbitron;font-size:1.6rem;color:#00f0ff;margin:0;text-shadow:0 0 18px #00f0ff}
-  .admin-head .who{font-size:.9rem;opacity:.75}
-  .admin-head .acts{display:flex;gap:10px;flex-wrap:wrap}
-  .admin-head a,.admin-head button{padding:9px 16px;border-radius:10px;border:1px solid rgba(0,240,255,.4);background:transparent;color:#00f0ff;font-weight:700;cursor:pointer;text-decoration:none;font-family:Cairo}
-  .admin-head button.danger{border-color:#ef4444;color:#ef4444}
-  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
-  .tab{padding:11px 20px;background:rgba(15,23,42,.55);border:1px solid rgba(0,240,255,.2);color:#fff;border-radius:12px;cursor:pointer;font-weight:600;font-family:Cairo;transition:.25s}
-  .tab.active{background:#00f0ff;color:#000;border-color:#00f0ff;box-shadow:0 0 24px rgba(0,240,255,.5)}
-  .panel{background:rgba(15,23,42,.6);backdrop-filter:blur(14px);border:1px solid rgba(0,240,255,.2);border-radius:18px;padding:26px;margin-bottom:22px;display:none}
-  .panel.active{display:block}
-  .panel h2{font-family:Orbitron;color:#00f0ff;font-size:1.3rem;margin:0 0 16px}
-  .panel .subhead{opacity:.7;margin:-6px 0 14px;font-size:.92rem;line-height:1.7}
-  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-  .form-grid.full{grid-template-columns:1fr}
-  .field{display:flex;flex-direction:column;gap:6px}
-  .field label{font-size:.85rem;color:#9bd0ff;font-weight:700}
-  .field input,.field select,.field textarea{background:rgba(0,0,0,.45);border:1px solid rgba(0,240,255,.25);color:#fff;padding:11px 13px;border-radius:10px;font-family:Cairo;font-size:.95rem}
-  .field textarea{min-height:90px;resize:vertical}
-  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#00f0ff;box-shadow:0 0 12px rgba(0,240,255,.4)}
-  .btn{padding:11px 22px;border-radius:10px;border:none;cursor:pointer;font-weight:700;font-family:Cairo;font-size:.95rem;transition:.25s}
-  .btn-primary{background:#00f0ff;color:#000;box-shadow:0 0 20px rgba(0,240,255,.4)}
-  .btn-primary:hover{transform:translateY(-2px)}
-  .btn-warn{background:#facc15;color:#000}
-  .btn-danger{background:#ef4444;color:#fff}
-  .btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.2)}
-  table{width:100%;border-collapse:collapse;margin-top:14px;font-size:.9rem}
-  table th,table td{padding:12px 10px;text-align:right;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:middle}
-  table th{color:#00f0ff;font-weight:700;background:rgba(0,240,255,.05)}
-  table tr:hover{background:rgba(0,240,255,.04)}
-  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700}
-  .b-ok{background:rgba(0,255,136,.2);color:#00ff88}
-  .b-no{background:rgba(239,68,68,.2);color:#ef4444}
-  .b-warn{background:rgba(250,204,21,.2);color:#facc15}
-  .row-actions{display:flex;gap:6px;flex-wrap:wrap}
-  .row-actions button{padding:6px 12px;font-size:.78rem;border-radius:8px;border:none;cursor:pointer;font-family:Cairo;font-weight:700}
-  .swatch{display:inline-block;width:18px;height:18px;border-radius:50%;vertical-align:middle;margin-inline-end:6px;border:2px solid rgba(255,255,255,.15)}
-  .msg{padding:12px 16px;border-radius:10px;margin:10px 0;display:none;font-weight:600}
-  .msg.ok{background:rgba(0,255,136,.15);color:#00ff88;border:1px solid #00ff88;display:block}
-  .msg.err{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid #ef4444;display:block}
-  .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:#00f0ff;border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .small-help{font-size:.78rem;opacity:.6;margin-top:4px}
-  .modal-back{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px;backdrop-filter:blur(6px)}
-  .modal-back.show{display:flex}
-  .modal{background:#0f172a;border:1px solid rgba(0,240,255,.4);border-radius:18px;padding:26px;max-width:760px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.6)}
-  .modal h3{font-family:Orbitron;color:#00f0ff;margin:0 0 14px}
-  .modal-acts{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
-  @media(max-width:640px){table{font-size:.78rem}table th,table td{padding:8px 6px}.admin-head h1{font-size:1.2rem}}
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════ */
+:root {
+  --bg:        #07090f;
+  --bg2:       #0d1117;
+  --bg3:       #131a24;
+  --surface:   rgba(13,17,23,0.85);
+  --border:    rgba(0,229,255,0.12);
+  --border2:   rgba(0,229,255,0.25);
+  --border3:   rgba(0,229,255,0.45);
+  --cyan:      #00e5ff;
+  --cyan-dim:  rgba(0,229,255,0.08);
+  --cyan-mid:  rgba(0,229,255,0.15);
+  --green:     #00e676;
+  --green-dim: rgba(0,230,118,0.08);
+  --violet:    #d500f9;
+  --violet-dim:rgba(213,0,249,0.08);
+  --orange:    #ff6d00;
+  --red:       #ff1744;
+  --gold:      #ffd600;
+  --text:      #e2eaf4;
+  --text2:     #7a9ab8;
+  --text3:     #3d5a72;
+  --r:         10px;
+  --r2:        16px;
+  --r3:        22px;
+  --shadow:    0 8px 40px rgba(0,0,0,0.6);
+  --glow-c:    0 0 24px rgba(0,229,255,0.18);
+  --t:         0.22s ease;
+}
+
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Cairo',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  direction:rtl;
+}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font-family:inherit}
+input,select,textarea{
+  background:rgba(0,0,0,0.4);
+  border:1px solid var(--border2);
+  color:var(--text);
+  padding:10px 13px;
+  border-radius:var(--r);
+  font-size:.9rem;
+  width:100%;
+  transition:border-color var(--t),box-shadow var(--t);
+  outline:none;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px rgba(0,229,255,.12);
+}
+textarea{min-height:90px;resize:vertical}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300e5ff' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 12px center;padding-left:32px}
+code{background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:5px;padding:1px 7px;font-size:.8rem;color:var(--cyan);font-family:monospace}
+
+/* ═══════════════════════════════════════════════
+   ANIMATED BACKGROUND GRID
+═══════════════════════════════════════════════ */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,229,255,.03) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(0,229,255,.03) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at 20% 20%,rgba(0,229,255,.04) 0%,transparent 55%),
+             radial-gradient(ellipse at 80% 80%,rgba(213,0,249,.04) 0%,transparent 55%);
+}
+
+/* ═══════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════ */
+.admin-wrap{
+  position:relative;z-index:1;
+  max-width:1440px;margin:0 auto;
+  padding:0 20px 60px;
+}
+
+/* ═══════════════════════════════════════════════
+   TOP BAR
+═══════════════════════════════════════════════ */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;
+  padding:18px 28px;margin:20px 0 24px;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r3);
+  backdrop-filter:blur(20px);
+  box-shadow:var(--shadow),var(--glow-c);
+  animation:slideDown .5s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:none}}
+
+.topbar-brand{display:flex;align-items:center;gap:12px}
+.brand-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:linear-gradient(135deg,var(--cyan),#0088aa);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;color:#000;font-weight:900;
+  box-shadow:0 0 20px rgba(0,229,255,.35);
+  flex-shrink:0;
+}
+.brand-text h1{
+  font-family:'Orbitron',monospace;font-size:1.25rem;font-weight:900;
+  color:var(--cyan);text-shadow:0 0 16px var(--cyan);
+  line-height:1;
+}
+.brand-text span{font-size:.72rem;color:var(--text2);display:block;margin-top:2px}
+
+.topbar-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.admin-badge{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:50px;
+  background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.22);
+  color:var(--cyan);font-size:.8rem;font-weight:700;
+}
+.online-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 2s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+
+.topbar-actions{display:flex;gap:8px}
+.tb-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:9px 16px;border-radius:var(--r);
+  border:1px solid var(--border2);background:var(--cyan-dim);
+  color:var(--text);font-size:.82rem;font-weight:700;cursor:pointer;
+  transition:all var(--t);
+}
+.tb-btn:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-mid)}
+.tb-btn.danger{border-color:rgba(255,23,68,.3);color:var(--red);background:rgba(255,23,68,.07)}
+.tb-btn.danger:hover{background:rgba(255,23,68,.14);border-color:var(--red)}
+
+/* ═══════════════════════════════════════════════
+   NAV TABS
+═══════════════════════════════════════════════ */
+.nav-tabs{
+  display:flex;gap:6px;flex-wrap:wrap;
+  margin-bottom:24px;
+  padding:8px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  backdrop-filter:blur(14px);
+}
+.nav-tab{
+  display:flex;align-items:center;gap:7px;
+  padding:10px 18px;border-radius:var(--r);
+  border:1px solid transparent;
+  background:transparent;
+  color:var(--text2);font-size:.84rem;font-weight:700;
+  cursor:pointer;transition:all var(--t);position:relative;
+}
+.nav-tab i{font-size:.9rem}
+.nav-tab:hover{color:var(--text);background:var(--cyan-dim);border-color:var(--border2)}
+.nav-tab.active{
+  background:var(--cyan);color:#000;
+  box-shadow:0 0 22px rgba(0,229,255,.45),0 4px 12px rgba(0,0,0,.3);
+  border-color:transparent;
+}
+.nav-tab .badge-count{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:18px;height:18px;border-radius:50%;
+  background:rgba(0,0,0,.3);font-size:.65rem;
+  min-width:18px;
+}
+.nav-tab.active .badge-count{background:rgba(0,0,0,.25);color:#000}
+
+/* ═══════════════════════════════════════════════
+   PANELS
+═══════════════════════════════════════════════ */
+.panel{display:none;animation:fadeUp .35s cubic-bezier(.16,1,.3,1) both}
+.panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* ═══════════════════════════════════════════════
+   CARDS & SECTIONS
+═══════════════════════════════════════════════ */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:26px;
+  backdrop-filter:blur(14px);
+  box-shadow:var(--shadow);
+  margin-bottom:20px;
+}
+.card-title{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Orbitron',monospace;
+  font-size:1rem;font-weight:900;
+  color:var(--cyan);margin-bottom:6px;
+}
+.card-title i{font-size:1.1rem}
+.card-sub{font-size:.82rem;color:var(--text2);line-height:1.6;margin-bottom:20px}
+
+/* ═══════════════════════════════════════════════
+   STATS ROW
+═══════════════════════════════════════════════ */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:22px}
+.stat-box{
+  background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);
+  padding:18px 16px;text-align:center;
+  transition:border-color var(--t),transform var(--t);
+}
+.stat-box:hover{border-color:var(--border2);transform:translateY(-2px)}
+.stat-box .num{
+  font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;
+  color:var(--cyan);text-shadow:0 0 16px rgba(0,229,255,.4);
+  display:block;line-height:1;margin-bottom:4px;
+}
+.stat-box .lbl{font-size:.74rem;color:var(--text2);font-weight:600}
+
+/* ═══════════════════════════════════════════════
+   FORM GRID
+═══════════════════════════════════════════════ */
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.fg.full{grid-template-columns:1fr}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:.8rem;color:var(--cyan);font-weight:700;display:flex;align-items:center;gap:5px}
+.field .hint{font-size:.72rem;color:var(--text3);margin-top:3px;line-height:1.4}
+.field label .req{color:var(--red);margin-right:2px}
+
+/* ═══════════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════════ */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:11px 22px;border-radius:var(--r);
+  font-weight:700;font-size:.88rem;cursor:pointer;
+  border:none;transition:all var(--t);
+}
+.btn-primary{background:var(--cyan);color:#000;box-shadow:0 0 20px rgba(0,229,255,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(0,229,255,.55)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim)}
+.btn-warn{background:rgba(255,214,0,.12);color:var(--gold);border:1px solid rgba(255,214,0,.3)}
+.btn-warn:hover{background:rgba(255,214,0,.22);border-color:var(--gold)}
+.btn-danger{background:rgba(255,23,68,.1);color:var(--red);border:1px solid rgba(255,23,68,.3)}
+.btn-danger:hover{background:rgba(255,23,68,.2);border-color:var(--red)}
+.btn-green{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.btn-green:hover{background:rgba(0,230,118,.2);border-color:var(--green)}
+.btn-sm{padding:7px 13px;font-size:.76rem}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;align-items:center}
+
+/* ═══════════════════════════════════════════════
+   TABLE
+═══════════════════════════════════════════════ */
+.table-wrap{overflow-x:auto;margin-top:18px;border-radius:var(--r2);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+thead th{
+  padding:13px 12px;text-align:right;
+  background:rgba(0,229,255,.06);
+  border-bottom:1px solid var(--border2);
+  color:var(--cyan);font-weight:800;font-size:.78rem;
+  letter-spacing:.5px;white-space:nowrap;
+}
+tbody td{
+  padding:12px 12px;border-bottom:1px solid var(--border);
+  color:var(--text2);vertical-align:middle;
+}
+tbody tr:last-child td{border-bottom:none}
+tbody tr{transition:background var(--t)}
+tbody tr:hover{background:rgba(0,229,255,.04)}
+.cell-actions{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+
+/* ═══════════════════════════════════════════════
+   BADGES
+═══════════════════════════════════════════════ */
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;border-radius:50px;
+  font-size:.7rem;font-weight:800;letter-spacing:.3px;white-space:nowrap;
+}
+.b-green {background:rgba(0,230,118,.12);color:var(--green);border:1px solid rgba(0,230,118,.25)}
+.b-red   {background:rgba(255,23,68,.12); color:var(--red);  border:1px solid rgba(255,23,68,.25)}
+.b-gold  {background:rgba(255,214,0,.1);  color:var(--gold); border:1px solid rgba(255,214,0,.25)}
+.b-cyan  {background:rgba(0,229,255,.1);  color:var(--cyan); border:1px solid rgba(0,229,255,.25)}
+.b-violet{background:rgba(213,0,249,.1);  color:var(--violet);border:1px solid rgba(213,0,249,.25)}
+.b-gray  {background:rgba(255,255,255,.06);color:var(--text2);border:1px solid var(--border)}
+
+/* ═══════════════════════════════════════════════
+   NOTIFICATIONS
+═══════════════════════════════════════════════ */
+.notif{
+  padding:13px 18px;border-radius:var(--r);margin:14px 0;
+  font-weight:600;font-size:.88rem;display:none;
+  align-items:center;gap:10px;
+  animation:fadeUp .3s ease both;
+}
+.notif.show{display:flex}
+.notif.ok {background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.notif.err{background:rgba(255,23,68,.1); color:var(--red);  border:1px solid rgba(255,23,68,.3)}
+.notif.warn{background:rgba(255,214,0,.1);color:var(--gold); border:1px solid rgba(255,214,0,.3)}
+
+/* ═══════════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════════ */
+.modal-back{
+  position:fixed;inset:0;z-index:9999;
+  display:none;align-items:center;justify-content:center;
+  padding:20px;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(8px);
+  animation:fadeIn .2s ease both;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-back.show{display:flex}
+.modal{
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  border-radius:var(--r3);
+  padding:30px;
+  max-width:760px;width:100%;
+  max-height:90vh;overflow-y:auto;
+  box-shadow:var(--shadow),0 0 60px rgba(0,0,0,.5);
+  animation:zoomIn .3s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes zoomIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+.modal-title{
+  font-family:'Orbitron',monospace;
+  color:var(--cyan);font-size:1.1rem;
+  margin-bottom:20px;display:flex;align-items:center;gap:10px;
+}
+.modal-title i{font-size:1.2rem}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap}
+
+/* ═══════════════════════════════════════════════
+   SPINNER & EMPTY
+═══════════════════════════════════════════════ */
+.spinner{
+  display:inline-block;width:20px;height:20px;
+  border:2px solid var(--border2);border-top-color:var(--cyan);
+  border-radius:50%;animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-row{padding:30px;text-align:center;color:var(--text3)}
+.empty-row{padding:40px;text-align:center;color:var(--text3);font-size:.88rem}
+.empty-row i{font-size:2rem;display:block;margin-bottom:10px;opacity:.4}
+
+/* ═══════════════════════════════════════════════
+   CONTENT OVERRIDE SPECIFIC
+═══════════════════════════════════════════════ */
+.ov-type-select{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;
+  margin-bottom:18px;
+}
+.ov-type-btn{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:14px 10px;border-radius:var(--r);
+  border:2px solid var(--border);background:var(--bg3);
+  color:var(--text2);cursor:pointer;transition:all var(--t);
+  font-size:.78rem;font-weight:700;font-family:'Cairo',sans-serif;
+}
+.ov-type-btn i{font-size:1.4rem;color:var(--text3);transition:color var(--t)}
+.ov-type-btn:hover{border-color:var(--border2);color:var(--text)}
+.ov-type-btn.active{border-color:var(--cyan);background:var(--cyan-dim);color:var(--cyan)}
+.ov-type-btn.active i{color:var(--cyan)}
+
+/* Selector helper */
+.selector-preview{
+  background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+  padding:10px 14px;margin-top:8px;font-size:.8rem;color:var(--text3);
+  display:none;
+}
+.selector-preview.show{display:block}
+.selector-examples{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.sel-chip{
+  padding:3px 9px;border-radius:4px;
+  background:rgba(0,229,255,.07);border:1px solid var(--border);
+  color:var(--cyan);font-size:.72rem;font-family:monospace;cursor:pointer;
+  transition:background var(--t);
+}
+.sel-chip:hover{background:var(--cyan-mid)}
+
+/* Animation picker */
+.anim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.anim-card{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:14px 8px;border-radius:var(--r);border:2px solid var(--border);
+  background:var(--bg3);cursor:pointer;transition:all var(--t);
+  font-size:.75rem;color:var(--text2);font-weight:700;font-family:'Cairo',sans-serif;
+}
+.anim-card .anim-demo{
+  width:36px;height:36px;border-radius:8px;
+  background:linear-gradient(135deg,var(--cyan),#0088aa);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;color:#000;
+}
+.anim-card:hover{border-color:var(--border2);color:var(--text)}
+.anim-card.active{border-color:var(--cyan);background:var(--cyan-dim);color:var(--cyan)}
+
+/* Color picker */
+.color-grid{display:flex;gap:8px;flex-wrap:wrap}
+.color-swatch{
+  width:36px;height:36px;border-radius:50%;cursor:pointer;
+  border:3px solid transparent;transition:all var(--t);
+  position:relative;
+}
+.color-swatch:hover{transform:scale(1.15)}
+.color-swatch.active{border-color:#fff;box-shadow:0 0 12px currentColor}
+.color-swatch::after{
+  content:'✓';position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;color:#000;font-weight:900;
+  opacity:0;transition:opacity var(--t);
+}
+.color-swatch.active::after{opacity:1}
+
+/* Live preview */
+.preview-box{
+  background:var(--bg3);border:1px dashed var(--border2);
+  border-radius:var(--r2);padding:20px;margin-top:16px;min-height:80px;
+  position:relative;overflow:hidden;
+}
+.preview-label{
+  position:absolute;top:8px;right:10px;
+  font-size:.65rem;color:var(--text3);letter-spacing:1px;text-transform:uppercase;
+}
+
+/* Extras layout picker */
+.layout-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
+.layout-card{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:14px 8px;border-radius:var(--r);border:2px solid var(--border);
+  background:var(--bg3);cursor:pointer;transition:all var(--t);
+  font-size:.74rem;color:var(--text2);font-weight:700;font-family:'Cairo',sans-serif;
+}
+.layout-card svg{opacity:.5;transition:opacity var(--t)}
+.layout-card:hover{border-color:var(--border2);color:var(--text)}
+.layout-card.active{border-color:var(--cyan);background:var(--cyan-dim);color:var(--cyan)}
+.layout-card.active svg{opacity:1}
+
+/* Section divider */
+.sec-div{
+  display:flex;align-items:center;gap:12px;
+  margin:28px 0 20px;
+}
+.sec-div span{
+  font-size:.72rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  color:var(--text3);white-space:nowrap;
+}
+.sec-div::before,.sec-div::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border2),transparent);
+}
+
+/* Truncated text */
+.trunc{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.filter-bar select{width:auto;min-width:150px}
+.filter-bar input{width:auto;flex:1;min-width:160px}
+
+/* Quick actions on edit */
+.edit-state{
+  background:rgba(0,229,255,.07);border:1px solid var(--border2);
+  border-radius:var(--r);padding:12px 16px;
+  display:flex;align-items:center;gap:10px;margin-bottom:16px;
+  font-size:.84rem;
+}
+.edit-state i{color:var(--cyan)}
+
+/* Tooltip */
+[title]{cursor:help}
+
+/* ═══════════════════════════════════════════════
+   SIDEBAR TOGGLE (mobile)
+═══════════════════════════════════════════════ */
+@media(max-width:768px){
+  .fg2{grid-template-columns:1fr}
+  .topbar{padding:14px 16px}
+  .brand-text h1{font-size:1rem}
+  .nav-tab span{display:none}
+  .nav-tab{padding:10px 14px}
+  table{font-size:.76rem}
+  thead th,tbody td{padding:9px 8px}
+  .modal{padding:20px}
+  .anim-grid{grid-template-columns:repeat(3,1fr)}
+}
+
+/* ═══════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════ */
+#toast{
+  position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--cyan);color:#000;
+  padding:13px 24px;border-radius:50px;
+  font-weight:700;font-size:.88rem;
+  z-index:99999;transition:transform .35s cubic-bezier(.16,1,.3,1);
+  white-space:nowrap;box-shadow:0 8px 30px rgba(0,229,255,.4);
+  pointer-events:none;
+}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast.err{background:var(--red);box-shadow:0 8px 30px rgba(255,23,68,.4)}
+#toast.ok {background:var(--green);color:#000;box-shadow:0 8px 30px rgba(0,230,118,.4)}
+
+/* ═══════════════════════════════════════════════
+   SECTION SELECTOR HELPER PANEL (sticky)
+═══════════════════════════════════════════════ */
+.help-panel{
+  background:rgba(0,229,255,.04);border:1px solid var(--border);
+  border-radius:var(--r2);padding:16px 18px;margin-top:14px;
+}
+.help-panel h4{font-size:.78rem;color:var(--cyan);margin-bottom:10px;font-weight:800;letter-spacing:.5px}
+.help-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.help-item{
+  background:var(--bg3);border-radius:6px;padding:8px 10px;
+  font-size:.74rem;cursor:pointer;transition:background var(--t);
+  display:flex;flex-direction:column;gap:2px;
+}
+.help-item:hover{background:var(--cyan-mid)}
+.help-item .sel{color:var(--cyan);font-family:monospace;font-size:.7rem}
+.help-item .desc{color:var(--text3)}
 </style>
 </head>
 <body>
 
+<!-- ══════════════════════════════════════
+     TOP BAR
+══════════════════════════════════════ -->
 <div class="admin-wrap">
-  <header class="admin-head">
-    <div>
-      <h1>⚙ لوحة التحكم — v17</h1>
-      <div class="who" id="whoami">جارٍ التحقق…</div>
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-icon"><i class="fas fa-shield-halved"></i></div>
+    <div class="brand-text">
+      <h1>لوحة التحكم</h1>
+      <span id="whoami">جارٍ التحقق…</span>
     </div>
-    <div class="acts">
-      <a href="index.html"><i class="fas fa-home"></i> الموقع</a>
-      <button class="danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> خروج</button>
-    </div>
-  </header>
-
-  <div class="tabs">
-    <button class="tab active" data-tab="content"><i class="fas fa-pen-to-square"></i> محتوى الصفحات</button>
-    <button class="tab" data-tab="extras"><i class="fas fa-puzzle-piece"></i> إكستراز الصفحات</button>
-    <button class="tab" data-tab="blog"><i class="fas fa-pen-fancy"></i> المدونة</button>
-    <button class="tab" data-tab="community"><i class="fas fa-users"></i> المجتمع</button>
-    <button class="tab" data-tab="testimonials"><i class="fas fa-star"></i> الشهادات</button>
-    <button class="tab" data-tab="contacts"><i class="fas fa-envelope"></i> الرسائل</button>
   </div>
+  <div class="topbar-meta">
+    <div class="admin-badge">
+      <span class="online-dot"></span>
+      <span>متصل</span>
+    </div>
+    <div class="admin-badge" style="color:var(--text2);border-color:var(--border)">
+      <i class="fas fa-code-branch" style="color:var(--text3)"></i>
+      <span>v17</span>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <a href="index.html" class="tb-btn"><i class="fas fa-arrow-right"></i><span>الموقع</span></a>
+    <button class="tb-btn danger" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>خروج</span></button>
+  </div>
+</div>
 
-  <!-- ============ CONTENT OVERRIDES (NEW v17) ============ -->
-  <section class="panel active" id="panel-content">
-    <h2>تعديل المحتوى الأصلي للصفحات</h2>
-    <p class="subhead">
-      عدّل أي نص أو صورة موجودة في صفحات الموقع الستاتيك بدون لمس الكود.<br>
-      اختر الصفحة، ثم نوع التعديل، ثم <b>محدد العنصر (CSS Selector)</b> مثل:
-      <code>#about h2</code> أو <code>.hero-title</code> أو <code>section#initiative p:first-of-type</code>،
-      ثم القيمة الجديدة. تُطبق فوراً لكل الزوار.
-    </p>
-    <div class="msg" id="ov-msg"></div>
+<!-- ══════════════════════════════════════
+     STATS
+══════════════════════════════════════ -->
+<div class="stats-row" id="statsRow">
+  <div class="stat-box"><span class="num" id="st-blog">—</span><span class="lbl">مقالات المدونة</span></div>
+  <div class="stat-box"><span class="num" id="st-comm">—</span><span class="lbl">منشورات المجتمع</span></div>
+  <div class="stat-box"><span class="num" id="st-test">—</span><span class="lbl">شهادات</span></div>
+  <div class="stat-box"><span class="num" id="st-msg">—</span><span class="lbl">رسائل جديدة</span></div>
+  <div class="stat-box"><span class="num" id="st-vis">—</span><span class="lbl">زوار اليوم</span></div>
+  <div class="stat-box"><span class="num" id="st-ovr">—</span><span class="lbl">تعديلات محتوى</span></div>
+</div>
 
-    <input type="hidden" id="ov-edit-id">
+<!-- ══════════════════════════════════════
+     TABS
+══════════════════════════════════════ -->
+<div class="nav-tabs">
+  <button class="nav-tab active" data-tab="content">
+    <i class="fas fa-pen-to-square"></i><span>تعديل المحتوى</span>
+  </button>
+  <button class="nav-tab" data-tab="extras">
+    <i class="fas fa-puzzle-piece"></i><span>بلوكات ديناميكية</span>
+  </button>
+  <button class="nav-tab" data-tab="blog">
+    <i class="fas fa-pen-fancy"></i><span>المدونة</span>
+  </button>
+  <button class="nav-tab" data-tab="community">
+    <i class="fas fa-users"></i><span>المجتمع</span>
+  </button>
+  <button class="nav-tab" data-tab="testimonials">
+    <i class="fas fa-star"></i><span>الشهادات</span>
+  </button>
+  <button class="nav-tab" data-tab="contacts">
+    <i class="fas fa-envelope"></i><span>الرسائل</span>
+  </button>
+</div>
 
-    <div class="form-grid">
+<!-- ══════════════════════════════════════
+     PANEL: CONTENT OVERRIDES
+══════════════════════════════════════ -->
+<div class="panel active" id="panel-content">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-wand-magic-sparkles"></i> تعديل المحتوى الأصلي للصفحات</div>
+    <div class="card-sub">
+      عدّل أي نص أو صورة أو عنصر في صفحات الموقع بدون لمس الكود — فقط اختر الصفحة والعنصر والقيمة الجديدة.
+    </div>
+    <div class="notif" id="ov-msg"></div>
+    <input type="hidden" id="ov-id">
+
+    <!-- نوع التعديل -->
+    <div class="field" style="margin-bottom:16px">
+      <label><i class="fas fa-sliders"></i> نوع التعديل</label>
+    </div>
+    <div class="ov-type-select">
+      <button class="ov-type-btn active" data-ovtype="text" onclick="setOvType('text',this)">
+        <i class="fas fa-font"></i>نص عادي
+      </button>
+      <button class="ov-type-btn" data-ovtype="html" onclick="setOvType('html',this)">
+        <i class="fas fa-code"></i>HTML كامل
+      </button>
+      <button class="ov-type-btn" data-ovtype="image" onclick="setOvType('image',this)">
+        <i class="fas fa-image"></i>صورة
+      </button>
+      <button class="ov-type-btn" data-ovtype="hide" onclick="setOvType('hide',this)">
+        <i class="fas fa-eye-slash"></i>إخفاء
+      </button>
+      <button class="ov-type-btn" data-ovtype="attr" onclick="setOvType('attr',this)">
+        <i class="fas fa-tag"></i>خاصية
+      </button>
+    </div>
+
+    <!-- الحقول الأساسية -->
+    <div class="fg" style="margin-bottom:14px">
       <div class="field">
-        <label>الصفحة</label>
+        <label><i class="fas fa-file-code"></i> الصفحة <span class="req">*</span></label>
         <select id="ov-page"></select>
       </div>
       <div class="field">
-        <label>نوع التعديل</label>
-        <select id="ov-type">
-          <option value="text">نص (Text)</option>
-          <option value="html">HTML كامل</option>
-          <option value="image">صورة (src أو خلفية)</option>
-          <option value="hide">إخفاء العنصر</option>
-          <option value="attr">تعديل خاصية (attribute)</option>
+        <label><i class="fas fa-hashtag"></i> الترتيب</label>
+        <input type="number" id="ov-order" value="0" min="0">
+      </div>
+      <div class="field">
+        <label><i class="fas fa-toggle-on"></i> الحالة</label>
+        <select id="ov-visible">
+          <option value="true">✅ مفعّل (يظهر للزوار)</option>
+          <option value="false">⏸ معطّل (مخفي مؤقتاً)</option>
         </select>
       </div>
       <div class="field">
-        <label>محدد العنصر (CSS Selector)</label>
-        <input id="ov-selector" placeholder="#about h2  أو  .hero-title">
-        <span class="small-help">يمكن استخدام أي محدد CSS صالح. افتح صفحة الموقع → كليك يمين → فحص لتعرف المحدد.</span>
-      </div>
-      <div class="field">
-        <label>الترتيب</label>
-        <input type="number" id="ov-order" value="0">
-      </div>
-      <div class="field">
-        <label>الحالة</label>
-        <select id="ov-visible"><option value="true">مفعّل</option><option value="false">معطّل</option></select>
-      </div>
-      <div class="field">
-        <label>ملاحظة (لك فقط)</label>
+        <label><i class="fas fa-sticky-note"></i> ملاحظة داخلية</label>
         <input id="ov-note" placeholder="مثلاً: عنوان قسم المبادرة">
       </div>
     </div>
 
-    <div class="form-grid" id="ov-text-fields" style="margin-top:14px">
-      <div class="field"><label>القيمة (عربي)</label><textarea id="ov-val-ar" rows="3"></textarea></div>
-      <div class="field"><label>القيمة (English)</label><textarea id="ov-val-en" rows="3"></textarea></div>
+    <!-- CSS Selector -->
+    <div class="field" style="margin-bottom:14px">
+      <label><i class="fas fa-crosshairs"></i> محدد العنصر (CSS Selector) <span class="req">*</span></label>
+      <input id="ov-selector" placeholder="مثال: #about h2  أو  .hero-name-ar  أو  section#initiative p" oninput="updateSelPreview()">
+      <div class="hint">
+        افتح صفحة الموقع في Chrome → كليك يمين على العنصر → فحص → انسخ Selector
+      </div>
     </div>
 
-    <div class="form-grid full" id="ov-image-fields" style="margin-top:14px;display:none">
+    <!-- أمثلة سريعة للمحددات -->
+    <div class="help-panel">
+      <h4><i class="fas fa-lightbulb"></i> أمثلة سريعة — اضغط لنسخ</h4>
+      <div class="help-grid">
+        <div class="help-item" onclick="useSelector('.hero-name-ar')">
+          <span class="sel">.hero-name-ar</span><span class="desc">اسم الصفحة الرئيسية</span>
+        </div>
+        <div class="help-item" onclick="useSelector('.hero-desc')">
+          <span class="sel">.hero-desc</span><span class="desc">وصف الهيرو</span>
+        </div>
+        <div class="help-item" onclick="useSelector('.page-hero h1')">
+          <span class="sel">.page-hero h1</span><span class="desc">عنوان الصفحة الفرعية</span>
+        </div>
+        <div class="help-item" onclick="useSelector('.page-hero p')">
+          <span class="sel">.page-hero p</span><span class="desc">وصف الصفحة الفرعية</span>
+        </div>
+        <div class="help-item" onclick="useSelector('#about .bio-title')">
+          <span class="sel">#about .bio-title</span><span class="desc">عنوان قصتي</span>
+        </div>
+        <div class="help-item" onclick="useSelector('.section-title')">
+          <span class="sel">.section-title</span><span class="desc">عناوين الأقسام</span>
+        </div>
+        <div class="help-item" onclick="useSelector('.hero-badge span')">
+          <span class="sel">.hero-badge span</span><span class="desc">شارة الهيرو</span>
+        </div>
+        <div class="help-item" onclick="useSelector('.footer-tagline')">
+          <span class="sel">.footer-tagline</span><span class="desc">جملة الفوتر</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- حقول القيمة — نص / html -->
+    <div id="ov-text-fields" style="margin-top:16px">
+      <div class="fg2">
+        <div class="field">
+          <label><i class="fas fa-language"></i> القيمة بالعربي</label>
+          <textarea id="ov-val-ar" rows="3" placeholder="النص أو HTML بالعربي…"></textarea>
+        </div>
+        <div class="field">
+          <label><i class="fas fa-language"></i> القيمة بالإنجليزي</label>
+          <textarea id="ov-val-en" rows="3" placeholder="Text or HTML in English…" dir="ltr"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- حقل الصورة -->
+    <div id="ov-image-fields" style="display:none;margin-top:16px">
       <div class="field">
-        <label>رابط الصورة الجديد</label>
-        <input id="ov-val-single" placeholder="https://…">
-        <span class="small-help">إذا العنصر &lt;img&gt; سيُغيّر src. وإلا ستوضع كخلفية.</span>
+        <label><i class="fas fa-link"></i> رابط الصورة الجديدة <span class="req">*</span></label>
+        <input id="ov-val-img" placeholder="https://example.com/image.jpg" dir="ltr">
+        <div class="hint">سيُستبدل src إذا كان العنصر &lt;img&gt;، أو سيُوضع كخلفية CSS</div>
       </div>
     </div>
 
-    <div class="form-grid" id="ov-attr-fields" style="margin-top:14px;display:none">
-      <div class="field"><label>اسم الخاصية</label><input id="ov-attr-name" placeholder="href / src / class …"></div>
-      <div class="field"><label>القيمة الجديدة</label><input id="ov-val-single2" placeholder="…"></div>
-    </div>
-
-    <div class="modal-acts" style="margin-top:18px">
-      <button class="btn btn-ghost" id="ov-reset"><i class="fas fa-rotate"></i> تفريغ</button>
-      <button class="btn btn-primary" id="ov-save"><i class="fas fa-save"></i> حفظ</button>
-    </div>
-
-    <h2 style="margin-top:34px">قائمة التعديلات</h2>
-    <div class="form-grid" style="margin-bottom:8px">
-      <div class="field"><label>تصفية حسب الصفحة</label><select id="ov-filter"></select></div>
-    </div>
-    <div id="ov-list"><div class="spinner"></div></div>
-  </section>
-
-  <!-- ============ EXTRAS ============ -->
-  <section class="panel" id="panel-extras">
-    <h2>إضافة بلوكات ديناميكية للصفحات</h2>
-    <p class="subhead">تضاف فوق محتوى الصفحة الستاتيك بألوان وأنميشن وتخطيطات مختلفة، دون كسر التصميم.</p>
-    <div class="msg" id="extras-msg"></div>
-
-    <input type="hidden" id="ex-edit-id">
-
-    <div class="form-grid">
-      <div class="field"><label>الصفحة</label><select id="ex-page"></select></div>
-      <div class="field"><label>الموضع داخل الصفحة</label>
-        <select id="ex-zone">
-          <option value="bottom">أسفل المحتوى</option>
-          <option value="after-hero">بعد القسم الرئيسي</option>
-          <option value="top">أعلى الصفحة</option>
-          <option value="before-footer">قبل الفوتر</option>
-        </select>
+    <!-- حقل الخاصية -->
+    <div id="ov-attr-fields" style="display:none;margin-top:16px">
+      <div class="fg2">
+        <div class="field">
+          <label><i class="fas fa-code"></i> اسم الخاصية <span class="req">*</span></label>
+          <input id="ov-attr-name" placeholder="href / src / class / data-…" dir="ltr">
+        </div>
+        <div class="field">
+          <label><i class="fas fa-pen"></i> القيمة الجديدة</label>
+          <input id="ov-attr-val" placeholder="القيمة" dir="ltr">
+        </div>
       </div>
-      <div class="field"><label>التخطيط</label>
-        <select id="ex-layout">
-          <option value="card">بطاقة</option><option value="split">مقسومة</option>
-          <option value="banner">بانر</option><option value="grid">شبكة</option>
-        </select>
-      </div>
-      <div class="field"><label>اللون</label>
-        <select id="ex-color">
-          <option value="cyan">سماوي</option><option value="green">أخضر</option>
-          <option value="violet">بنفسجي</option><option value="orange">برتقالي</option>
-          <option value="blue">أزرق</option><option value="pink">وردي</option>
-          <option value="red">أحمر</option><option value="yellow">أصفر</option>
-        </select>
-      </div>
-      <div class="field"><label>الأنميشن</label>
-        <select id="ex-anim">
-          <option value="fade-up">Fade Up</option><option value="fade-in">Fade In</option>
-          <option value="zoom-in">Zoom In</option><option value="slide-right">Slide Right</option>
-          <option value="slide-left">Slide Left</option><option value="bounce">Bounce</option>
-          <option value="none">بدون</option>
-        </select>
-      </div>
-      <div class="field"><label>شكل الصورة</label>
-        <select id="ex-shape">
-          <option value="rounded">مدوّر</option><option value="circle">دائرة</option>
-          <option value="square">مربع</option><option value="hex">سداسي</option>
-        </select>
-      </div>
-      <div class="field"><label>موضع الصورة</label>
-        <select id="ex-pos">
-          <option value="right">يمين</option><option value="left">يسار</option>
-          <option value="top">فوق</option><option value="bottom">تحت</option>
-        </select>
-      </div>
-      <div class="field"><label>الترتيب</label><input type="number" id="ex-order" value="0"></div>
-      <div class="field"><label>أيقونة (FontAwesome)</label><input id="ex-icon" placeholder="fas fa-star"></div>
-      <div class="field"><label>رابط الصورة</label><input id="ex-image" placeholder="https://…"></div>
-      <div class="field"><label>الحالة</label><select id="ex-visible"><option value="true">ظاهر</option><option value="false">مخفي</option></select></div>
     </div>
 
-    <div class="form-grid" style="margin-top:14px">
-      <div class="field"><label>العنوان (عربي)</label><input id="ex-title-ar"></div>
-      <div class="field"><label>العنوان (English)</label><input id="ex-title-en"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveOverride()"><i class="fas fa-floppy-disk"></i> حفظ التعديل</button>
+      <button class="btn btn-ghost" onclick="resetOverride()"><i class="fas fa-rotate-left"></i> تفريغ</button>
+      <div id="ov-saving" style="display:none"><div class="spinner"></div></div>
     </div>
-    <div class="form-grid full" style="margin-top:14px">
-      <div class="field"><label>المحتوى (عربي)</label><textarea id="ex-body-ar" rows="4"></textarea></div>
-      <div class="field"><label>المحتوى (English)</label><textarea id="ex-body-en" rows="4"></textarea></div>
+  </div>
+
+  <!-- LIST -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-list-check"></i> قائمة التعديلات المحفوظة</div>
+    <div class="filter-bar">
+      <select id="ov-filter" onchange="loadOverrides()">
+        <option value="">— كل الصفحات —</option>
+      </select>
+      <input id="ov-search" placeholder="بحث…" oninput="filterOvTable()">
     </div>
-    <div class="form-grid">
-      <div class="field"><label>رابط CTA</label><input id="ex-link" placeholder="https://…"></div>
-      <div class="field"><label>نص الزر (عربي)</label><input id="ex-link-ar"></div>
-      <div class="field"><label>نص الزر (English)</label><input id="ex-link-en"></div>
-    </div>
-
-    <div class="modal-acts" style="margin-top:18px">
-      <button class="btn btn-ghost" id="ex-reset">تفريغ</button>
-      <button class="btn btn-primary" id="ex-save">حفظ</button>
-    </div>
-
-    <h2 style="margin-top:34px">القائمة</h2>
-    <div class="form-grid" style="margin-bottom:8px">
-      <div class="field"><label>تصفية</label><select id="ex-filter"></select></div>
-    </div>
-    <div id="ex-list-wrap"><div class="spinner"></div></div>
-  </section>
-
-  <!-- ============ BLOG ============ -->
-  <section class="panel" id="panel-blog">
-    <h2>إضافة مقال جديد</h2>
-    <div class="msg" id="blog-msg"></div>
-    <div class="form-grid">
-      <div class="field"><label>العنوان</label><input id="bl-title"></div>
-      <div class="field"><label>الأيقونة</label><input id="bl-icon" placeholder="fas fa-pen-fancy"></div>
-    </div>
-    <div class="form-grid full" style="margin-top:12px">
-      <div class="field"><label>المقتطف</label><textarea id="bl-excerpt" rows="2"></textarea></div>
-      <div class="field"><label>المحتوى الكامل</label><textarea id="bl-content" rows="6"></textarea></div>
-    </div>
-    <div class="modal-acts"><button class="btn btn-primary" id="bl-save">نشر</button></div>
-
-    <h2 style="margin-top:30px">المقالات</h2>
-    <div id="bl-list"><div class="spinner"></div></div>
-  </section>
-
-  <!-- ============ COMMUNITY ============ -->
-  <section class="panel" id="panel-community">
-    <h2>منشورات المجتمع</h2>
-    <p class="subhead">يمكنك تعديل أي منشور، إخفاؤه مؤقتاً، اعتماده للنشر، أو حذفه نهائياً.</p>
-    <div id="cm-list"><div class="spinner"></div></div>
-  </section>
-
-  <!-- ============ TESTIMONIALS ============ -->
-  <section class="panel" id="panel-testimonials">
-    <h2>الشهادات</h2>
-    <p class="subhead">عدّل، اعتمد، أخفِ أو احذف أي شهادة.</p>
-    <div id="ts-list"><div class="spinner"></div></div>
-  </section>
-
-  <!-- ============ CONTACTS ============ -->
-  <section class="panel" id="panel-contacts">
-    <h2>رسائل التواصل</h2>
-    <div id="ct-list"><div class="spinner"></div></div>
-  </section>
+    <div id="ov-list"><div class="loading-row"><div class="spinner"></div></div></div>
+  </div>
 </div>
 
-<!-- ============ EDIT MODAL ============ -->
+<!-- ══════════════════════════════════════
+     PANEL: PAGE EXTRAS
+══════════════════════════════════════ -->
+<div class="panel" id="panel-extras">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-puzzle-piece"></i> إضافة بلوك ديناميكي للصفحات</div>
+    <div class="card-sub">بطاقات وبانرات تُحقن فوق محتوى أي صفحة بألوان وأنيميشن من نظام الموقع.</div>
+    <div class="notif" id="ex-msg"></div>
+    <input type="hidden" id="ex-id">
+
+    <div class="fg" style="margin-bottom:14px">
+      <div class="field">
+        <label><i class="fas fa-file-code"></i> الصفحة</label>
+        <select id="ex-page"></select>
+      </div>
+      <div class="field">
+        <label><i class="fas fa-map-pin"></i> الموضع داخل الصفحة</label>
+        <select id="ex-zone">
+          <option value="bottom">⬇ أسفل المحتوى</option>
+          <option value="after-hero">🎯 بعد القسم الرئيسي</option>
+          <option value="top">⬆ أعلى الصفحة</option>
+          <option value="before-footer">🦶 قبل الفوتر</option>
+        </select>
+      </div>
+      <div class="field">
+        <label><i class="fas fa-hashtag"></i> الترتيب</label>
+        <input type="number" id="ex-order" value="0" min="0">
+      </div>
+      <div class="field">
+        <label><i class="fas fa-toggle-on"></i> الحالة</label>
+        <select id="ex-visible">
+          <option value="true">✅ ظاهر</option>
+          <option value="false">⏸ مخفي</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- التخطيط -->
+    <div class="sec-div"><span>التخطيط</span></div>
+    <div class="layout-grid" id="layoutGrid">
+      <div class="layout-card active" data-layout="card" onclick="setLayout('card',this)">
+        <svg width="40" height="30" viewBox="0 0 40 30" fill="none">
+          <rect x="2" y="2" width="36" height="26" rx="4" fill="currentColor" opacity=".3"/>
+          <rect x="6" y="6" width="28" height="4" rx="2" fill="currentColor"/>
+          <rect x="6" y="14" width="20" height="3" rx="1.5" fill="currentColor" opacity=".6"/>
+          <rect x="6" y="20" width="14" height="3" rx="1.5" fill="currentColor" opacity=".4"/>
+        </svg>
+        بطاقة
+      </div>
+      <div class="layout-card" data-layout="split" onclick="setLayout('split',this)">
+        <svg width="40" height="30" viewBox="0 0 40 30" fill="none">
+          <rect x="2" y="2" width="17" height="26" rx="3" fill="currentColor" opacity=".3"/>
+          <rect x="21" y="2" width="17" height="26" rx="3" fill="currentColor" opacity=".15"/>
+          <rect x="23" y="7" width="13" height="3" rx="1.5" fill="currentColor" opacity=".6"/>
+          <rect x="23" y="13" width="10" height="2" rx="1" fill="currentColor" opacity=".4"/>
+        </svg>
+        مقسومة
+      </div>
+      <div class="layout-card" data-layout="banner" onclick="setLayout('banner',this)">
+        <svg width="40" height="30" viewBox="0 0 40 30" fill="none">
+          <rect x="2" y="6" width="36" height="18" rx="3" fill="currentColor" opacity=".3"/>
+          <rect x="11" y="10" width="18" height="4" rx="2" fill="currentColor"/>
+          <rect x="14" y="17" width="12" height="3" rx="1.5" fill="currentColor" opacity=".5"/>
+        </svg>
+        بانر
+      </div>
+      <div class="layout-card" data-layout="grid" onclick="setLayout('grid',this)">
+        <svg width="40" height="30" viewBox="0 0 40 30" fill="none">
+          <rect x="2" y="2" width="17" height="12" rx="2" fill="currentColor" opacity=".3"/>
+          <rect x="21" y="2" width="17" height="12" rx="2" fill="currentColor" opacity=".25"/>
+          <rect x="2" y="16" width="17" height="12" rx="2" fill="currentColor" opacity=".2"/>
+          <rect x="21" y="16" width="17" height="12" rx="2" fill="currentColor" opacity=".15"/>
+        </svg>
+        شبكة
+      </div>
+    </div>
+
+    <!-- اللون -->
+    <div class="sec-div"><span>اللون</span></div>
+    <div class="color-grid" id="colorGrid">
+      <div class="color-swatch active" data-color="cyan"   style="background:#00e5ff;box-shadow:0 0 12px #00e5ff" onclick="setColor('cyan',this)"></div>
+      <div class="color-swatch" data-color="green"  style="background:#00e676" onclick="setColor('green',this)"></div>
+      <div class="color-swatch" data-color="violet" style="background:#d500f9" onclick="setColor('violet',this)"></div>
+      <div class="color-swatch" data-color="orange" style="background:#ff6d00" onclick="setColor('orange',this)"></div>
+      <div class="color-swatch" data-color="blue"   style="background:#2979ff" onclick="setColor('blue',this)"></div>
+      <div class="color-swatch" data-color="pink"   style="background:#f50057" onclick="setColor('pink',this)"></div>
+      <div class="color-swatch" data-color="red"    style="background:#ff1744" onclick="setColor('red',this)"></div>
+      <div class="color-swatch" data-color="yellow" style="background:#ffd600" onclick="setColor('yellow',this)"></div>
+    </div>
+
+    <!-- الأنيميشن -->
+    <div class="sec-div"><span>أنيميشن الظهور</span></div>
+    <div class="anim-grid" id="animGrid">
+      <div class="anim-card active" data-anim="fade-up" onclick="setAnim('fade-up',this)">
+        <div class="anim-demo"><i class="fas fa-arrow-up"></i></div>Fade Up
+      </div>
+      <div class="anim-card" data-anim="fade-in" onclick="setAnim('fade-in',this)">
+        <div class="anim-demo"><i class="fas fa-eye"></i></div>Fade In
+      </div>
+      <div class="anim-card" data-anim="zoom-in" onclick="setAnim('zoom-in',this)">
+        <div class="anim-demo"><i class="fas fa-magnifying-glass-plus"></i></div>Zoom In
+      </div>
+      <div class="anim-card" data-anim="slide-right" onclick="setAnim('slide-right',this)">
+        <div class="anim-demo"><i class="fas fa-arrow-right-long"></i></div>Slide Right
+      </div>
+      <div class="anim-card" data-anim="slide-left" onclick="setAnim('slide-left',this)">
+        <div class="anim-demo"><i class="fas fa-arrow-left-long"></i></div>Slide Left
+      </div>
+      <div class="anim-card" data-anim="bounce" onclick="setAnim('bounce',this)">
+        <div class="anim-demo"><i class="fas fa-star"></i></div>Bounce
+      </div>
+      <div class="anim-card" data-anim="none" onclick="setAnim('none',this)">
+        <div class="anim-demo"><i class="fas fa-minus"></i></div>بدون
+      </div>
+    </div>
+
+    <!-- محتوى -->
+    <div class="sec-div"><span>المحتوى</span></div>
+    <div class="fg" style="margin-bottom:14px">
+      <div class="field">
+        <label><i class="fas fa-icons"></i> أيقونة FontAwesome</label>
+        <input id="ex-icon" placeholder="fas fa-star">
+      </div>
+      <div class="field">
+        <label><i class="fas fa-image"></i> رابط صورة</label>
+        <input id="ex-image" placeholder="https://…" dir="ltr">
+      </div>
+      <div class="field">
+        <label><i class="fas fa-shapes"></i> شكل الصورة</label>
+        <select id="ex-shape">
+          <option value="rounded">🔲 مدوّر الزوايا</option>
+          <option value="circle">⭕ دائرة</option>
+          <option value="square">◼ مربع</option>
+          <option value="hex">⬡ سداسي</option>
+        </select>
+      </div>
+      <div class="field">
+        <label><i class="fas fa-arrow-right-arrow-left"></i> موضع الصورة</label>
+        <select id="ex-pos">
+          <option value="right">← يمين النص</option>
+          <option value="left">→ يسار النص</option>
+          <option value="top">↑ فوق النص</option>
+          <option value="bottom">↓ تحت النص</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="fg2" style="margin-bottom:14px">
+      <div class="field"><label>العنوان (عربي)</label><input id="ex-title-ar"></div>
+      <div class="field"><label>العنوان (English)</label><input id="ex-title-en" dir="ltr"></div>
+    </div>
+    <div class="fg2" style="margin-bottom:14px">
+      <div class="field"><label>المحتوى (عربي)</label><textarea id="ex-body-ar" rows="4"></textarea></div>
+      <div class="field"><label>المحتوى (English)</label><textarea id="ex-body-en" rows="4" dir="ltr"></textarea></div>
+    </div>
+    <div class="fg" style="margin-bottom:14px">
+      <div class="field"><label>رابط الزر</label><input id="ex-link" placeholder="https://…" dir="ltr"></div>
+      <div class="field"><label>نص الزر (عربي)</label><input id="ex-link-ar"></div>
+      <div class="field"><label>نص الزر (English)</label><input id="ex-link-en" dir="ltr"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveExtra()"><i class="fas fa-floppy-disk"></i> حفظ البلوك</button>
+      <button class="btn btn-ghost" onclick="resetExtra()"><i class="fas fa-rotate-left"></i> تفريغ</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="fas fa-table-list"></i> البلوكات المحفوظة</div>
+    <div class="filter-bar">
+      <select id="ex-filter" onchange="loadExtras()">
+        <option value="">— كل الصفحات —</option>
+      </select>
+    </div>
+    <div id="ex-list"><div class="loading-row"><div class="spinner"></div></div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL: BLOG
+══════════════════════════════════════ -->
+<div class="panel" id="panel-blog">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-pen-fancy"></i> نشر مقال جديد</div>
+    <div class="notif" id="bl-msg"></div>
+    <div class="fg" style="margin-bottom:14px">
+      <div class="field"><label>العنوان <span class="req">*</span></label><input id="bl-title" placeholder="عنوان المقال"></div>
+      <div class="field"><label>الأيقونة</label><input id="bl-icon" placeholder="fas fa-pen-fancy"></div>
+    </div>
+    <div class="fg2" style="margin-bottom:14px">
+      <div class="field"><label>المقتطف (يظهر في الكارد)</label><textarea id="bl-excerpt" rows="2" placeholder="وصف قصير…"></textarea></div>
+      <div class="field"><label>المحتوى الكامل (يدعم HTML) <span class="req">*</span></label><textarea id="bl-content" rows="6" placeholder="&lt;p&gt;اكتب هنا…&lt;/p&gt;"></textarea></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveBlog()"><i class="fas fa-paper-plane"></i> نشر المقال</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="fas fa-newspaper"></i> المقالات المنشورة</div>
+    <div id="bl-list"><div class="loading-row"><div class="spinner"></div></div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL: COMMUNITY
+══════════════════════════════════════ -->
+<div class="panel" id="panel-community">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-users"></i> منشورات المجتمع</div>
+    <div class="card-sub">اعتمد أو عدّل أو أخفِ أو احذف أي منشور من الزوار.</div>
+    <div id="cm-list"><div class="loading-row"><div class="spinner"></div></div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL: TESTIMONIALS
+══════════════════════════════════════ -->
+<div class="panel" id="panel-testimonials">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-star"></i> الشهادات والآراء</div>
+    <div class="card-sub">اعتمد أو عدّل أو أخفِ أو احذف أي شهادة.</div>
+    <div id="ts-list"><div class="loading-row"><div class="spinner"></div></div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL: CONTACTS
+══════════════════════════════════════ -->
+<div class="panel" id="panel-contacts">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-envelope"></i> رسائل التواصل</div>
+    <div id="ct-list"><div class="loading-row"><div class="spinner"></div></div></div>
+  </div>
+</div>
+</div><!-- /admin-wrap -->
+
+<!-- ══════════════════════════════════════
+     EDIT MODAL
+══════════════════════════════════════ -->
 <div class="modal-back" id="modal">
   <div class="modal">
-    <h3 id="modal-title">تعديل</h3>
+    <div class="modal-title" id="modal-title"><i class="fas fa-pen"></i> تعديل</div>
     <div id="modal-body"></div>
-    <div class="modal-acts">
-      <button class="btn btn-ghost" onclick="closeModal()">إلغاء</button>
-      <button class="btn btn-primary" id="modal-save">حفظ</button>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()"><i class="fas fa-xmark"></i> إلغاء</button>
+      <button class="btn btn-primary" id="modal-save"><i class="fas fa-floppy-disk"></i> حفظ</button>
     </div>
   </div>
 </div>
 
+<!-- ══════════════════════════════════════
+     DELETE CONFIRM MODAL
+══════════════════════════════════════ -->
+<div class="modal-back" id="del-modal">
+  <div class="modal" style="max-width:440px;text-align:center">
+    <div style="font-size:3rem;margin-bottom:12px">🗑️</div>
+    <h3 style="color:var(--red);font-size:1.2rem;margin-bottom:8px">حذف نهائي؟</h3>
+    <p style="color:var(--text2);font-size:.88rem;margin-bottom:24px" id="del-label">هذا الإجراء لا يمكن التراجع عنه.</p>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-ghost" onclick="closeDelModal()">إلغاء</button>
+      <button class="btn btn-danger" id="del-confirm"><i class="fas fa-trash"></i> حذف</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
 <script>
 'use strict';
 
-/* ============ TOKEN ============ */
+/* ── AUTH ── */
 var TOKEN = localStorage.getItem('admin-token');
 if (!TOKEN) location.href = 'login.html';
 
@@ -308,422 +1041,603 @@ function authFetch(url, opts) {
   opts.credentials = 'same-origin';
   opts.headers = opts.headers || {};
   opts.headers['Authorization'] = TOKEN === 'admin-token' ? 'admin-token' : ('Bearer ' + TOKEN);
-  if (opts.body && typeof opts.body !== 'string' && !(opts.body instanceof FormData)) {
+  if (opts.body && typeof opts.body === 'object' && !(opts.body instanceof FormData)) {
     opts.headers['Content-Type'] = 'application/json';
     opts.body = JSON.stringify(opts.body);
   }
   return fetch(url, opts);
 }
 
-function showMsg(id, txt, ok) {
-  var el = document.getElementById(id);
-  if (!el) { alert(txt); return; }
-  el.textContent = txt;
-  el.className = 'msg ' + (ok ? 'ok' : 'err');
-  setTimeout(function () { el.className = 'msg'; }, 4500);
-}
-
 function logout() {
-  fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }).finally(function () {
-    localStorage.removeItem('admin-token');
-    location.href = 'login.html';
-  });
+  fetch('/api/auth/logout', { method:'POST', credentials:'same-origin' })
+    .finally(function() { localStorage.removeItem('admin-token'); location.href = 'login.html'; });
 }
 
+/* ── TOAST ── */
+var _toastTimer;
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = (type === 'err' ? 'err' : type === 'ok' ? 'ok' : '') + ' show';
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function() { el.className = el.className.replace('show',''); }, 3200);
+}
+
+/* ── NOTIF ── */
+function notif(id, msg, ok) {
+  var el = document.getElementById(id);
+  if (!el) { toast(msg, ok ? 'ok' : 'err'); return; }
+  el.innerHTML = '<i class="fas fa-' + (ok ? 'check-circle' : 'triangle-exclamation') + '"></i> ' + msg;
+  el.className = 'notif show ' + (ok ? 'ok' : 'err');
+  setTimeout(function() { el.className = 'notif'; }, 4500);
+}
+
+/* ── ESCAPE ── */
 function esc(s) {
-  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-  });
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
+function trunc(s, n) { s = String(s||''); return s.length > n ? s.slice(0,n)+'…' : s; }
 
-/* ============ TABS ============ */
-document.querySelectorAll('.tab').forEach(function (t) {
-  t.addEventListener('click', function () {
-    document.querySelectorAll('.tab').forEach(function (x) { x.classList.remove('active'); });
-    document.querySelectorAll('.panel').forEach(function (x) { x.classList.remove('active'); });
+/* ── TABS ── */
+document.querySelectorAll('.nav-tab').forEach(function(t) {
+  t.addEventListener('click', function() {
+    document.querySelectorAll('.nav-tab').forEach(function(x) { x.classList.remove('active'); });
+    document.querySelectorAll('.panel').forEach(function(x) { x.classList.remove('active'); });
     t.classList.add('active');
     document.getElementById('panel-' + t.dataset.tab).classList.add('active');
   });
 });
 
-/* ============ MODAL ============ */
-var modalSaveHandler = null;
-function openModal(title, bodyHTML, onSave) {
-  document.getElementById('modal-title').textContent = title;
+/* ── MODAL ── */
+var _modalSave = null;
+function openModal(title, bodyHTML, icon, onSave) {
+  document.getElementById('modal-title').innerHTML = '<i class="fas fa-' + (icon||'pen') + '"></i> ' + title;
   document.getElementById('modal-body').innerHTML = bodyHTML;
   document.getElementById('modal').classList.add('show');
-  modalSaveHandler = onSave;
+  _modalSave = onSave;
 }
-function closeModal() {
-  document.getElementById('modal').classList.remove('show');
-  modalSaveHandler = null;
-}
-document.getElementById('modal-save').onclick = function () {
-  if (modalSaveHandler) modalSaveHandler();
-};
-document.getElementById('modal').addEventListener('click', function (e) {
-  if (e.target.id === 'modal') closeModal();
-});
-window.closeModal = closeModal;
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+document.getElementById('modal-save').onclick = function() { if (_modalSave) _modalSave(); };
+document.getElementById('modal').addEventListener('click', function(e) { if (e.target.id === 'modal') closeModal(); });
 
-/* ============ PAGES LIST ============ */
+/* ── DELETE MODAL ── */
+var _delFn = null;
+function confirmDel(label, fn) {
+  document.getElementById('del-label').textContent = label || 'هذا الإجراء لا يمكن التراجع عنه.';
+  _delFn = fn;
+  document.getElementById('del-modal').classList.add('show');
+}
+function closeDelModal() { document.getElementById('del-modal').classList.remove('show'); }
+document.getElementById('del-confirm').onclick = function() { closeDelModal(); if (_delFn) _delFn(); };
+document.getElementById('del-modal').addEventListener('click', function(e) { if (e.target.id === 'del-modal') closeDelModal(); });
+
+/* ── PAGES LIST ── */
 var PAGES = [];
 function loadPages() {
-  return fetch('/api/pages-list').then(function (r) { return r.json(); }).then(function (rows) {
+  return fetch('/api/pages-list').then(function(r){ return r.json(); }).then(function(rows) {
     PAGES = rows;
-    ['ex-page','ov-page'].forEach(function (id) {
+    ['ex-page','ov-page','ov-filter','ex-filter'].forEach(function(id) {
       var s = document.getElementById(id);
-      s.innerHTML = '';
-      rows.forEach(function (p) { s.innerHTML += '<option value="' + p.slug + '">' + p.ar + ' (' + p.slug + ')</option>'; });
-    });
-    ['ex-filter','ov-filter'].forEach(function (id) {
-      var s = document.getElementById(id);
-      s.innerHTML = '<option value="">— الكل —</option>';
-      rows.forEach(function (p) { s.innerHTML += '<option value="' + p.slug + '">' + p.ar + '</option>'; });
+      if (!s) return;
+      var isFilter = id.indexOf('filter') >= 0;
+      s.innerHTML = isFilter ? '<option value="">— كل الصفحات —</option>' : '';
+      rows.forEach(function(p) {
+        s.innerHTML += '<option value="' + p.slug + '">' + p.ar + ' (' + p.slug + ')</option>';
+      });
     });
   });
 }
 
-/* ============ CONTENT OVERRIDES ============ */
-function ovTypeChanged() {
-  var t = document.getElementById('ov-type').value;
-  document.getElementById('ov-text-fields').style.display  = (t === 'text' || t === 'html') ? '' : 'none';
-  document.getElementById('ov-image-fields').style.display = (t === 'image') ? '' : 'none';
-  document.getElementById('ov-attr-fields').style.display  = (t === 'attr')  ? '' : 'none';
-}
-document.getElementById('ov-type').onchange = ovTypeChanged;
+/* ══════════════════════════════════════════
+   CONTENT OVERRIDES
+══════════════════════════════════════════ */
+var _ovType = 'text';
+var _ovs = [];
 
-function gatherOverride() {
-  var t = document.getElementById('ov-type').value;
+function setOvType(t, el) {
+  _ovType = t;
+  document.querySelectorAll('.ov-type-btn').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('ov-text-fields').style.display  = (t==='text'||t==='html') ? '' : 'none';
+  document.getElementById('ov-image-fields').style.display = (t==='image') ? '' : 'none';
+  document.getElementById('ov-attr-fields').style.display  = (t==='attr')  ? '' : 'none';
+}
+
+function useSelector(sel) {
+  document.getElementById('ov-selector').value = sel;
+  toast('✅ تم نسخ المحدد إلى الحقل');
+  updateSelPreview();
+}
+
+function updateSelPreview() {
+  /* نعرض hint مبسّط */
+}
+
+function gatherOv() {
   var d = {
     page:     document.getElementById('ov-page').value,
-    type:     t,
+    type:     _ovType,
     selector: document.getElementById('ov-selector').value.trim(),
-    order:    parseInt(document.getElementById('ov-order').value, 10) || 0,
+    order:    parseInt(document.getElementById('ov-order').value) || 0,
     visible:  document.getElementById('ov-visible').value === 'true',
     note:     document.getElementById('ov-note').value
   };
-  if (t === 'text' || t === 'html') {
+  if (_ovType === 'text' || _ovType === 'html') {
     d.value_ar = document.getElementById('ov-val-ar').value;
     d.value_en = document.getElementById('ov-val-en').value;
-  } else if (t === 'image') {
-    d.value = document.getElementById('ov-val-single').value.trim();
-  } else if (t === 'attr') {
+  } else if (_ovType === 'image') {
+    d.value = document.getElementById('ov-val-img').value.trim();
+  } else if (_ovType === 'attr') {
     d.attr_name = document.getElementById('ov-attr-name').value.trim();
-    d.value     = document.getElementById('ov-val-single2').value;
+    d.value     = document.getElementById('ov-attr-val').value;
   }
   return d;
 }
 
-function fillOverride(o) {
-  document.getElementById('ov-edit-id').value = o.id || '';
-  document.getElementById('ov-page').value     = o.page || 'index';
-  document.getElementById('ov-type').value     = o.type || 'text';
-  document.getElementById('ov-selector').value = o.selector || '';
-  document.getElementById('ov-order').value    = o.order || 0;
-  document.getElementById('ov-visible').value  = (o.visible !== false) ? 'true' : 'false';
-  document.getElementById('ov-note').value     = o.note || '';
-  document.getElementById('ov-val-ar').value   = o.value_ar || '';
-  document.getElementById('ov-val-en').value   = o.value_en || '';
-  document.getElementById('ov-val-single').value  = o.value || '';
-  document.getElementById('ov-attr-name').value   = o.attr_name || '';
-  document.getElementById('ov-val-single2').value = o.value || '';
-  ovTypeChanged();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function fillOv(o) {
+  document.getElementById('ov-id').value = o.id||'';
+  document.getElementById('ov-page').value   = o.page||'index';
+  document.getElementById('ov-order').value  = o.order||0;
+  document.getElementById('ov-visible').value= (o.visible!==false)?'true':'false';
+  document.getElementById('ov-note').value   = o.note||'';
+  document.getElementById('ov-selector').value= o.selector||'';
+  document.getElementById('ov-val-ar').value = o.value_ar||'';
+  document.getElementById('ov-val-en').value = o.value_en||'';
+  document.getElementById('ov-val-img').value= o.value||'';
+  document.getElementById('ov-attr-name').value = o.attr_name||'';
+  document.getElementById('ov-attr-val').value  = o.value||'';
+  /* set type button */
+  var t = o.type||'text';
+  document.querySelectorAll('.ov-type-btn').forEach(function(b){
+    if (b.dataset.ovtype === t) setOvType(t, b);
+  });
+  /* scroll up */
+  document.getElementById('panel-content').scrollIntoView({behavior:'smooth'});
+  toast('📝 جاهز للتعديل');
 }
 
 function resetOverride() {
-  document.getElementById('ov-edit-id').value = '';
-  ['ov-selector','ov-note','ov-val-ar','ov-val-en','ov-val-single','ov-attr-name','ov-val-single2']
-    .forEach(function (i) { document.getElementById(i).value = ''; });
+  document.getElementById('ov-id').value = '';
+  ['ov-selector','ov-note','ov-val-ar','ov-val-en','ov-val-img','ov-attr-name','ov-attr-val']
+    .forEach(function(i){ document.getElementById(i).value=''; });
   document.getElementById('ov-order').value = 0;
+  document.getElementById('ov-visible').value = 'true';
 }
 
 function saveOverride() {
-  var d = gatherOverride();
-  if (!d.selector) return showMsg('ov-msg', 'محدد العنصر مطلوب', false);
-  if (d.type === 'attr' && !d.attr_name) return showMsg('ov-msg', 'اسم الخاصية مطلوب', false);
-  var id = document.getElementById('ov-edit-id').value;
-  var url = id ? ('/api/admin/content-overrides/' + id) : '/api/admin/content-overrides';
-  authFetch(url, { method: id ? 'PUT' : 'POST', body: d }).then(function (r) { return r.json(); }).then(function (j) {
-    if (j.ok || j.id) {
-      showMsg('ov-msg', id ? 'تم التحديث ✓' : 'تمت الإضافة ✓', true);
-      resetOverride();
-      loadOverrides();
-    } else showMsg('ov-msg', j.error || 'فشل', false);
-  }).catch(function () { showMsg('ov-msg', 'خطأ في الاتصال', false); });
+  var d = gatherOv();
+  if (!d.selector) { notif('ov-msg','محدد العنصر مطلوب',false); return; }
+  if (d.type==='attr' && !d.attr_name) { notif('ov-msg','اسم الخاصية مطلوب',false); return; }
+  var id = document.getElementById('ov-id').value;
+  var url = id ? '/api/admin/content-overrides/'+id : '/api/admin/content-overrides';
+  var method = id ? 'PUT' : 'POST';
+  document.getElementById('ov-saving').style.display = 'inline-flex';
+  authFetch(url, {method:method, body:d})
+    .then(function(r){ return r.json(); })
+    .then(function(j) {
+      document.getElementById('ov-saving').style.display = 'none';
+      if (j.ok || j.id) {
+        notif('ov-msg', id ? '✅ تم التحديث بنجاح' : '✅ تمت الإضافة بنجاح', true);
+        resetOverride();
+        loadOverrides();
+      } else {
+        notif('ov-msg', j.error||'حدث خطأ', false);
+      }
+    }).catch(function() {
+      document.getElementById('ov-saving').style.display='none';
+      notif('ov-msg','خطأ في الاتصال',false);
+    });
 }
 
 function loadOverrides() {
   var f = document.getElementById('ov-filter').value;
-  var url = '/api/admin/content-overrides' + (f ? '?page=' + encodeURIComponent(f) : '');
-  document.getElementById('ov-list').innerHTML = '<div class="spinner"></div>';
-  authFetch(url).then(function (r) { return r.json(); }).then(function (rows) {
-    if (!rows.length) { document.getElementById('ov-list').innerHTML = '<p style="opacity:.6;padding:14px">لا توجد تعديلات بعد.</p>'; return; }
-    var html = '<table><thead><tr><th>الصفحة</th><th>النوع</th><th>المحدد</th><th>القيمة</th><th>ملاحظة</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody>';
-    rows.forEach(function (o) {
-      var pageAr = (PAGES.find(function (p) { return p.slug === o.page; }) || {}).ar || o.page;
-      var preview = o.type === 'hide' ? '—' : esc((o.value_ar || o.value_en || o.value || '').slice(0, 60));
-      html += '<tr>' +
-        '<td>' + pageAr + '</td>' +
-        '<td><span class="badge b-warn">' + o.type + '</span></td>' +
-        '<td><code style="background:#000;padding:2px 6px;border-radius:4px;font-size:.8rem">' + esc(o.selector) + '</code></td>' +
-        '<td>' + preview + '</td>' +
-        '<td style="opacity:.7">' + esc(o.note || '') + '</td>' +
-        '<td><span class="badge ' + (o.visible !== false ? 'b-ok' : 'b-no') + '">' + (o.visible !== false ? 'مفعّل' : 'معطّل') + '</span></td>' +
-        '<td class="row-actions">' +
-          '<button class="btn-warn" onclick="toggleOv(\'' + o.id + '\',' + (o.visible === false) + ')">' + (o.visible === false ? 'تفعيل' : 'تعطيل') + '</button>' +
-          '<button class="btn-primary" onclick="editOv(\'' + o.id + '\')">تعديل</button>' +
-          '<button class="btn-danger" onclick="delOv(\'' + o.id + '\')">حذف</button>' +
-        '</td></tr>';
+  var url = '/api/admin/content-overrides' + (f ? '?page='+encodeURIComponent(f) : '');
+  document.getElementById('ov-list').innerHTML = '<div class="loading-row"><div class="spinner"></div></div>';
+  authFetch(url).then(function(r){ return r.json(); }).then(function(rows) {
+    _ovs = rows;
+    document.getElementById('st-ovr').textContent = rows.length;
+    if (!rows.length) {
+      document.getElementById('ov-list').innerHTML = '<div class="empty-row"><i class="fas fa-wand-magic"></i>لا توجد تعديلات بعد</div>';
+      return;
+    }
+    var html = '<div class="table-wrap"><table><thead><tr>' +
+      '<th>الصفحة</th><th>النوع</th><th>المحدد</th><th>القيمة (عربي)</th><th>ملاحظة</th><th>الحالة</th><th>إجراءات</th>' +
+      '</tr></thead><tbody>';
+    rows.forEach(function(o) {
+      var pageAr = (PAGES.find(function(p){return p.slug===o.page;})||{}).ar || o.page;
+      var typeColor = {text:'b-cyan',html:'b-violet',image:'b-green',hide:'b-red',attr:'b-gold'}[o.type]||'b-gray';
+      var preview = o.type==='hide' ? '—' : trunc(o.value_ar||o.value_en||o.value||'',55);
+      html += '<tr id="ovr-'+o.id+'">' +
+        '<td><span class="badge b-gray">'+esc(pageAr)+'</span></td>' +
+        '<td><span class="badge '+typeColor+'">'+esc(o.type)+'</span></td>' +
+        '<td><code>'+esc(trunc(o.selector,35))+'</code></td>' +
+        '<td class="trunc" style="max-width:160px">'+esc(preview)+'</td>' +
+        '<td style="color:var(--text3);font-size:.78rem">'+esc(trunc(o.note||'',30))+'</td>' +
+        '<td><span class="badge '+(o.visible!==false?'b-green':'b-red')+'">'+(o.visible!==false?'مفعّل':'معطّل')+'</span></td>' +
+        '<td><div class="cell-actions">' +
+          '<button class="btn btn-sm btn-ghost" onclick="fillOv(_ovs.find(function(x){return x.id===\''+o.id+'\'}))" title="تعديل"><i class="fas fa-pen"></i></button>' +
+          '<button class="btn btn-sm btn-warn" onclick="toggleOvVis(\''+o.id+'\','+(!o.visible)+')"><i class="fas fa-'+(o.visible!==false?'eye-slash':'eye')+'"></i></button>' +
+          '<button class="btn btn-sm btn-danger" onclick="delOv(\''+o.id+'\')" title="حذف"><i class="fas fa-trash"></i></button>' +
+        '</div></td></tr>';
     });
-    html += '</tbody></table>';
+    html += '</tbody></table></div>';
     document.getElementById('ov-list').innerHTML = html;
-    window._ovs = rows;
+  }).catch(function() {
+    document.getElementById('ov-list').innerHTML = '<div class="empty-row">⚠️ فشل التحميل</div>';
   });
 }
-window.editOv = function (id) {
-  var o = (window._ovs || []).find(function (x) { return x.id === id; });
-  if (o) fillOverride(o);
-};
-window.delOv = function (id) {
-  if (!confirm('حذف هذا التعديل؟')) return;
-  authFetch('/api/admin/content-overrides/' + id, { method: 'DELETE' }).then(loadOverrides);
-};
-window.toggleOv = function (id, makeVisible) {
-  var o = (window._ovs || []).find(function (x) { return x.id === id; });
-  if (!o) return;
-  o.visible = !!makeVisible;
-  authFetch('/api/admin/content-overrides/' + id, { method: 'PUT', body: o }).then(loadOverrides);
-};
-document.getElementById('ov-save').onclick = saveOverride;
-document.getElementById('ov-reset').onclick = resetOverride;
-document.getElementById('ov-filter').onchange = loadOverrides;
 
-/* ============ EXTRAS (نفس v16 — مختصر) ============ */
+function filterOvTable() {
+  var q = document.getElementById('ov-search').value.toLowerCase();
+  document.querySelectorAll('#ov-list tbody tr').forEach(function(tr) {
+    tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function toggleOvVis(id, makeVisible) {
+  var o = _ovs.find(function(x){return x.id===id;});
+  if (!o) return;
+  authFetch('/api/admin/content-overrides/'+id, {method:'PUT', body:Object.assign({},o,{visible:!!makeVisible})})
+    .then(function(){toast(makeVisible?'👁 تم التفعيل':'⏸ تم التعطيل');loadOverrides();});
+}
+
+function delOv(id) {
+  confirmDel('سيُحذف هذا التعديل نهائياً من قاعدة البيانات.', function() {
+    authFetch('/api/admin/content-overrides/'+id, {method:'DELETE'})
+      .then(function(){toast('🗑 تم الحذف','ok');loadOverrides();});
+  });
+}
+
+/* ══════════════════════════════════════════
+   PAGE EXTRAS
+══════════════════════════════════════════ */
+var _exLayout = 'card';
+var _exColor  = 'cyan';
+var _exAnim   = 'fade-up';
+var _extras   = [];
+
+function setLayout(v, el) {
+  _exLayout = v;
+  document.querySelectorAll('#layoutGrid .layout-card').forEach(function(c){c.classList.remove('active');});
+  el.classList.add('active');
+}
+function setColor(v, el) {
+  _exColor = v;
+  document.querySelectorAll('#colorGrid .color-swatch').forEach(function(c){c.classList.remove('active');});
+  el.classList.add('active');
+}
+function setAnim(v, el) {
+  _exAnim = v;
+  document.querySelectorAll('#animGrid .anim-card').forEach(function(c){c.classList.remove('active');});
+  el.classList.add('active');
+}
+
 function gatherExtra() {
   return {
-    page:document.getElementById('ex-page').value,
-    target_zone:document.getElementById('ex-zone').value,
-    layout:document.getElementById('ex-layout').value,
-    color:document.getElementById('ex-color').value,
-    animation:document.getElementById('ex-anim').value,
-    image_shape:document.getElementById('ex-shape').value,
-    image_pos:document.getElementById('ex-pos').value,
-    order:parseInt(document.getElementById('ex-order').value,10)||0,
-    icon:document.getElementById('ex-icon').value.trim(),
-    image_url:document.getElementById('ex-image').value.trim(),
-    title_ar:document.getElementById('ex-title-ar').value,
-    title_en:document.getElementById('ex-title-en').value,
-    body_ar:document.getElementById('ex-body-ar').value,
-    body_en:document.getElementById('ex-body-en').value,
-    link_url:document.getElementById('ex-link').value.trim(),
+    page:        document.getElementById('ex-page').value,
+    target_zone: document.getElementById('ex-zone').value,
+    layout:      _exLayout,
+    color:       _exColor,
+    animation:   _exAnim,
+    image_shape: document.getElementById('ex-shape').value,
+    image_pos:   document.getElementById('ex-pos').value,
+    order:       parseInt(document.getElementById('ex-order').value)||0,
+    icon:        document.getElementById('ex-icon').value.trim(),
+    image_url:   document.getElementById('ex-image').value.trim(),
+    title_ar:    document.getElementById('ex-title-ar').value,
+    title_en:    document.getElementById('ex-title-en').value,
+    body_ar:     document.getElementById('ex-body-ar').value,
+    body_en:     document.getElementById('ex-body-en').value,
+    link_url:    document.getElementById('ex-link').value.trim(),
     link_text_ar:document.getElementById('ex-link-ar').value,
     link_text_en:document.getElementById('ex-link-en').value,
-    visible:document.getElementById('ex-visible').value==='true'
+    visible:     document.getElementById('ex-visible').value === 'true'
   };
 }
+
 function fillExtra(e) {
-  document.getElementById('ex-edit-id').value=e.id||'';
-  ['page','zone','layout','color','anim','shape','pos','order','icon','image','title-ar','title-en','body-ar','body-en','link','link-ar','link-en','visible'].forEach(function(){});
-  document.getElementById('ex-page').value=e.page||'index';
-  document.getElementById('ex-zone').value=e.target_zone||'bottom';
-  document.getElementById('ex-layout').value=e.layout||'card';
-  document.getElementById('ex-color').value=e.color||'cyan';
-  document.getElementById('ex-anim').value=e.animation||'fade-up';
-  document.getElementById('ex-shape').value=e.image_shape||'rounded';
-  document.getElementById('ex-pos').value=e.image_pos||'right';
-  document.getElementById('ex-order').value=e.order||0;
-  document.getElementById('ex-icon').value=e.icon||'';
-  document.getElementById('ex-image').value=e.image_url||'';
-  document.getElementById('ex-title-ar').value=e.title_ar||'';
-  document.getElementById('ex-title-en').value=e.title_en||'';
-  document.getElementById('ex-body-ar').value=e.body_ar||'';
-  document.getElementById('ex-body-en').value=e.body_en||'';
-  document.getElementById('ex-link').value=e.link_url||'';
-  document.getElementById('ex-link-ar').value=e.link_text_ar||'';
-  document.getElementById('ex-link-en').value=e.link_text_en||'';
-  document.getElementById('ex-visible').value=(e.visible!==false)?'true':'false';
-  window.scrollTo({top:document.getElementById('panel-extras').offsetTop,behavior:'smooth'});
+  document.getElementById('ex-id').value = e.id||'';
+  document.getElementById('ex-page').value     = e.page||'index';
+  document.getElementById('ex-zone').value     = e.target_zone||'bottom';
+  document.getElementById('ex-order').value    = e.order||0;
+  document.getElementById('ex-visible').value  = (e.visible!==false)?'true':'false';
+  document.getElementById('ex-icon').value     = e.icon||'';
+  document.getElementById('ex-image').value    = e.image_url||'';
+  document.getElementById('ex-shape').value    = e.image_shape||'rounded';
+  document.getElementById('ex-pos').value      = e.image_pos||'right';
+  document.getElementById('ex-title-ar').value = e.title_ar||'';
+  document.getElementById('ex-title-en').value = e.title_en||'';
+  document.getElementById('ex-body-ar').value  = e.body_ar||'';
+  document.getElementById('ex-body-en').value  = e.body_en||'';
+  document.getElementById('ex-link').value     = e.link_url||'';
+  document.getElementById('ex-link-ar').value  = e.link_text_ar||'';
+  document.getElementById('ex-link-en').value  = e.link_text_en||'';
+  /* set selectors */
+  document.querySelectorAll('#layoutGrid .layout-card').forEach(function(c){
+    c.classList.toggle('active', c.dataset.layout===(e.layout||'card'));
+  });
+  _exLayout = e.layout||'card';
+  document.querySelectorAll('#colorGrid .color-swatch').forEach(function(c){
+    c.classList.toggle('active', c.dataset.color===(e.color||'cyan'));
+  });
+  _exColor = e.color||'cyan';
+  document.querySelectorAll('#animGrid .anim-card').forEach(function(c){
+    c.classList.toggle('active', c.dataset.anim===(e.animation||'fade-up'));
+  });
+  _exAnim = e.animation||'fade-up';
+  document.getElementById('panel-extras').scrollIntoView({behavior:'smooth'});
+  toast('📝 جاهز للتعديل');
 }
-function resetExtra(){document.getElementById('ex-edit-id').value='';['ex-icon','ex-image','ex-title-ar','ex-title-en','ex-body-ar','ex-body-en','ex-link','ex-link-ar','ex-link-en'].forEach(function(i){document.getElementById(i).value='';});document.getElementById('ex-order').value=0;}
-function saveExtra(){
-  var d=gatherExtra();
-  if(!d.title_ar&&!d.title_en&&!d.body_ar&&!d.body_en&&!d.image_url) return showMsg('extras-msg','أدخل عنواناً أو محتوى أو صورة',false);
-  var id=document.getElementById('ex-edit-id').value;
-  authFetch(id?'/api/admin/page-extras/'+id:'/api/admin/page-extras',{method:id?'PUT':'POST',body:d})
-    .then(function(r){return r.json();}).then(function(j){
-      if(j.ok||j.id){showMsg('extras-msg',id?'تم التحديث ✓':'تمت الإضافة ✓',true);resetExtra();loadExtras();}
-      else showMsg('extras-msg',j.error||'فشل',false);
+
+function resetExtra() {
+  document.getElementById('ex-id').value='';
+  ['ex-icon','ex-image','ex-title-ar','ex-title-en','ex-body-ar','ex-body-en','ex-link','ex-link-ar','ex-link-en']
+    .forEach(function(i){document.getElementById(i).value='';});
+  document.getElementById('ex-order').value=0;
+}
+
+function saveExtra() {
+  var d = gatherExtra();
+  if (!d.title_ar && !d.title_en && !d.body_ar && !d.body_en && !d.image_url) {
+    notif('ex-msg','أدخل عنواناً أو محتوى على الأقل',false); return;
+  }
+  var id = document.getElementById('ex-id').value;
+  authFetch(id?'/api/admin/page-extras/'+id:'/api/admin/page-extras',
+    {method:id?'PUT':'POST', body:d})
+    .then(function(r){return r.json();})
+    .then(function(j){
+      if (j.ok||j.id){ notif('ex-msg',id?'✅ تم التحديث':'✅ تمت الإضافة',true); resetExtra(); loadExtras(); }
+      else notif('ex-msg',j.error||'فشل',false);
     });
 }
-function loadExtras(){
-  var f=document.getElementById('ex-filter').value;
-  authFetch('/api/admin/page-extras'+(f?'?page='+f:'')).then(function(r){return r.json();}).then(function(rows){
-    if(!rows.length){document.getElementById('ex-list-wrap').innerHTML='<p style="opacity:.6;padding:14px">لا يوجد</p>';return;}
-    var html='<table><thead><tr><th>الصفحة</th><th>العنوان</th><th>التخطيط</th><th>اللون</th><th>الأنميشن</th><th>الموضع</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody>';
+
+function loadExtras() {
+  var f = document.getElementById('ex-filter').value;
+  authFetch('/api/admin/page-extras'+(f?'?page='+f:''))
+    .then(function(r){return r.json();}).then(function(rows) {
+    _extras = rows;
+    if (!rows.length) {
+      document.getElementById('ex-list').innerHTML='<div class="empty-row"><i class="fas fa-puzzle-piece"></i>لا توجد بلوكات بعد</div>';
+      return;
+    }
+    var CLRS = {cyan:'#00e5ff',green:'#00e676',violet:'#d500f9',orange:'#ff6d00',blue:'#2979ff',pink:'#f50057',red:'#ff1744',yellow:'#ffd600'};
+    var html='<div class="table-wrap"><table><thead><tr><th>الصفحة</th><th>العنوان</th><th>التخطيط</th><th>اللون</th><th>الأنيميشن</th><th>الموضع</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody>';
     rows.forEach(function(e){
       var pageAr=(PAGES.find(function(p){return p.slug===e.page;})||{}).ar||e.page;
-      html+='<tr><td>'+pageAr+'</td><td>'+esc(e.title_ar||e.title_en||'—')+'</td><td>'+e.layout+'</td>'+
-        '<td><span class="swatch" style="background:'+(e.color||'#888')+'"></span>'+e.color+'</td>'+
-        '<td>'+e.animation+'</td><td>'+e.target_zone+'</td>'+
-        '<td><span class="badge '+(e.visible!==false?'b-ok':'b-no')+'">'+(e.visible!==false?'ظاهر':'مخفي')+'</span></td>'+
-        '<td class="row-actions">'+
-        '<button class="btn-warn" onclick="toggleEx(\''+e.id+'\','+(e.visible===false)+')">'+(e.visible===false?'إظهار':'إخفاء')+'</button>'+
-        '<button class="btn-primary" onclick="editEx(\''+e.id+'\')">تعديل</button>'+
-        '<button class="btn-danger" onclick="delEx(\''+e.id+'\')">حذف</button>'+
-        '</td></tr>';
+      var c=CLRS[e.color]||'#888';
+      html+='<tr>'+
+        '<td><span class="badge b-gray">'+esc(pageAr)+'</span></td>'+
+        '<td>'+esc(trunc(e.title_ar||e.title_en||'—',30))+'</td>'+
+        '<td><span class="badge b-cyan">'+esc(e.layout)+'</span></td>'+
+        '<td><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:50%;background:'+c+';box-shadow:0 0 6px '+c+'"></span>'+esc(e.color)+'</span></td>'+
+        '<td style="font-size:.78rem;color:var(--text3)">'+esc(e.animation)+'</td>'+
+        '<td style="font-size:.78rem;color:var(--text3)">'+esc(e.target_zone)+'</td>'+
+        '<td><span class="badge '+(e.visible!==false?'b-green':'b-red')+'">'+(e.visible!==false?'ظاهر':'مخفي')+'</span></td>'+
+        '<td><div class="cell-actions">'+
+          '<button class="btn btn-sm btn-ghost" onclick="fillExtra(_extras.find(function(x){return x.id===\''+e.id+'\'}))" title="تعديل"><i class="fas fa-pen"></i></button>'+
+          '<button class="btn btn-sm btn-warn" onclick="toggleExVis(\''+e.id+'\','+(!e.visible)+')"><i class="fas fa-'+(e.visible!==false?'eye-slash':'eye')+'"></i></button>'+
+          '<button class="btn btn-sm btn-danger" onclick="delEx(\''+e.id+'\')" title="حذف"><i class="fas fa-trash"></i></button>'+
+        '</div></td></tr>';
     });
-    document.getElementById('ex-list-wrap').innerHTML=html+'</tbody></table>';
-    window._extras=rows;
+    html+='</tbody></table></div>';
+    document.getElementById('ex-list').innerHTML=html;
   });
 }
-window.editEx=function(id){var e=(window._extras||[]).find(function(x){return x.id===id;});if(e)fillExtra(e);};
-window.delEx=function(id){if(confirm('حذف؟'))authFetch('/api/admin/page-extras/'+id,{method:'DELETE'}).then(loadExtras);};
-window.toggleEx=function(id,vis){var e=(window._extras||[]).find(function(x){return x.id===id;});if(!e)return;e.visible=!!vis;authFetch('/api/admin/page-extras/'+id,{method:'PUT',body:e}).then(loadExtras);};
-document.getElementById('ex-save').onclick=saveExtra;
-document.getElementById('ex-reset').onclick=resetExtra;
-document.getElementById('ex-filter').onchange=loadExtras;
+function toggleExVis(id,v){
+  var e=_extras.find(function(x){return x.id===id;});if(!e)return;
+  authFetch('/api/admin/page-extras/'+id,{method:'PUT',body:Object.assign({},e,{visible:!!v})})
+    .then(function(){toast(v?'👁 تم الإظهار':'⏸ تم الإخفاء');loadExtras();});
+}
+function delEx(id){
+  confirmDel('سيُحذف هذا البلوك الديناميكي.',function(){
+    authFetch('/api/admin/page-extras/'+id,{method:'DELETE'}).then(function(){toast('🗑 تم الحذف','ok');loadExtras();});
+  });
+}
 
-/* ============ BLOG ============ */
+/* ══════════════════════════════════════════
+   BLOG
+══════════════════════════════════════════ */
+var _blog = [];
 function saveBlog(){
   var d={title:document.getElementById('bl-title').value,excerpt:document.getElementById('bl-excerpt').value,content:document.getElementById('bl-content').value,icon:document.getElementById('bl-icon').value};
-  if(!d.title||!d.content) return showMsg('blog-msg','العنوان والمحتوى مطلوبان',false);
+  if(!d.title||!d.content){notif('bl-msg','العنوان والمحتوى مطلوبان',false);return;}
   authFetch('/api/blog',{method:'POST',body:d}).then(function(r){return r.json();}).then(function(j){
-    if(j.ok){showMsg('blog-msg','تم النشر ✓',true);['bl-title','bl-excerpt','bl-content','bl-icon'].forEach(function(i){document.getElementById(i).value='';});loadBlog();}
-    else showMsg('blog-msg','فشل',false);
+    if(j.ok){notif('bl-msg','✅ تم النشر',true);['bl-title','bl-excerpt','bl-content','bl-icon'].forEach(function(i){document.getElementById(i).value='';});loadBlog();}
+    else notif('bl-msg',j.error||'فشل',false);
   });
 }
-document.getElementById('bl-save').onclick=saveBlog;
 
 function loadBlog(){
   authFetch('/api/admin/blog').then(function(r){return r.json();}).then(function(rows){
-    if(!rows.length){document.getElementById('bl-list').innerHTML='<p style="opacity:.6">لا يوجد</p>';return;}
-    var html='<table><thead><tr><th>التاريخ</th><th>العنوان</th><th>الحالة</th><th>الظهور</th><th>إجراءات</th></tr></thead><tbody>';
+    _blog=rows;
+    document.getElementById('st-blog').textContent=rows.length;
+    if(!rows.length){document.getElementById('bl-list').innerHTML='<div class="empty-row"><i class="fas fa-pen-fancy"></i>لا توجد مقالات بعد</div>';return;}
+    var html='<div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>العنوان</th><th>النشر</th><th>الظهور</th><th>إجراءات</th></tr></thead><tbody>';
     rows.forEach(function(p){
-      html+='<tr><td>'+(p.date||'-')+'</td><td>'+esc(p.title)+'</td>'+
-            '<td><span class="badge '+(p.published?'b-ok':'b-warn')+'">'+(p.published?'منشور':'مسودة')+'</span></td>'+
-            '<td><span class="badge '+(p.hidden?'b-no':'b-ok')+'">'+(p.hidden?'مخفي':'ظاهر')+'</span></td>'+
-            '<td class="row-actions">'+
-              '<button class="btn-primary" onclick="editBlog(\''+p.id+'\')">تعديل</button>'+
-              '<button class="btn-warn" onclick="toggleBlogHide(\''+p.id+'\','+(!p.hidden)+')">'+(p.hidden?'إظهار':'إخفاء')+'</button>'+
-              '<button class="btn-warn" onclick="toggleBlogPub(\''+p.id+'\','+(!p.published)+')">'+(p.published?'إلغاء النشر':'نشر')+'</button>'+
-              '<button class="btn-danger" onclick="delBlog(\''+p.id+'\')">حذف</button>'+
-            '</td></tr>';
+      html+='<tr><td style="color:var(--text3);font-size:.78rem">'+(p.date||'—')+'</td>'+
+        '<td>'+esc(trunc(p.title,45))+'</td>'+
+        '<td><span class="badge '+(p.published?'b-green':'b-gold')+'">'+(p.published?'منشور':'مسودة')+'</span></td>'+
+        '<td><span class="badge '+(p.hidden?'b-red':'b-green')+'">'+(p.hidden?'مخفي':'ظاهر')+'</span></td>'+
+        '<td><div class="cell-actions">'+
+          '<button class="btn btn-sm btn-ghost" onclick="editBlog(\''+p.id+'\')" title="تعديل"><i class="fas fa-pen"></i></button>'+
+          '<button class="btn btn-sm btn-warn" onclick="toggleBlogHide(\''+p.id+'\','+(!p.hidden)+')" title="'+(p.hidden?'إظهار':'إخفاء')+'"><i class="fas fa-'+(p.hidden?'eye':'eye-slash')+'"></i></button>'+
+          '<button class="btn btn-sm '+(p.published?'btn-ghost':'btn-green')+'" onclick="toggleBlogPub(\''+p.id+'\','+(!p.published)+')" title="'+(p.published?'إلغاء النشر':'نشر')+'"><i class="fas fa-'+(p.published?'pause':'play')+'"></i></button>'+
+          '<button class="btn btn-sm btn-danger" onclick="delBlog(\''+p.id+'\')" title="حذف"><i class="fas fa-trash"></i></button>'+
+        '</div></td></tr>';
     });
-    document.getElementById('bl-list').innerHTML=html+'</tbody></table>';
-    window._blog=rows;
+    html+='</tbody></table></div>';
+    document.getElementById('bl-list').innerHTML=html;
   });
 }
-window.delBlog=function(id){if(confirm('حذف نهائي؟'))authFetch('/api/blog/'+id,{method:'DELETE'}).then(loadBlog);};
-window.toggleBlogHide=function(id,v){authFetch('/api/blog/'+id,{method:'PUT',body:{hidden:v}}).then(loadBlog);};
-window.toggleBlogPub=function(id,v){authFetch('/api/blog/'+id,{method:'PUT',body:{published:v}}).then(loadBlog);};
-window.editBlog=function(id){
-  var p=(window._blog||[]).find(function(x){return x.id===id;});if(!p)return;
-  openModal('تعديل المقال',
-    '<div class="form-grid"><div class="field"><label>العنوان</label><input id="m-title" value="'+esc(p.title||'')+'"></div>'+
-    '<div class="field"><label>الأيقونة</label><input id="m-icon" value="'+esc(p.icon||'')+'"></div></div>'+
-    '<div class="form-grid full" style="margin-top:12px"><div class="field"><label>المقتطف</label><textarea id="m-excerpt" rows="2">'+esc(p.excerpt||'')+'</textarea></div>'+
-    '<div class="field"><label>المحتوى</label><textarea id="m-content" rows="8">'+esc(p.content||'')+'</textarea></div></div>',
-    function(){
-      authFetch('/api/blog/'+id,{method:'PUT',body:{title:document.getElementById('m-title').value,icon:document.getElementById('m-icon').value,excerpt:document.getElementById('m-excerpt').value,content:document.getElementById('m-content').value}}).then(function(){closeModal();loadBlog();});
-    });
-};
 
-/* ============ COMMUNITY ============ */
+function editBlog(id){
+  var p=_blog.find(function(x){return x.id===id;});if(!p)return;
+  openModal('تعديل المقال',
+    '<div class="fg" style="margin-bottom:12px">'+
+      '<div class="field"><label>العنوان</label><input id="m-title" value="'+esc(p.title||'')+'"></div>'+
+      '<div class="field"><label>الأيقونة</label><input id="m-icon" value="'+esc(p.icon||'')+'"></div>'+
+    '</div>'+
+    '<div class="field" style="margin-bottom:12px"><label>المقتطف</label><textarea id="m-excerpt" rows="2">'+esc(p.excerpt||'')+'</textarea></div>'+
+    '<div class="field"><label>المحتوى (HTML)</label><textarea id="m-content" rows="8">'+esc(p.content||'')+'</textarea></div>',
+    'newspaper',
+    function(){
+      authFetch('/api/blog/'+id,{method:'PUT',body:{
+        title:document.getElementById('m-title').value,
+        icon:document.getElementById('m-icon').value,
+        excerpt:document.getElementById('m-excerpt').value,
+        content:document.getElementById('m-content').value
+      }}).then(function(){closeModal();toast('✅ تم التحديث','ok');loadBlog();});
+    });
+}
+function toggleBlogHide(id,v){authFetch('/api/blog/'+id,{method:'PUT',body:{hidden:v}}).then(function(){toast(v?'⏸ تم الإخفاء':'👁 تم الإظهار');loadBlog();});}
+function toggleBlogPub(id,v){authFetch('/api/blog/'+id,{method:'PUT',body:{published:v}}).then(function(){toast(v?'✅ تم النشر':'⏸ إلغاء النشر');loadBlog();});}
+function delBlog(id){confirmDel('سيُحذف المقال نهائياً.',function(){authFetch('/api/blog/'+id,{method:'DELETE'}).then(function(){toast('🗑 تم الحذف','ok');loadBlog();});});}
+
+/* ══════════════════════════════════════════
+   COMMUNITY
+══════════════════════════════════════════ */
+var _cm=[];
 function loadCommunity(){
   authFetch('/api/admin/community').then(function(r){return r.json();}).then(function(rows){
-    if(!rows.length){document.getElementById('cm-list').innerHTML='<p style="opacity:.6">لا يوجد</p>';return;}
-    var html='<table><thead><tr><th>التاريخ</th><th>الكاتب</th><th>العنوان</th><th>الحالة</th><th>الظهور</th><th>إجراءات</th></tr></thead><tbody>';
+    _cm=rows;
+    document.getElementById('st-comm').textContent=rows.length;
+    if(!rows.length){document.getElementById('cm-list').innerHTML='<div class="empty-row"><i class="fas fa-users"></i>لا توجد منشورات</div>';return;}
+    var html='<div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>الكاتب</th><th>العنوان</th><th>الحالة</th><th>الظهور</th><th>إجراءات</th></tr></thead><tbody>';
     rows.forEach(function(p){
-      html+='<tr><td>'+(p.date||'-')+'</td><td>'+esc(p.author||'-')+'</td><td>'+esc(p.title)+'</td>'+
-            '<td><span class="badge '+(p.published?'b-ok':'b-warn')+'">'+(p.published?'معتمد':'بانتظار')+'</span></td>'+
-            '<td><span class="badge '+(p.hidden?'b-no':'b-ok')+'">'+(p.hidden?'مخفي':'ظاهر')+'</span></td>'+
-            '<td class="row-actions">'+
-              '<button class="btn-primary" onclick="editCm(\''+p.id+'\')">تعديل</button>'+
-              (!p.published?'<button class="btn-warn" onclick="approveCm(\''+p.id+'\')">اعتماد</button>':'')+
-              '<button class="btn-warn" onclick="toggleCmHide(\''+p.id+'\','+(!p.hidden)+')">'+(p.hidden?'إظهار':'إخفاء')+'</button>'+
-              '<button class="btn-danger" onclick="delCm(\''+p.id+'\')">حذف</button>'+
-            '</td></tr>';
+      html+='<tr><td style="color:var(--text3);font-size:.78rem">'+(p.date||'—')+'</td>'+
+        '<td>'+esc(trunc(p.author||'زائر',20))+'</td>'+
+        '<td>'+esc(trunc(p.title,40))+'</td>'+
+        '<td><span class="badge '+(p.published?'b-green':'b-gold')+'">'+(p.published?'معتمد':'بانتظار')+'</span></td>'+
+        '<td><span class="badge '+(p.hidden?'b-red':'b-green')+'">'+(p.hidden?'مخفي':'ظاهر')+'</span></td>'+
+        '<td><div class="cell-actions">'+
+          '<button class="btn btn-sm btn-ghost" onclick="editCm(\''+p.id+'\')" title="تعديل"><i class="fas fa-pen"></i></button>'+
+          (!p.published?'<button class="btn btn-sm btn-green" onclick="approveCm(\''+p.id+'\')" title="اعتماد"><i class="fas fa-check"></i></button>':'')+
+          '<button class="btn btn-sm btn-warn" onclick="toggleCmHide(\''+p.id+'\','+(!p.hidden)+')" title="'+(p.hidden?'إظهار':'إخفاء')+'"><i class="fas fa-'+(p.hidden?'eye':'eye-slash')+'"></i></button>'+
+          '<button class="btn btn-sm btn-danger" onclick="delCm(\''+p.id+'\')" title="حذف"><i class="fas fa-trash"></i></button>'+
+        '</div></td></tr>';
     });
-    document.getElementById('cm-list').innerHTML=html+'</tbody></table>';
-    window._cm=rows;
+    html+='</tbody></table></div>';
+    document.getElementById('cm-list').innerHTML=html;
   });
 }
-window.approveCm=function(id){authFetch('/api/community/approve/'+id,{method:'PUT'}).then(loadCommunity);};
-window.delCm=function(id){if(confirm('حذف؟'))authFetch('/api/community/'+id,{method:'DELETE'}).then(loadCommunity);};
-window.toggleCmHide=function(id,v){authFetch('/api/community/'+id,{method:'PUT',body:{hidden:v}}).then(loadCommunity);};
-window.editCm=function(id){
-  var p=(window._cm||[]).find(function(x){return x.id===id;});if(!p)return;
-  openModal('تعديل منشور',
-    '<div class="form-grid"><div class="field"><label>العنوان</label><input id="m-title" value="'+esc(p.title||'')+'"></div>'+
-    '<div class="field"><label>الكاتب</label><input id="m-author" value="'+esc(p.author||'')+'"></div>'+
-    '<div class="field"><label>الأيقونة</label><input id="m-icon" value="'+esc(p.icon||'')+'"></div></div>'+
-    '<div class="form-grid full" style="margin-top:12px"><div class="field"><label>المقتطف</label><textarea id="m-excerpt" rows="2">'+esc(p.excerpt||'')+'</textarea></div>'+
-    '<div class="field"><label>المحتوى</label><textarea id="m-content" rows="6">'+esc(p.content||'')+'</textarea></div></div>',
+function editCm(id){
+  var p=_cm.find(function(x){return x.id===id;});if(!p)return;
+  openModal('تعديل منشور المجتمع',
+    '<div class="fg" style="margin-bottom:12px">'+
+      '<div class="field"><label>العنوان</label><input id="m-title" value="'+esc(p.title||'')+'"></div>'+
+      '<div class="field"><label>الكاتب</label><input id="m-author" value="'+esc(p.author||'')+'"></div>'+
+    '</div>'+
+    '<div class="field" style="margin-bottom:12px"><label>المقتطف</label><textarea id="m-excerpt" rows="2">'+esc(p.excerpt||'')+'</textarea></div>'+
+    '<div class="field"><label>المحتوى</label><textarea id="m-content" rows="6">'+esc(p.content||'')+'</textarea></div>',
+    'users',
     function(){
-      authFetch('/api/community/'+id,{method:'PUT',body:{title:document.getElementById('m-title').value,author:document.getElementById('m-author').value,icon:document.getElementById('m-icon').value,excerpt:document.getElementById('m-excerpt').value,content:document.getElementById('m-content').value}}).then(function(){closeModal();loadCommunity();});
+      authFetch('/api/community/'+id,{method:'PUT',body:{
+        title:document.getElementById('m-title').value,
+        author:document.getElementById('m-author').value,
+        excerpt:document.getElementById('m-excerpt').value,
+        content:document.getElementById('m-content').value
+      }}).then(function(){closeModal();toast('✅ تم التحديث','ok');loadCommunity();});
     });
-};
+}
+function approveCm(id){authFetch('/api/community/approve/'+id,{method:'PUT'}).then(function(){toast('✅ تم الاعتماد','ok');loadCommunity();});}
+function toggleCmHide(id,v){authFetch('/api/community/'+id,{method:'PUT',body:{hidden:v}}).then(function(){toast(v?'⏸ مخفي':'👁 ظاهر');loadCommunity();});}
+function delCm(id){confirmDel('سيُحذف المنشور نهائياً.',function(){authFetch('/api/community/'+id,{method:'DELETE'}).then(function(){toast('🗑 تم الحذف','ok');loadCommunity();});});}
 
-/* ============ TESTIMONIALS ============ */
+/* ══════════════════════════════════════════
+   TESTIMONIALS
+══════════════════════════════════════════ */
+var _ts=[];
 function loadTs(){
   authFetch('/api/admin/testimonials').then(function(r){return r.json();}).then(function(rows){
-    if(!rows.length){document.getElementById('ts-list').innerHTML='<p style="opacity:.6">لا يوجد</p>';return;}
-    var html='<table><thead><tr><th>الاسم</th><th>الوصف</th><th>الرسالة</th><th>الحالة</th><th>الظهور</th><th>إجراءات</th></tr></thead><tbody>';
+    _ts=rows;
+    document.getElementById('st-test').textContent=rows.length;
+    if(!rows.length){document.getElementById('ts-list').innerHTML='<div class="empty-row"><i class="fas fa-star"></i>لا توجد شهادات</div>';return;}
+    var html='<div class="table-wrap"><table><thead><tr><th>الاسم</th><th>الوصف</th><th>الشهادة</th><th>الحالة</th><th>الظهور</th><th>إجراءات</th></tr></thead><tbody>';
     rows.forEach(function(t){
-      html+='<tr><td>'+esc(t.name||'-')+'</td><td>'+esc(t.role||'-')+'</td>'+
-            '<td>'+esc((t.message||'').slice(0,80))+'…</td>'+
-            '<td><span class="badge '+(t.approved?'b-ok':'b-warn')+'">'+(t.approved?'معتمد':'بانتظار')+'</span></td>'+
-            '<td><span class="badge '+(t.hidden?'b-no':'b-ok')+'">'+(t.hidden?'مخفي':'ظاهر')+'</span></td>'+
-            '<td class="row-actions">'+
-              '<button class="btn-primary" onclick="editTs(\''+t.id+'\')">تعديل</button>'+
-              (!t.approved?'<button class="btn-warn" onclick="approveTs(\''+t.id+'\')">اعتماد</button>':'')+
-              '<button class="btn-warn" onclick="toggleTsHide(\''+t.id+'\','+(!t.hidden)+')">'+(t.hidden?'إظهار':'إخفاء')+'</button>'+
-              '<button class="btn-danger" onclick="delTs(\''+t.id+'\')">حذف</button>'+
-            '</td></tr>';
+      html+='<tr>'+
+        '<td style="font-weight:700">'+esc(trunc(t.name||'—',20))+'</td>'+
+        '<td style="color:var(--text3);font-size:.78rem">'+esc(trunc(t.role||'—',20))+'</td>'+
+        '<td style="color:var(--text2)">'+esc(trunc(t.message||'',55))+'</td>'+
+        '<td><span class="badge '+(t.approved?'b-green':'b-gold')+'">'+(t.approved?'معتمد':'بانتظار')+'</span></td>'+
+        '<td><span class="badge '+(t.hidden?'b-red':'b-green')+'">'+(t.hidden?'مخفي':'ظاهر')+'</span></td>'+
+        '<td><div class="cell-actions">'+
+          '<button class="btn btn-sm btn-ghost" onclick="editTs(\''+t.id+'\')" title="تعديل"><i class="fas fa-pen"></i></button>'+
+          (!t.approved?'<button class="btn btn-sm btn-green" onclick="approveTs(\''+t.id+'\')" title="اعتماد"><i class="fas fa-check"></i></button>':'')+
+          '<button class="btn btn-sm btn-warn" onclick="toggleTsHide(\''+t.id+'\','+(!t.hidden)+')" title="'+(t.hidden?'إظهار':'إخفاء')+'"><i class="fas fa-'+(t.hidden?'eye':'eye-slash')+'"></i></button>'+
+          '<button class="btn btn-sm btn-danger" onclick="delTs(\''+t.id+'\')" title="حذف"><i class="fas fa-trash"></i></button>'+
+        '</div></td></tr>';
     });
-    document.getElementById('ts-list').innerHTML=html+'</tbody></table>';
-    window._ts=rows;
+    html+='</tbody></table></div>';
+    document.getElementById('ts-list').innerHTML=html;
   });
 }
-window.approveTs=function(id){authFetch('/api/testimonials/approve/'+id,{method:'PUT'}).then(loadTs);};
-window.delTs=function(id){if(confirm('حذف؟'))authFetch('/api/testimonials/'+id,{method:'DELETE'}).then(loadTs);};
-window.toggleTsHide=function(id,v){authFetch('/api/testimonials/'+id,{method:'PUT',body:{hidden:v}}).then(loadTs);};
-window.editTs=function(id){
-  var t=(window._ts||[]).find(function(x){return x.id===id;});if(!t)return;
-  openModal('تعديل شهادة',
-    '<div class="form-grid"><div class="field"><label>الاسم</label><input id="m-name" value="'+esc(t.name||'')+'"></div>'+
-    '<div class="field"><label>الوصف</label><input id="m-role" value="'+esc(t.role||'')+'"></div></div>'+
-    '<div class="form-grid full" style="margin-top:12px"><div class="field"><label>الرسالة</label><textarea id="m-message" rows="5">'+esc(t.message||'')+'</textarea></div></div>',
+function editTs(id){
+  var t=_ts.find(function(x){return x.id===id;});if(!t)return;
+  openModal('تعديل الشهادة',
+    '<div class="fg" style="margin-bottom:12px">'+
+      '<div class="field"><label>الاسم</label><input id="m-name" value="'+esc(t.name||'')+'"></div>'+
+      '<div class="field"><label>الوصف</label><input id="m-role" value="'+esc(t.role||'')+'"></div>'+
+    '</div>'+
+    '<div class="field"><label>الشهادة</label><textarea id="m-message" rows="5">'+esc(t.message||'')+'</textarea></div>',
+    'star',
     function(){
-      authFetch('/api/testimonials/'+id,{method:'PUT',body:{name:document.getElementById('m-name').value,role:document.getElementById('m-role').value,message:document.getElementById('m-message').value}}).then(function(){closeModal();loadTs();});
+      authFetch('/api/testimonials/'+id,{method:'PUT',body:{
+        name:document.getElementById('m-name').value,
+        role:document.getElementById('m-role').value,
+        message:document.getElementById('m-message').value
+      }}).then(function(){closeModal();toast('✅ تم التحديث','ok');loadTs();});
     });
-};
+}
+function approveTs(id){authFetch('/api/testimonials/approve/'+id,{method:'PUT'}).then(function(){toast('✅ تم الاعتماد','ok');loadTs();});}
+function toggleTsHide(id,v){authFetch('/api/testimonials/'+id,{method:'PUT',body:{hidden:v}}).then(function(){toast(v?'⏸ مخفي':'👁 ظاهر');loadTs();});}
+function delTs(id){confirmDel('سيُحذف الشهادة نهائياً.',function(){authFetch('/api/testimonials/'+id,{method:'DELETE'}).then(function(){toast('🗑 تم الحذف','ok');loadTs();});});}
 
-/* ============ CONTACTS ============ */
+/* ══════════════════════════════════════════
+   CONTACTS
+══════════════════════════════════════════ */
 function loadCt(){
   authFetch('/api/contacts').then(function(r){return r.json();}).then(function(rows){
-    if(!rows.length){document.getElementById('ct-list').innerHTML='<p style="opacity:.6">لا يوجد</p>';return;}
-    var html='<table><thead><tr><th>التاريخ</th><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>الموضوع</th><th>الرسالة</th><th>إجراء</th></tr></thead><tbody>';
+    document.getElementById('st-msg').textContent=rows.length;
+    if(!rows.length){document.getElementById('ct-list').innerHTML='<div class="empty-row"><i class="fas fa-envelope"></i>لا توجد رسائل</div>';return;}
+    var html='<div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>الاسم</th><th>البريد</th><th>الموضوع</th><th>الرسالة</th><th>إجراء</th></tr></thead><tbody>';
     rows.forEach(function(c){
-      html+='<tr><td>'+(c.date||'-').slice(0,10)+'</td><td>'+esc(c.name||'-')+'</td><td>'+esc(c.email||'-')+'</td><td>'+esc(c.phone||'-')+'</td><td>'+esc(c.subject||'-')+'</td><td>'+esc((c.message||'').slice(0,100))+'…</td>'+
-            '<td><button class="btn-danger" onclick="delCt(\''+c.id+'\')">حذف</button></td></tr>';
+      html+='<tr>'+
+        '<td style="color:var(--text3);font-size:.78rem">'+(c.date||'').slice(0,10)+'</td>'+
+        '<td style="font-weight:700">'+esc(c.name||'—')+'</td>'+
+        '<td><a href="mailto:'+esc(c.email)+'" style="color:var(--cyan)">'+esc(trunc(c.email||'',25))+'</a></td>'+
+        '<td><span class="badge b-gray">'+esc(trunc(c.subject||'—',20))+'</span></td>'+
+        '<td style="color:var(--text2)">'+esc(trunc(c.message||'',60))+'</td>'+
+        '<td><button class="btn btn-sm btn-danger" onclick="delCt(\''+c.id+'\')" title="حذف"><i class="fas fa-trash"></i></button></td>'+
+      '</tr>';
     });
-    document.getElementById('ct-list').innerHTML=html+'</tbody></table>';
+    html+='</tbody></table></div>';
+    document.getElementById('ct-list').innerHTML=html;
   });
 }
-window.delCt=function(id){if(confirm('حذف؟'))authFetch('/api/contacts/'+id,{method:'DELETE'}).then(loadCt);};
+function delCt(id){confirmDel('سيُحذف الرسالة نهائياً.',function(){authFetch('/api/contacts/'+id,{method:'DELETE'}).then(function(){toast('🗑 تم الحذف','ok');loadCt();});});}
 
-/* ============ INIT ============ */
-fetch('/api/auth/me',{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(j){
-  if(j.user){document.getElementById('whoami').textContent='مرحباً '+j.user.username;}
-  else if(TOKEN==='admin-token'){document.getElementById('whoami').textContent='وضع توافق (legacy)';}
-  else{localStorage.removeItem('admin-token');location.href='login.html';return;}
-}).catch(function(){document.getElementById('whoami').textContent='متصل';});
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+fetch('/api/auth/me', {credentials:'same-origin'}).then(function(r){return r.json();}).then(function(j){
+  if (j.user) {
+    document.getElementById('whoami').textContent = 'مرحباً، ' + j.user.username;
+  } else if (TOKEN === 'admin-token') {
+    document.getElementById('whoami').textContent = 'وضع التوافق';
+  } else {
+    localStorage.removeItem('admin-token');
+    location.href = 'login.html';
+  }
+}).catch(function(){ document.getElementById('whoami').textContent = 'متصل'; });
+
+/* Visitors stat */
+fetch('/api/visitors').then(function(r){return r.json();}).then(function(d){
+  document.getElementById('st-vis').textContent = d.today || 0;
+});
 
 loadPages().then(function(){
-  ovTypeChanged();
   loadOverrides();
   loadExtras();
   loadBlog();
