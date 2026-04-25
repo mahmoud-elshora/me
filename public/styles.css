@@ -63,7 +63,7 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
   overflow-x: hidden; /* ← مهم جداً للجوال */
-  max-width: 100vw;
+  max-width: 100%;
 }
 
 body {
@@ -72,7 +72,7 @@ body {
   font-family: 'Cairo', 'Tajawal', sans-serif;
   line-height: 1.7;
   overflow-x: hidden; /* ← على المستويين */
-  max-width: 100vw;
+  max-width: 100%;
   min-height: 100vh;
   transition: background-color 0.4s ease, color 0.4s ease;
   direction: rtl;
@@ -525,17 +525,17 @@ body::before {
 }
 
 /* ===== ABOUT SECTION ===== */
-.about-grid { display: grid; grid-template-columns: 1fr 1.5fr; grid-template-rows: auto auto; gap: 1.5rem; }
-.about-card { padding: 2rem; display: flex; align-items: center; gap: 1.5rem; }
+.about-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 1.5rem; }
+.about-card { padding: 2rem; display: flex; align-items: center; gap: 1.5rem;width:100%; }
 .about-avatar { position: relative; flex-shrink: 0; }
 .avatar-glow { position: absolute; inset: -4px; border-radius: 50%; background: conic-gradient(var(--neon-cyan), var(--neon-green), var(--neon-violet), var(--neon-cyan)); animation: spin 4s linear infinite; z-index: 0; }
-.avatar-letter { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; background: var(--bg-primary); border-radius: 50%; font-size: 2.5rem; font-weight: 900; color: var(--neon-cyan); }
+.avatar-letter { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center;   width: clamp(60px, 15vw, 80px);height: clamp(60px, 15vw, 80px); background: var(--bg-primary); border-radius: 50%; font-size: 2.5rem; font-weight: 900; color: var(--neon-cyan); }
 .about-info h3 { font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.25rem; }
 .about-subtitle { color: var(--neon-green); font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem; }
 .about-details { display: flex; flex-direction: column; gap: 0.5rem; }
-.detail-row { display: flex; align-items: center; gap: 0.75rem; font-size: 0.88rem; color: var(--text-secondary); }
+.detail-row { display: flex; align-items: center; gap: 0.75rem; font-size: 0.88rem; color: var(--text-secondary); flex-wrap: wrap; }
 .detail-row i { width: 16px; flex-shrink: 0; }
-.about-bio { padding: 2rem; grid-row: 1 / 3; }
+.about-bio { padding: 2rem; }
 .bio-title { font-size: 1.4rem; font-weight: 800; color: var(--neon-cyan); margin-bottom: 1rem; }
 .about-bio p { color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.8; }
 .skills-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
@@ -565,7 +565,7 @@ body::before {
 .timeline-content p  { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
 
 /* ===== PROJECTS ===== */
-.projects-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; grid-template-rows: auto auto; gap: 1.5rem; }
+.projects-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 1.5rem; }
 .project-card { padding: 2rem; position: relative; overflow: hidden; }
 .project-card.featured { grid-row: 1 / 3; }
 .project-badge { position: absolute; top: 1rem; left: 1rem; padding: 0.3rem 0.8rem; background: var(--neon-cyan); color: #030a14; font-size: 0.75rem; font-weight: 700; border-radius: 50px; }
@@ -831,7 +831,6 @@ body::before {
   .timeline-item[data-side="left"]  .timeline-dot  { grid-column: 1; }
 
   .projects-grid { grid-template-columns: 1fr; }
-  .about-roles   { grid-template-columns: 1fr 1fr; }
 }
 
 /* ── 600px ── */
@@ -850,7 +849,7 @@ body::before {
   .stat-divider { height: 30px; }
 
   /* About */
-  .about-card { flex-direction: column; text-align: center; padding: 1.5rem; }
+  .about-card { flex-direction: column; text-align: center; padding: 1.5rem; width:100%; }
   .about-roles { grid-template-columns: 1fr; }
   .role-card { padding: 1rem; }
 
@@ -932,3 +931,11 @@ body::before {
   .activities-grid { grid-template-columns: 1fr; }
   .initiative-hero { padding: 1.5rem; }
 }
+
+/* ================================================================
+   ⛔️ تم حذف التكرارات (~200 سطر) من نهاية الملف:
+      - 4 بلوكات @media لقسم about مكررة
+      - بلوك FIX GLOBAL MOBILE ISSUES المكرر
+      - بلوك ABOUT FIX (MOBILE SAFE) المكرر
+   كل هذه التحسينات موجودة الآن في mobile-responsive.css
+   ================================================================ */
