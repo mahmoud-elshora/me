@@ -2,7 +2,7 @@ require('dotenv').config({ path: '.env' });
 
 'use strict';
 /* ============================================================
-   PERFECT CLAUDE v17 — API
+   PERFECT CLAUDE v22 — API
    - Node 13.14.0 / CommonJS
    - MongoDB Atlas (mongodb v3 driver)
    - إصلاح نظام الزوار: middleware فقط على /api/ وليس كل طلب
@@ -21,7 +21,7 @@ var app = express();
 
 /* ---------- MongoDB ---------- */
 var MONGODB_URI = process.env.MONGODB_URI;
-var DB_NAME     = process.env.DB_NAME || 'wa3yna';
+var DB_NAME     = process.env.DB_NAME || 'perfect_claude';
 var _db = null, _client = null;
 
 function getDB() {
@@ -622,7 +622,7 @@ app.get('/api/pages-list', function (req, res) {
 });
 
 app.get('/api/health', function (req, res) {
-  res.json({ ok: true, ts: Date.now(), version: 'v17' });
+  res.json({ ok: true, ts: Date.now(), version: 'v22' });
 });
 
 /* ---------- Export & standalone ---------- */
@@ -636,6 +636,6 @@ if (require.main === module) {
     res.status(404).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
   });
   app.listen(PORT, function () {
-    console.log('Perfect Claude v17 running on http://localhost:' + PORT);
+    console.log('Perfect Claude v22 running on http://localhost:' + PORT);
   });
 }
