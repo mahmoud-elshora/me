@@ -1,5 +1,5 @@
 'use strict';
-/* Perfect Claude v16 — Local dev server (Node 13.14.0)
+/* Perfect Claude v22 — Local dev server (Node 13.14.0)
    For Vercel deployment, api/index.js is used as a serverless function. */
 require('dotenv').config && (function () { try { require('dotenv').config(); } catch (e) {} })();
 var path = require('path');

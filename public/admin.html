@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════
-   DESIGN TOKENS
+  DESIGN TOKENS
 ═══════════════════════════════════════════════ */
 :root {
   --bg:        #07090f;
@@ -1455,7 +1455,7 @@ function loadBlog(){
     _blog=rows;
     document.getElementById('st-blog').textContent=rows.length;
     if(!rows.length){document.getElementById('bl-list').innerHTML='<div class="empty-row"><i class="fas fa-pen-fancy"></i>لا توجد مقالات بعد</div>';return;}
-    var html='<div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>العنوان</th><th>النشر</th><th>الظهور</th><th>إجراءات</th></tr></thead><tbody>';
+    var html='<div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>العنوان</th><th>الظهور</th><th>امكانية الوصول</th><th>إجراءات</th></tr></thead><tbody>';
     rows.forEach(function(p){
       html+='<tr><td style="color:var(--text3);font-size:.78rem">'+(p.date||'—')+'</td>'+
         '<td>'+esc(trunc(p.title,45))+'</td>'+
@@ -1620,7 +1620,7 @@ function loadCt(){
 function delCt(id){confirmDel('سيُحذف الرسالة نهائياً.',function(){authFetch('/api/contacts/'+id,{method:'DELETE'}).then(function(){toast('🗑 تم الحذف','ok');loadCt();});});}
 
 /* ══════════════════════════════════════════
-   INIT
+  INIT
 ══════════════════════════════════════════ */
 fetch('/api/auth/me', {credentials:'same-origin'}).then(function(r){return r.json();}).then(function(j){
   if (j.user) {
