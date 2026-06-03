@@ -220,7 +220,7 @@
     var p = currentPage();
     if (p === 'admin' || p === 'login') return;
     var bar = document.createElement('a');
-    bar.href = '/admin.html';
+    bar.href = '/pages/admin.html';
     bar.textContent = '⚙ لوحة الأدمن';
     bar.style.cssText = 'position:fixed;bottom:18px;inset-inline-start:18px;z-index:99999;padding:10px 18px;background:#00f0ff;color:#000;border-radius:30px;font-weight:700;text-decoration:none;box-shadow:0 6px 24px rgba(0,240,255,.5);font-family:Cairo,sans-serif;font-size:13px';
     document.body.appendChild(bar);

@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="stylesheet" href="page-common.css"/>
+  <link rel="stylesheet" href="../CSS/styles.css"/>
+  <link rel="stylesheet" href="../CSS/page-common.css"/>
   <!-- ==================== Google tag (gtag.js) ===================== -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-4S94ZMLQJ3"></script>
   <script>
@@ -78,7 +78,7 @@
     }
     @media(max-width:600px){.activity-full-card{grid-template-columns:1fr;}.act-icon-big{width:60px;height:60px;}}
   </style>
-  <link rel="stylesheet" href="mobile-responsive.css">
+  <link rel="stylesheet" href="../CSS/mobile-responsive.css">
 </head>
 <body>
 <div id="loader" class="loader">
@@ -94,7 +94,7 @@
   <h1>أنشطة المبادرة</h1>
   <p>مجموعة متنوعة من الأنشطة والبرامج التوعوية التي تقدمها مبادرة وعينا لبناء جيل واعٍ ومتميز</p>
   <div class="breadcrumb">
-    <a href="index.html">الرئيسية</a>
+    <a href="../index.html">الرئيسية</a>
     <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
     <span>الأنشطة</span>
   </div>
@@ -312,7 +312,7 @@
   </div>
 </div>
 
-<script src="components.js"></script>
+<script src="../JS/components.js"></script>
 <script>
 function filterActivities(cat, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -328,6 +328,6 @@ function filterActivities(cat, btn) {
 </script>
 
   <!-- v16: admin-overlay (fetches dynamic extras for this page) -->
-  <script src="admin-overlay.js" defer></script>
+  <script src="../JS/admin-overlay.js" defer></script>
 </body>
 </html>

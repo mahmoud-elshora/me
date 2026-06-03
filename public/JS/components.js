@@ -6,14 +6,14 @@
 const NAVBAR_HTML = `
 <header class="header" id="header">
   <nav class="navbar">
-    <a href="index.html" class="nav-logo">
+    <a href="../index.html" class="nav-logo">
       <span class="logo-ar">م.ش</span>
       <span class="logo-divider">|</span>
       <span class="logo-en">M.S</span>
     </a>
 
     <div class="nav-links" id="navLinks">
-    <a href="index.html" class="nav-link" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
+    <a href="../index.html" class="nav-link" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
     <a href="initiative.html" class="nav-link" data-ar="المبادرة" data-en="Initiative">المبادرة</a>
     <a href="activities.html" class="nav-link" data-ar="الأنشطة" data-en="Activities">الأنشطة</a>
     <a href="projects.html" class="nav-link" data-ar="المشاريع" data-en="Projects">المشاريع</a>

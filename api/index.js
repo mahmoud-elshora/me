@@ -29,8 +29,6 @@ function getDB() {
   if (_db) return Promise.resolve(_db);
   if (!_client) {
     _client = new MongoClient(MONGODB_URI, {
-      useNewUrlParser:    true,
-      useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000
     });
   }
@@ -632,6 +630,8 @@ if (require.main === module) {
   var path = require('path');
   var PORT = process.env.PORT || 3000;
   app.use(express.static(path.join(__dirname, '..', 'public'), { extensions: ['html'] }));
+  // Pretty URLs: /admin -> public/pages/admin.html (mirrors vercel.json rewrites)
+  app.use(express.static(path.join(__dirname, '..', 'public', 'pages'), { extensions: ['html'] }));
   app.use(function (req, res) {
     res.status(404).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
   });
