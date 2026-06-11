@@ -1,12 +1,11 @@
-# Perfect Claude — v22
+# Perfect Claude — v17
 
-موقع وعينا (HTML/css/js كلاسيكي) + خادم Node 13.14.0 + MongoDB Atlas.
-هذا الإصدار يحتفظ بكل ميزات v22 ويضيف:
+موقع وعينا (HTML/CSS/JS كلاسيكي) + خادم Node 13.14.0 + MongoDB Atlas.
+هذا الإصدار يحتفظ بكل ميزات v16 ويضيف:
 
-## الجديد في v22
+## الجديد في v17
 
 1. **تعديل المحتوى الأصلي للصفحات (Content Overrides)**
-
    - من تبويب "محتوى الصفحات" داخل لوحة التحكم.
    - تعديل أي نص/HTML/صورة موجودة في صفحات الموقع الستاتيك بدون لمس الكود.
    - أنواع التعديل: `text`, `html`, `image`, `hide`, `attr`.
@@ -21,7 +20,6 @@
    - زر **حذف نهائي**.
 
 ## التشغيل
-
 ```bash
 npm install
 cp .env.example .env   # ضع MONGODB_URI و JWT_SECRET و ADMIN_USER/PASS
@@ -30,12 +28,10 @@ npm start              # http://localhost:3000
 ```
 
 ## المتطلبات
-
-- Node.js **13.14.0** (Commonjs فقط).
+- Node.js **13.14.0** (CommonJS فقط).
 - MongoDB Atlas — متغير `MONGODB_URI` في `.env`.
 
 ## مثال على Override
-
 - الصفحة: `index`
 - النوع: `text`
 - المحدد: `#about h2`
@@ -43,5 +39,4 @@ npm start              # http://localhost:3000
 - النتيجة: يُستبدل عنوان قسم "من نحن" فوراً لكل الزوار.
 
 ## الصفحات المدعومة
-
 index, initiative, activities, projects, cv, skills, achivments, stats, blog, community, testimonials, contact.

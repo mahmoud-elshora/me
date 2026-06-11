@@ -1,0 +1,151 @@
+/* ================================================================
+   INITIATIVE.CSS
+   Palette: Deep Teal + Emerald Green + Electric Cyan
+   Mood: Growth · Trust · Community
+   ================================================================ */
+
+:root {
+  --page-primary:   #00e5d4;   /* teal-cyan */
+  --page-secondary: #00c853;   /* emerald */
+  --page-accent:    #1de9b6;   /* mint-neon */
+  --page-dark:      #002b27;   /* deep teal bg */
+  --page-glow:      rgba(0,229,212,0.15);
+}
+
+/* ── Hero override ── */
+.page-hero {
+  background: radial-gradient(ellipse at 40% 50%, #00251e 0%, #050a14 75%);
+}
+.hero-glow {
+  background: radial-gradient(ellipse, rgba(0,229,212,.07) 0%, transparent 70%);
+}
+.hero-badge {
+  color: var(--page-primary);
+  background: rgba(0,229,212,.07);
+  border-color: rgba(0,229,212,.25);
+}
+.page-hero h1 {
+  background: linear-gradient(135deg, var(--text-primary), var(--page-primary));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Initiative Logo ── */
+.init-logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 180px; height: 180px;
+  margin: 0 auto 2rem;
+}
+.init-ring {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: conic-gradient(var(--page-primary), var(--page-secondary), var(--page-accent), var(--page-primary)) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out; mask-composite: exclude;
+  animation: spin 6s linear infinite;
+}
+.init-ring-2 {
+  position: absolute; inset: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,229,212,.2);
+  animation: spin 10s linear infinite reverse;
+}
+.init-logo-text {
+  font-size: 2.6rem; font-weight: 900;
+  color: var(--page-primary);
+  text-shadow: 0 0 28px var(--page-primary);
+  position: relative; z-index: 2;
+}
+.init-logo-sub {
+  font-family: 'Orbitron', monospace;
+  font-size: .62rem; letter-spacing: 4px;
+  color: var(--page-secondary); text-transform: uppercase;
+  position: relative; z-index: 2;
+}
+
+/* ── VM Cards (Vision Mission) ── */
+.vm-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.4rem;
+  margin-bottom: 3rem;
+}
+.vm-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(0,229,212,.15);
+  border-radius: var(--r-lg);
+  padding: 1.8rem 1.5rem;
+  transition: all var(--t-mid);
+  position: relative; overflow: hidden;
+}
+.vm-card::before {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle, var(--page-glow) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.vm-card:hover {
+  border-color: rgba(0,229,212,.38);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0,229,212,.12);
+}
+.vm-icon {
+  width: 50px; height: 50px; border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; margin-bottom: 1.1rem;
+}
+.vm-card h3 { font-size: 1rem; font-weight: 800; color: var(--page-primary); margin-bottom: .7rem; }
+.vm-card p  { font-size: .84rem; color: var(--text-secondary); line-height: 1.72; }
+
+/* ── Pillar Cards ── */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.4rem;
+  margin-bottom: 3rem;
+}
+.pillar-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--r-lg);
+  padding: 2rem 1.5rem;
+  position: relative; overflow: hidden;
+  transition: all var(--t-mid);
+}
+.pillar-num {
+  font-family: 'Orbitron', monospace;
+  font-size: 2.8rem; font-weight: 900;
+  color: var(--border-dim);
+  position: absolute; top: 1rem; left: 1.4rem;
+  line-height: 1; pointer-events: none;
+  transition: color var(--t-mid);
+}
+.pillar-card:hover .pillar-num { color: rgba(0,229,212,.15); }
+.pillar-card:hover { border-color: rgba(0,229,212,.3); transform: translateY(-4px); box-shadow: 0 10px 35px rgba(0,229,212,.1); }
+.pillar-icon { font-size: 2rem; margin-bottom: 1rem; display: block; position: relative; z-index: 1; }
+.pillar-card h3 { font-weight: 700; margin-bottom: .65rem; color: var(--text-primary); position: relative; z-index: 1; }
+.pillar-card p  { font-size: .84rem; color: var(--text-secondary); line-height: 1.65; position: relative; z-index: 1; }
+
+/* ── CTA Block ── */
+.init-cta {
+  background: linear-gradient(135deg, rgba(0,229,212,.06), rgba(0,200,83,.04));
+  border: 1px solid rgba(0,229,212,.2);
+  border-radius: var(--r-xl);
+  padding: 3rem; text-align: center;
+}
+.init-cta h2 { font-size: 1.9rem; font-weight: 900; color: var(--text-primary); margin-bottom: 1rem; }
+.init-cta p  { color: var(--text-secondary); max-width: 520px; margin: 0 auto 2rem; }
+.init-cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+/* ── Sec line override ── */
+.sec-line { background: linear-gradient(90deg, var(--page-primary), var(--page-secondary)); box-shadow: 0 0 10px var(--page-primary); }
+
+/* ── Responsive ── */
+@media (max-width: 900px) { .vm-grid { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .pillars-grid { grid-template-columns: 1fr; } .init-cta { padding: 2rem 1.25rem; } }

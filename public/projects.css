@@ -1,0 +1,65 @@
+/* ================================================================
+   PROJECTS.CSS
+   Palette: Electric Violet + Neon Pink + Deep Purple
+   Mood: Innovation · Tech · Bold
+   ================================================================ */
+:root {
+  --prj-primary:   #d500f9;
+  --prj-secondary: #f50057;
+  --prj-accent:    #aa00ff;
+  --prj-soft:      #e040fb;
+  --prj-glow:      rgba(213,0,249,.13);
+}
+.page-hero { background:radial-gradient(ellipse at 55% 40%,#1a0030 0%,#050a14 75%); }
+.hero-glow { background:radial-gradient(ellipse,rgba(213,0,249,.07) 0%,transparent 70%); }
+.hero-badge { color:var(--prj-primary); background:rgba(213,0,249,.07); border-color:rgba(213,0,249,.25); }
+.page-hero h1 { background:linear-gradient(135deg,var(--text-primary),var(--prj-soft)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+.sec-line { background:linear-gradient(90deg,var(--prj-primary),var(--prj-secondary)); box-shadow:0 0 10px var(--prj-primary); }
+
+/* Stats Strip */
+.prj-stats {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:1rem; margin-bottom:3rem;
+}
+.prj-stat { background:var(--bg-card); border:1px solid var(--border-dim); border-radius:var(--r-md); padding:1.6rem 1rem; text-align:center; transition:all var(--t-mid); }
+.prj-stat:hover { border-color:rgba(213,0,249,.3); transform:translateY(-4px); box-shadow:0 10px 30px rgba(213,0,249,.12); }
+.prj-stat-num { font-family:'Orbitron',monospace; font-size:2.4rem; font-weight:900; color:var(--prj-primary); text-shadow:0 0 18px var(--prj-primary); display:block; margin-bottom:.3rem; }
+.prj-stat-lbl { font-size:.75rem; color:var(--text-muted); font-weight:600; }
+
+/* Featured Project */
+.prj-featured {
+  background:var(--bg-card); border:1px solid rgba(213,0,249,.25);
+  border-radius:var(--r-xl); padding:2.5rem; margin-bottom:2rem;
+  position:relative; overflow:hidden;
+}
+.prj-featured::before {
+  content:''; position:absolute; top:-60px; right:-60px;
+  width:240px; height:240px;
+  background:radial-gradient(circle,rgba(213,0,249,.08) 0%,transparent 70%);
+  border-radius:50%; pointer-events:none;
+}
+.prj-featured-tag { position:absolute; top:1.2rem; left:1.5rem; background:var(--prj-primary); color:#fff; font-size:.72rem; font-weight:700; padding:.28rem .8rem; border-radius:50px; }
+.prj-featured h2 { font-size:1.7rem; font-weight:900; color:var(--text-primary); margin:.75rem 0 1rem; }
+.prj-featured p  { color:var(--text-secondary); line-height:1.8; font-size:.92rem; margin-bottom:1rem; }
+
+/* Tech Stack Chips */
+.tech-row { display:flex; flex-wrap:wrap; gap:.45rem; margin-bottom:1.5rem; }
+.tech-chip { padding:.25rem .75rem; border-radius:6px; font-size:.72rem; font-weight:700; font-family:'Orbitron',monospace; background:var(--bg-glass); border:1px solid var(--border-mid); color:var(--text-muted); }
+
+/* Project Cards Grid */
+.prj-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.6rem; }
+.prj-card { background:var(--bg-card); border:1px solid var(--border-dim); border-radius:var(--r-lg); overflow:hidden; transition:all var(--t-mid); }
+.prj-card:hover { border-color:rgba(213,0,249,.3); transform:translateY(-5px); box-shadow:0 14px 44px rgba(213,0,249,.12); }
+.prj-card-banner { height:140px; display:flex; align-items:center; justify-content:center; font-size:3.5rem; position:relative; overflow:hidden; }
+.prj-card-banner::after { content:''; position:absolute; inset:0; background:inherit; opacity:.08; }
+.prj-card-body { padding:1.6rem; }
+.prj-card-header { display:flex; align-items:center; gap:.9rem; margin-bottom:1rem; }
+.prj-card h3 { font-size:1.05rem; font-weight:800; color:var(--text-primary); margin-bottom:.2rem; }
+.prj-card-type { font-size:.72rem; color:var(--text-muted); }
+.prj-card p { font-size:.84rem; color:var(--text-secondary); line-height:1.7; margin-bottom:1.2rem; }
+
+/* Skill Bars section */
+.skills-section { background:var(--bg-card); border:1px solid var(--border-dim); border-radius:var(--r-lg); padding:2rem; margin-top:2.5rem; }
+.skills-section h2 { font-size:1.2rem; font-weight:800; color:var(--prj-soft); margin-bottom:1.5rem; display:flex; align-items:center; gap:.65rem; }
+.skills-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+@media(max-width:700px) { .skills-grid{grid-template-columns:1fr;} .prj-featured{padding:1.75rem;} }
