@@ -1,0 +1,5 @@
+public/test/
+seed.js
+*.log
+.env.local
+README.md
