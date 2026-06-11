@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>لوحة التحكم — وعينا v23</title>
+    <title>لوحة التحكم — وعينا v22</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -1223,7 +1223,7 @@
             style="color: var(--text2); border-color: var(--border)"
           >
             <i class="fas fa-code-branch" style="color: var(--text3)"></i>
-            <span>v23</span>
+            <span>v22</span>
           </div>
         </div>
         <div class="topbar-actions">
@@ -2124,7 +2124,7 @@
           !(opts.body instanceof FormData)
         ) {
           opts.headers["Content-Type"] = "application/json";
-          opts.body = JSON.stringify(opts.body);
+          opts.body = jsON.stringify(opts.body);
         }
         return fetch(url, opts);
       }

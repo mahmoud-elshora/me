@@ -1,5 +1,5 @@
 'use strict';
-/* SEED — Perfect Claude v23
+/* SEED — Perfect Claude v16
    يرفع البيانات الأولية لـ MongoDB Atlas مع إنشاء فهارس page_extras.
    Usage:  MONGODB_URI="..." node seed.js
 */
@@ -82,7 +82,7 @@ client.connect().then(function () {
     /* ===== contacts (ضمان وجود) ===== */
     return db.collection('contacts').createIndex({ date: -1 }).catch(function () {});
   }).then(function () {
-    /* ===== page_extras (مجموعة جديدة في v23) ===== */
+    /* ===== page_extras (مجموعة جديدة في v16) ===== */
     return db.collection('page_extras').createIndex({ page: 1, order: 1 }).catch(function () {});
   }).then(function () {
     console.log('[seed] page_extras: جاهزة (فارغة — أضف من لوحة الأدمن)');

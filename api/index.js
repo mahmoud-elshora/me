@@ -2,7 +2,7 @@ require("dotenv").config({ path: ".env" });
 
 ("use strict");
 /* ============================================================
-   PERFECT CLAUDE v23 — API
+   PERFECT CLAUDE v22 — API
    - Node 13.14.0 / Commonjs
    - MongoDB Atlas (mongodb v3 driver)
    - إصلاح نظام الزوار: middleware فقط على /api/ وليس كل طلب
@@ -880,66 +880,32 @@ app.get("/api/pages-list", function (req, res) {
 });
 
 app.get("/api/health", function (req, res) {
-  res.json({ ok: true, ts: Date.now(), version: "v23" });
+  res.json({ ok: true, ts: Date.now(), version: "v22" });
 });
 
-/* ---------- Static files + Export & standalone ---------- */
-var path = require("path");
-var PUBLIC_DIR = path.join(__dirname, "..", "public");
-var PAGES_DIR = path.join(PUBLIC_DIR, "pages");
-
-/*
-   مهم جدًا لـ Vercel:
-   كل الطلبات يتم تمريرها إلى api/index.js من vercel.json.
-   لذلك لازم Express نفسه يخدم ملفات public/css و public/js بالـ MIME الصحيح.
-*/
-app.use(
-  express.static(PUBLIC_DIR, {
-    extensions: ["html"],
-    setHeaders: function (res, filePath) {
-      if (filePath.slice(-4) === ".css") {
-        res.setHeader("Content-Type", "text/css; charset=utf-8");
-      }
-      if (filePath.slice(-3) === ".js") {
-        res.setHeader("Content-Type", "application/javascript; charset=utf-8");
-      }
-    },
-  })
-);
-
-/* Pretty URLs: /admin -> public/pages/admin.html */
-app.use(
-  express.static(PAGES_DIR, {
-    extensions: ["html"],
-    setHeaders: function (res, filePath) {
-      if (filePath.slice(-4) === ".css") {
-        res.setHeader("Content-Type", "text/css; charset=utf-8");
-      }
-      if (filePath.slice(-3) === ".js") {
-        res.setHeader("Content-Type", "application/javascript; charset=utf-8");
-      }
-    },
-  })
-);
-
-/* API 404 واضح بدل صفحة HTML */
-app.use(function (req, res, next) {
-  if (req.path.indexOf("/api/") === 0) {
-    return res.status(404).json({ ok: false, error: "API route not found" });
-  }
-  next();
-});
-
-/* fallback للصفحات */
-app.use(function (req, res) {
-  res.status(404).sendFile(path.join(PUBLIC_DIR, "index.html"));
-});
-
+/* ---------- Export & standalone ---------- */
 module.exports = app;
 
 if (require.main === module) {
+  var path = require("path");
   var PORT = process.env.PORT || 3000;
+  app.use(
+    express.static(path.join(__dirname, "..", "public"), {
+      extensions: ["html"],
+    })
+  );
+  // Pretty URLs: /admin -> public/pages/admin.html (mirrors vercel.json rewrites)
+  app.use(
+    express.static(path.join(__dirname, "..", "public", "pages"), {
+      extensions: ["html"],
+    })
+  );
+  app.use(function (req, res) {
+    res
+      .status(404)
+      .sendFile(path.join(__dirname, "..", "public", "index.html"));
+  });
   app.listen(PORT, function () {
-    console.log("Perfect Claude v24 running on http://localhost:" + PORT);
+    console.log("Perfect Claude v22 running on http://localhost:" + PORT);
   });
 }

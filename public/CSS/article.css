@@ -1,20 +1,18 @@
-/*
-  ════════════════════════════════════════════════════════════════════
-  📰  article-styles.css  –  wa3-article  (v2)
-  ════════════════════════════════════════════════════════════════════
-  ضعه في  /css/article-styles.css
-  ثم أضف في <head> داخل blog-post.html:
-      <link rel="stylesheet" href="../css/article-styles.css" />
-  ════════════════════════════════════════════════════════════════════
-*/
+/* ════════════════════════════════════════════════════════════════════
+   📰 Article System – Mahmoud El-Shouri Blog (v2)
+   ضع هذا الملف في: css/article.css
+   واربطه مرة واحدة في blog-post.html بعد page-common.css
+   ════════════════════════════════════════════════════════════════════ */
 
-/* ─── Base ─────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
 .wa3-article {
   font-family: "Cairo", sans-serif;
   color: var(--text-secondary, #c0d3e4);
   line-height: 1.95;
   font-size: 1.02rem;
-  direction: rtl;
 }
 .wa3-article *,
 .wa3-article *::before,
@@ -22,7 +20,6 @@
   box-sizing: border-box;
 }
 
-/* ─── Headings ──────────────────────────────────────────────── */
 .wa3-article h2,
 .wa3-article h3,
 .wa3-article h4 {
@@ -35,6 +32,7 @@
   margin: 2.6rem 0 1rem;
   padding-right: 0.9rem;
   border-right: 4px solid var(--neon-cyan, #00e5ff);
+  scroll-margin-top: 100px;
 }
 .wa3-article h3 {
   font-size: 1.2rem;
@@ -45,8 +43,6 @@
   font-size: 1.05rem;
   margin: 0 0 0.6rem;
 }
-
-/* ─── Text ──────────────────────────────────────────────────── */
 .wa3-article p {
   margin: 0 0 1.2rem;
 }
@@ -75,7 +71,7 @@
   border-radius: 4px;
 }
 
-/* ─── Lead paragraph ─────────────────────────────────────────── */
+/* Lead */
 .wa3-article .wa3-lead {
   font-size: 1.18rem;
   color: var(--text-primary, #e8f4ff);
@@ -85,7 +81,7 @@
   margin-bottom: 1.8rem;
 }
 
-/* ─── TL;DR ──────────────────────────────────────────────────── */
+/* TL;DR */
 .wa3-tldr {
   display: flex;
   gap: 1rem;
@@ -124,7 +120,7 @@
   margin: 0;
 }
 
-/* ─── TOC ────────────────────────────────────────────────────── */
+/* TOC */
 .wa3-toc {
   background: var(--bg-glass, rgba(0, 229, 255, 0.04));
   border: 1px solid var(--border-color, rgba(0, 229, 255, 0.12));
@@ -150,12 +146,11 @@
   cursor: pointer;
   font-size: 0.95rem;
   padding: 0.25rem 0.5rem;
-  transition: transform 0.25s;
+  transition: transform 0.2s;
 }
 .wa3-toc-list {
   margin: 0.8rem 0 0;
   padding-inline-start: 1.4rem;
-  list-style: decimal;
 }
 .wa3-toc-list li {
   margin: 0.4rem 0;
@@ -170,11 +165,11 @@
 .wa3-toc.is-collapsed .wa3-toc-list {
   display: none;
 }
-.wa3-toc.is-collapsed .wa3-toc-toggle {
+.wa3-toc.is-collapsed .wa3-toc-toggle i {
   transform: rotate(180deg);
 }
 
-/* ─── Callouts ───────────────────────────────────────────────── */
+/* Callouts */
 .wa3-callout {
   display: flex;
   gap: 0.9rem;
@@ -215,7 +210,7 @@
   color: var(--neon-violet, #d500f9);
 }
 
-/* ─── Lists ──────────────────────────────────────────────────── */
+/* Lists */
 .wa3-article .wa3-list {
   padding-inline-start: 1.4rem;
   margin: 0 0 1.4rem;
@@ -228,7 +223,7 @@
   font-weight: 900;
 }
 
-/* ─── Figure ─────────────────────────────────────────────────── */
+/* Figure */
 .wa3-figure {
   margin: 2rem 0;
   text-align: center;
@@ -246,7 +241,7 @@
   color: var(--text-muted, #456080);
 }
 
-/* ─── Grid cards ─────────────────────────────────────────────── */
+/* Grid Cards */
 .wa3-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -289,7 +284,7 @@
   font-size: 0.92rem;
 }
 
-/* ─── Pros / Cons ────────────────────────────────────────────── */
+/* Pros/Cons */
 .wa3-pros-cons {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -325,7 +320,7 @@
   margin-bottom: 0.35rem;
 }
 
-/* ─── Table ──────────────────────────────────────────────────── */
+/* Table */
 .wa3-table-wrap {
   overflow-x: auto;
   margin: 1.2rem 0 2rem;
@@ -362,7 +357,7 @@
   border-bottom: 0;
 }
 
-/* ─── Code block ─────────────────────────────────────────────── */
+/* Code */
 .wa3-code {
   margin: 1.2rem 0 2rem;
   border-radius: 12px;
@@ -411,7 +406,7 @@
   color: #c8e1ff;
 }
 
-/* ─── Video ──────────────────────────────────────────────────── */
+/* Video */
 .wa3-video {
   position: relative;
   padding-top: 56.25%;
@@ -428,89 +423,70 @@
   border: 0;
 }
 
-/* ─── Video section label ────────────────────────────────────── */
-.wa3-videos-section {
-  margin: 2rem 0;
-}
-.wa3-videos-section h3 {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.1rem;
-  color: var(--text-primary, #e8f4ff);
-  margin-bottom: 1rem;
-}
-.wa3-videos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
-}
-.wa3-video-card {
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid var(--border-color, rgba(0, 229, 255, 0.12));
-  background: var(--bg-glass, rgba(0, 229, 255, 0.04));
-}
-.wa3-video-card .wa3-video {
-  margin: 0;
-  border-radius: 0;
-  border: 0;
-}
-.wa3-video-card-body {
-  padding: 0.7rem 1rem 0.9rem;
-}
-.wa3-video-card-body strong {
-  color: var(--text-primary, #e8f4ff);
-  font-size: 0.92rem;
-  display: block;
-  margin-bottom: 0.25rem;
-}
-.wa3-video-card-body span {
-  font-size: 0.8rem;
-  color: var(--text-muted, #456080);
-}
-
-/* ─── Aliases (توافق مع أسماء بديلة للكلاسات) ──────────────── */
-.wa3-video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
-.wa3-video-meta { padding: 0.7rem 1rem 0.9rem; }
-.wa3-video-meta strong { color: var(--text-primary,#e8f4ff); font-size: .92rem; display: block; margin-bottom: .25rem; }
-.wa3-video-meta a, .wa3-video-meta span { font-size: .8rem; color: var(--text-muted,#456080); display: block; }
-.wa3-video-meta a { color: var(--neon-cyan,#00e5ff); border-bottom: 1px dashed rgba(0,229,255,.4); text-decoration: none; }
-
-/* ─── References ─────────────────────────────────────────────── */
+/* References (NEW) */
 .wa3-refs {
-  margin: 2rem 0;
+  margin: 1.5rem 0 2rem;
   padding: 1.2rem 1.4rem;
   background: var(--bg-glass, rgba(0, 229, 255, 0.04));
   border: 1px solid var(--border-color, rgba(0, 229, 255, 0.12));
+  border-right: 4px solid var(--neon-blue, #2979ff);
   border-radius: 14px;
 }
 .wa3-refs h4 {
+  margin: 0 0 0.8rem;
+  color: var(--neon-blue, #2979ff);
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--text-primary, #e8f4ff);
-  margin: 0 0 0.8rem;
-  font-size: 1rem;
 }
-.wa3-refs h4 i {
-  color: var(--neon-cyan, #00e5ff);
-}
-.wa3-refs ol,
 .wa3-refs ul {
   margin: 0;
-  padding-inline-start: 1.4rem;
+  padding-inline-start: 1.3rem;
+  list-style: none;
 }
 .wa3-refs li {
-  font-size: 0.88rem;
-  color: var(--text-secondary, #c0d3e4);
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.6rem;
+  position: relative;
+  padding-inline-start: 1.4rem;
 }
-.wa3-refs a {
-  font-size: 0.88rem;
+.wa3-refs li::before {
+  content: "\f0c1"; /* fa-link */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  right: 0;
+  top: 0.15rem;
+  color: var(--neon-cyan, #00e5ff);
+  font-size: 0.85rem;
 }
 
-/* ─── FAQ ────────────────────────────────────────────────────── */
+/* Video Grid (NEW – عرض كذا فيديو جنب بعض) */
+.wa3-video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 1.2rem 0 2rem;
+}
+.wa3-video-grid .wa3-video {
+  margin: 0;
+}
+.wa3-video-card .wa3-video-meta {
+  padding: 0.6rem 0.2rem 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary, #c0d3e4);
+}
+.wa3-video-card .wa3-video-meta strong {
+  display: block;
+  color: var(--text-primary, #e8f4ff);
+  margin-bottom: 0.15rem;
+}
+.wa3-video-card .wa3-video-meta a {
+  color: var(--neon-cyan, #00e5ff);
+  font-size: 0.82rem;
+  border: 0;
+}
+
+/* FAQ */
 .wa3-faq {
   padding: 0.85rem 1.1rem;
   margin-bottom: 0.7rem;
@@ -548,7 +524,7 @@
   margin: 0.7rem 0 0;
 }
 
-/* ─── CTA ────────────────────────────────────────────────────── */
+/* CTA */
 .wa3-cta {
   margin: 2.5rem 0 1.5rem;
   padding: 1.8rem 1.4rem;
@@ -611,7 +587,7 @@
   color: var(--neon-cyan, #00e5ff);
 }
 
-/* ─── Tags ───────────────────────────────────────────────────── */
+/* Tags */
 .wa3-tags {
   display: flex;
   flex-wrap: wrap;
@@ -630,12 +606,38 @@
   border: 1px solid rgba(0, 229, 255, 0.25);
 }
 
-/* ─── Scroll target offset ───────────────────────────────────── */
 .wa3-article :target {
   scroll-margin-top: 100px;
 }
 
-/* ─── Responsive ─────────────────────────────────────────────── */
+/* Toast for copy (NEW) */
+.wa3-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: linear-gradient(
+    135deg,
+    var(--neon-cyan, #00e5ff),
+    var(--neon-green, #00e676)
+  );
+  color: #030a14;
+  font-weight: 700;
+  padding: 0.6rem 1.2rem;
+  border-radius: 50px;
+  box-shadow: 0 10px 30px rgba(0, 229, 255, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  z-index: 9999;
+  font-size: 0.9rem;
+}
+.wa3-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Responsive */
 @media (max-width: 600px) {
   .wa3-article {
     font-size: 0.98rem;
@@ -658,14 +660,5 @@
     width: 38px;
     height: 38px;
     flex-basis: 38px;
-  }
-  .wa3-cta {
-    padding: 1.4rem 1rem;
-  }
-  .wa3-cta h3 {
-    font-size: 1.15rem;
-  }
-  .wa3-videos-grid {
-    grid-template-columns: 1fr;
   }
 }

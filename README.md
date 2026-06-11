@@ -1,9 +1,9 @@
-# Perfect Claude — v23
+# Perfect Claude — v22
 
 موقع وعينا (HTML/css/js كلاسيكي) + خادم Node 13.14.0 + MongoDB Atlas.
-هذا الإصدار يحتفظ بكل ميزات v23 ويضيف:
+هذا الإصدار يحتفظ بكل ميزات v22 ويضيف:
 
-## الجديد في v23
+## الجديد في v22
 
 1. **تعديل المحتوى الأصلي للصفحات (Content Overrides)**
 
@@ -45,72 +45,3 @@ npm start              # http://localhost:3000
 ## الصفحات المدعومة
 
 index, initiative, activities, projects, cv, skills, achivments, stats, blog, community, testimonials, contact.
-
-<!-- @ the  body of the website -->
-
-perfect-claude-v23/
-│
-├── 📂 api/                          # المجلد الخاص بالـ Backend والأقسام الخلفية
-│   └── index.js                    # ملف الـ API الرئيسي والمتحكم بالطلبات
-│
-├── 📂 public/                       # الملفات العامة المتاحة للمتصفح (Front-end)
-│   │
-│   ├── 📄 index.html                # الواجهة الرئيسية للموقع
-│   ├── 📄 favicon.ico               # أيقونة الموقع المصغرة
-│   ├── 📄 robots.txt                # ملف توجيه عناكب البحث (SEO)
-│   ├── 📄 sitemap.xml               # الخريطة الأوتوماتيكية لمحركات البحث
-│   ├── 📄 google54e680f4ea799425.html # ملف إثبات الملكية لـ Google Search Console
-│   │
-│   ├── 📂 pages/                    # جميع الصفحات الفرعية للموقع
-│   │   ├── achivments.html
-│   │   ├── activities.html
-│   │   ├── admin.html
-│   │   ├── blog.html
-│   │   ├── blog-post.html
-│   │   ├── community.html
-│   │   ├── community-post.html
-│   │   ├── contact.html
-│   │   ├── cv.html
-│   │   ├── initiative.html
-│   │   ├── login.html
-│   │   ├── projects.html
-│   │   ├── skills.html
-│   │   ├── stats.html
-│   │   └── testimonials.html
-│   │
-│   ├── 📂 css/                      # ملفات التنسيق والتصميم الاستجابي (9 Items)
-│   │   ├── article-styles.css       # ✨ الجديد: تنسيقات مخصصة للمقالات والنصوص الطويلة
-│   │   ├── main.css                 # التنسيق الرئيسي للموقع
-│   │   ├── styles.css               # ملف الستستايل الشامل وتنسيقات الألوان
-│   │   ├── mobile-responsive.css    # تعديلات الشاشات الصغيرة والموبايل
-│   │   ├── page-common.css          # التنسيقات المشتركة بين الصفحات
-│   │   ├── pages.css                # تنسيقات خاصة بالصفحات الداخلية
-│   │   ├── initiative.css           # تنسيق صفحة المبادرة
-│   │   ├── activities.css           # تنسيق قسم الأنشطة
-│   │   └── projects.css             # تنسيق معرض المشاريع
-│   │
-│   ├── 📂 js/                       # ملفات التفاعل والمنطق البرمجي (5 Items)
-│   │   ├── article-engine.js        # ✨ الجديد: محرك معالجة ورندرة المقالات ديناميكياً
-│   │   ├── script.js                # السكربت الرئيسي للموقع
-│   │   ├── components.js            # العناصر المشتركة (مثل الـ Navbar والـ Footer)
-│   │   ├── page-scripts.js          # سكربتات خاصة بالصفحات الداخلية
-│   │   └── admin-overlay.js         # المنطق البرمجي الخاص بلوحة تحكم الإدارة
-│   │
-│   ├── 📂 assets/                   # الملفات والموارد المرئية
-│   │   ├── 📂 images/               # صور الموقع، الخلفيات، والشعارات
-│   │   └── 📂 other/                # ملفات أخرى أو مستندات مرفقة
-│   │
-│   └── 📂 test/                     # القوالب التجريبية والتطويرية (5 Items)
-│       ├── article-template-v2.html # ✨ الجديد: النسخة المطورة من قالب المقالات
-│       ├── post-vacation.html       # ✨ الجديد: صفحة تجريبية لمنشور الإجازة/التوقف
-│       └── trust-self.html
-│
-├── 📄 .env                          # ملف متغيرات البيئة السرية
-├── 📄 .gitignore                    # الملفات المستثناة من الرفع على Git
-├── 📄 package.json                  # ملف الاعتمادات ووصف المشروع وبيانات التشغيل
-├── 📄 package-lock.json             # قفل نسخ الحزم البرمجية المستقرة
-├── 📄 README.md                     # التوثيق والشرح الرئيسي للمشروع
-├── 📄 seed.js                       # ملف تغذية قاعدة البيانات بالبيانات الأولية
-├── 📄 server.js                     # ملف تشغيل السيرفر المحلي والربط
-├── 📄 .vercelignore                 # الملفات المستثناة من الرفع علي vercel 
-└── 📄 vercel.json                   # إعدادات الرفع والاستضافة على منصة Vercel

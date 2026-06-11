@@ -1,327 +1,55 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>مقال | مدونة محمود الشوري</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap"
-      rel="stylesheet"
+    <title>اختبار قالب المقال — منصة محمود</title>
+    <meta
+      name="description"
+      content="صفحة اختبار قالب المقال الجديد بتصميم النيون الديناميكي."
     />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../css/styles.css" />
-    <link rel="stylesheet" href="../css/page-common.css" />
-    <!-- ✅ ستايل المقالات المُحسَّن (مرة واحدة في <head> — لا داعي لتكراره في كل مقال) -->
-    <link rel="stylesheet" href="../css/article-styles.css" />
-    <link rel="stylesheet" href="../css/mobile-responsive.css" />
 
-    <!-- Google Analytics -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-4S94ZMLQJ3"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "G-4S94ZMLQJ3");
-    </script>
+    <!-- Font Awesome 6 (نفس الموقع) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <!-- ستايلات القالب — مسار نسبي من test/ إلى css/ -->
+    <link rel="stylesheet" href="../css/article.css" />
 
     <style>
-      /* ─── Post page layout (يبقى هنا لأنه خاص بهيكل الصفحة مش المقال) ─── */
-      html {
-        scroll-behavior: smooth;
-      }
-
-      .post-hero {
-        padding: 5rem 1.5rem 3rem;
-        background: linear-gradient(
-          180deg,
-          rgba(0, 229, 255, 0.05) 0%,
-          transparent 100%
-        );
-      }
-      .post-container {
-        max-width: 780px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-      }
-      .post-meta-bar {
-        display: flex;
-        align-items: center;
-        gap: 1.2rem;
-        flex-wrap: wrap;
-        margin-bottom: 1.2rem;
-        font-size: 0.85rem;
-        color: var(--text-muted);
-      }
-      .post-meta-bar i {
-        margin-inline-end: 0.3rem;
-        color: var(--neon-cyan);
-      }
-      .post-cat-badge {
-        padding: 0.25rem 0.75rem;
-        border-radius: 50px;
-        font-size: 0.78rem;
-        font-weight: 700;
-        background: rgba(0, 229, 255, 0.1);
-        color: var(--neon-cyan);
-        border: 1px solid rgba(0, 229, 255, 0.3);
-      }
-      .post-title {
-        font-size: clamp(1.6rem, 4vw, 2.4rem);
-        font-weight: 900;
-        line-height: 1.3;
-        color: var(--text-primary);
-        margin: 0 0 1.5rem;
-      }
-      .post-author {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 1.25rem;
-        background: var(--bg-glass);
-        border: 1px solid var(--border-dim);
-        border-radius: 12px;
-        margin-bottom: 3rem;
-      }
-      .post-author-avatar {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        background: linear-gradient(
-          135deg,
-          var(--neon-cyan),
-          var(--neon-green)
-        );
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        font-weight: 900;
-        color: #030a14;
-        flex-shrink: 0;
-      }
-      .post-author-name {
-        font-weight: 700;
-        color: var(--text-primary);
-        font-size: 0.95rem;
-      }
-      .post-author-role {
-        font-size: 0.78rem;
-        color: var(--text-muted);
-      }
-
-      .post-body {
-        font-size: 1rem;
-        color: var(--text-secondary);
-        line-height: 1.9;
-      }
-
-      .post-share {
-        margin-top: 3rem;
-        padding-top: 2rem;
-        border-top: 1px solid var(--border-dim);
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-      }
-      .post-share span {
-        font-weight: 700;
-        color: var(--text-primary);
-      }
-      .share-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        border: 1px solid var(--border-dim);
-        background: var(--bg-glass);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: all 0.2s;
-        color: var(--text-secondary);
-        text-decoration: none;
-      }
-      .share-btn:hover {
-        border-color: var(--neon-cyan);
-        color: var(--neon-cyan);
-      }
-
-      /* Skeleton loader */
-      .skeleton {
-        background: var(--bg-glass);
-        border-radius: 8px;
-        animation: pulse 1.5s ease-in-out infinite;
-      }
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 0.5;
-        }
-        50% {
-          opacity: 1;
-        }
+      /* خلفية بسيطة للاختبار فقط — مش جزء من القالب */
+      body {
+        background: #0a0a14;
+        margin: 0;
+        padding: 24px 12px;
+        font-family: "Tajawal", "Cairo", system-ui, sans-serif;
       }
     </style>
   </head>
-
-  <body data-page="blog-post">
-    <div id="loader" class="loader">
-      <div class="loader-inner">
-        <div class="loader-logo" style="font-size: 1.5rem">00</div>
-        <div class="loader-bar"><span></span></div>
+  <body>
+    <!-- ⬇⬇⬇ جسم المقال — انسخ ما بداخل .post-body فقط عند النشر في admin ⬇⬇⬇ -->
+    <main class="post-body">
+      <!-- ضع هنا محتوى أي مقال (مثال: محتوى ملف pages/vacation-post-body.html) -->
+      <div class="wa3-article" dir="rtl" lang="ar">
+        <aside class="wa3-tldr">
+          <strong>باختصار:</strong> هذه صفحة اختبار للقالب. استبدل هذا الـ
+          <code>div.wa3-article</code> بمحتوى المقال من ملف
+          <code>pages/vacation-post-body.html</code>.
+        </aside>
+        <nav class="wa3-toc" id="wa3Toc"><ol class="wa3-toc-list"></ol></nav>
+        <p class="wa3-lead">
+          جرّب فتح هذه الصفحة في المتصفح للتأكد من أن الـ css والـ js يعملان قبل
+          النشر.
+        </p>
+        <h2><i class="fas fa-flask"></i> قسم تجريبي</h2>
+        <p>إذا ظهر فهرس المحتويات أعلاه تلقائياً، فالقالب يعمل بنجاح.</p>
       </div>
-    </div>
+    </main>
+    <!-- ⬆⬆⬆ نهاية جسم المقال ⬆⬆⬆ -->
 
-    <!-- ─── Post Hero ─── -->
-    <div class="post-hero">
-      <div class="post-container">
-        <div
-          class="breadcrumb"
-          style="justify-content: flex-start; margin-bottom: 2rem"
-        >
-          <a href="../index.html">الرئيسية</a>
-          <span class="breadcrumb-sep"
-            ><i class="fas fa-chevron-left"></i
-          ></span>
-          <a href="blog.html">المدونة</a>
-          <span class="breadcrumb-sep"
-            ><i class="fas fa-chevron-left"></i
-          ></span>
-          <span id="postBreadcrumb">المقال</span>
-        </div>
-        <div class="post-meta-bar">
-          <span class="post-cat-badge" id="postCategory">مقالاتي</span>
-          <span
-            ><i class="fas fa-calendar"></i
-            ><span id="postDate">جاري التحميل...</span></span
-          >
-          <span><i class="fas fa-user"></i> محمود الشوري</span>
-        </div>
-        <h1 class="post-title" id="postTitle">جاري تحميل المقال...</h1>
-      </div>
-    </div>
-
-    <!-- ─── Post Content ─── -->
-    <div class="post-container" style="padding-top: 3rem; padding-bottom: 6rem">
-      <!-- Author -->
-      <div class="post-author">
-        <div class="post-author-avatar">م</div>
-        <div>
-          <div class="post-author-name">محمود أحمد الشوري</div>
-          <div class="post-author-role">
-            طالب مثالي • مؤسس مبادرة وعينا • كفر الشيخ، مصر
-          </div>
-        </div>
-      </div>
-
-      <!-- Body — يُملأ ديناميكياً من API -->
-      <div class="post-body" id="postBody">
-        <p
-          class="skeleton"
-          style="height: 1rem; width: 80%; margin-bottom: 1rem"
-        ></p>
-        <p
-          class="skeleton"
-          style="height: 1rem; width: 95%; margin-bottom: 1rem"
-        ></p>
-        <p
-          class="skeleton"
-          style="height: 1rem; width: 70%; margin-bottom: 1rem"
-        ></p>
-      </div>
-
-      <!-- Share -->
-      <div class="post-share">
-        <span>شارك المقال:</span>
-        <a
-          id="shareWa"
-          href="#"
-          target="_blank"
-          class="share-btn"
-          style="color: #25d366; border-color: rgba(37, 211, 102, 0.3)"
-        >
-          <i class="fab fa-whatsapp"></i>
-        </a>
-        <button class="share-btn" onclick="copyLink()">
-          <i class="fas fa-link"></i>
-        </button>
-        <button class="share-btn" onclick="window.print()">
-          <i class="fas fa-print"></i>
-        </button>
-      </div>
-
-      <!-- Back -->
-      <div style="margin-top: 3rem">
-        <a href="blog.html" class="btn btn-secondary">
-          <i class="fas fa-arrow-right"></i> العودة للمدونة
-        </a>
-      </div>
-    </div>
-
-    <script src="../js/components.js"></script>
-    <script>
-      async function loadFullPost() {
-        const postId = new URLSearchParams(window.location.search).get("id");
-        if (!postId) {
-          document.getElementById("postTitle").textContent =
-            "لم يُحدَّد معرّف المقال";
-          document.getElementById("postBody").innerHTML =
-            '<p style="color:var(--neon-violet);">الرابط غير صحيح.</p>';
-          return;
-        }
-        try {
-          const res = await fetch(`/api/post-details/${postId}`);
-          if (!res.ok) throw new Error("not found");
-          const post = await res.json();
-
-          document.title = post.title + " | مدونة محمود الشوري";
-          document.getElementById("postTitle").textContent = post.title;
-          document.getElementById("postBreadcrumb").textContent =
-            post.title.slice(0, 30) + "…";
-          document.getElementById("postDate").textContent = post.date || "";
-          document.getElementById("postBody").innerHTML =
-            post.content || "<p>لا يوجد محتوى.</p>";
-
-          const waText = encodeURIComponent(
-            `اقرأ هذا المقال: ${post.title}\n${window.location.href}`
-          );
-          document.getElementById(
-            "shareWa"
-          ).href = `https://wa.me/?text=${waText}`;
-        } catch (err) {
-          console.error("Error loading post:", err);
-          document.getElementById("postTitle").textContent =
-            "تعذّر تحميل المقال";
-          document.getElementById("postBody").innerHTML =
-            '<p style="color:var(--neon-violet);">تأكد من تشغيل السيرفر وصحة الرابط.</p>';
-        }
-      }
-
-      function copyLink() {
-        navigator.clipboard
-          .writeText(window.location.href)
-          .then(() => showToast("✅ تم نسخ الرابط!"))
-          .catch(() => showToast("⚠️ تعذّر النسخ"));
-      }
-
-      document.addEventListener("DOMContentLoaded", loadFullPost);
-    </script>
-
-    <!-- ✅ محرك المقالات — يعمل تلقائياً بعد حقن المحتوى (لا تكرار في كل مقال) -->
-    <script src="../js/article-engine.js" defer></script>
-
-    <!-- admin overlay -->
-    <script src="../js/admin-overlay.js" defer></script>
+    <!-- سكريبت القالب — مسار نسبي من test/ إلى js/ -->
+    <script src="../js/article.js" defer></script>
   </body>
 </html>

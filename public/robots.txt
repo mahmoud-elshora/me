@@ -1,13 +1,4 @@
 User-agent: *
-Allow: /
-
-Disallow: /api/
 Disallow: /pages/admin.html
 Disallow: /pages/login.html
-Disallow: /admin
-Disallow: /login
-
-User-agent: Googlebot
-Allow: /
-
-Sitemap: https://mahmoudelshora.vercel.app/sitemap.xml
+Sitemap: https://mahmoud-elshoragithubio-production.up.railway.app/sitemap.xml

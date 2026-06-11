@@ -583,7 +583,7 @@
           const response = await fetch("/api/contact", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email, phone, subject, message: msg }),
+            body: jsON.stringify({ name, email, phone, subject, message: msg }),
           });
 
           if (response.ok) {
@@ -609,7 +609,7 @@
       }
     </script>
 
-    <!-- v23: admin-overlay (fetches dynamic extras for this page) -->
+    <!-- v16: admin-overlay (fetches dynamic extras for this page) -->
     <script src="../js/admin-overlay.js" defer></script>
   </body>
 </html>

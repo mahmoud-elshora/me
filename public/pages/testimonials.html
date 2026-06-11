@@ -120,7 +120,7 @@ async function submitTestimonial() {
     const response = await fetch('/api/testimonials', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, role, message })
+      body: jsON.stringify({ name, role, message })
     });
 
     const result = await response.json();
@@ -149,7 +149,7 @@ async function submitTestimonial() {
 }
   </script>
 
-  <!-- v23: admin-overlay (fetches dynamic extras for this page) -->
+  <!-- v16: admin-overlay (fetches dynamic extras for this page) -->
   <script src="../js/admin-overlay.js" defer></script>
 </body>
 </html>

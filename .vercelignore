@@ -1,8 +1,0 @@
-public/test/
-seed.js
-*.log
-.env
-.env.*
-!.env.example
-.vercel
-node_modules/

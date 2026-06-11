@@ -258,7 +258,7 @@
           const res = await fetch("/api/community-submit", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(postData),
+            body: jsON.stringify(postData),
           });
 
           const data = await res.json();
@@ -286,7 +286,7 @@
       document.addEventListener("DOMContentLoaded", loadCommunityPosts);
     </script>
 
-    <!-- v23: admin-overlay (fetches dynamic extras for this page) -->
+    <!-- v16: admin-overlay (fetches dynamic extras for this page) -->
     <script src="../js/admin-overlay.js" defer></script>
   </body>
 </html>

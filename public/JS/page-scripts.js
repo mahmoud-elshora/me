@@ -305,7 +305,7 @@ function initBlogPostPage() {
         const res = await fetch("/api/comments", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+          body: jsON.stringify(data),
         });
         if (res.ok) {
           showToast("✅ تم إرسال تعليقك بنجاح!");
@@ -350,7 +350,7 @@ function initTestimonialsPage() {
       const res = await fetch("/api/testimonials", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: jsON.stringify(data),
       });
       if (res.ok) {
         showToast("✅ شكراً! تم استلام شهادتك.");
@@ -429,7 +429,7 @@ function initContactPage() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: jsON.stringify(data),
       });
       if (res.ok) {
         showToast("✅ تم إرسال رسالتك بنجاح! سنرد قريباً.");
