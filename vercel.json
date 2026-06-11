@@ -1,90 +1,140 @@
 {
   "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/index.js",
-      "use": "@vercel/node",
-      "config": { "maxLambdaSize": "15mb" }
+      "source": "/initiative",
+      "destination": "/pages/initiative.html"
     },
     {
-      "src": "public/**",
-      "use": "@vercel/static"
+      "source": "/activities",
+      "destination": "/pages/activities.html"
+    },
+    {
+      "source": "/projects",
+      "destination": "/pages/projects.html"
+    },
+    {
+      "source": "/blog",
+      "destination": "/pages/blog.html"
+    },
+    {
+      "source": "/blog-post",
+      "destination": "/pages/blog-post.html"
+    },
+    {
+      "source": "/community",
+      "destination": "/pages/community.html"
+    },
+    {
+      "source": "/community-post",
+      "destination": "/pages/community-post.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/pages/contact.html"
+    },
+    {
+      "source": "/cv",
+      "destination": "/pages/cv.html"
+    },
+    {
+      "source": "/skills",
+      "destination": "/pages/skills.html"
+    },
+    {
+      "source": "/achivments",
+      "destination": "/pages/achivments.html"
+    },
+    {
+      "source": "/stats",
+      "destination": "/pages/stats.html"
+    },
+    {
+      "source": "/testimonials",
+      "destination": "/pages/testimonials.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/pages/login.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/pages/admin.html"
+    },
+    {
+      "source": "/:page.html",
+      "destination": "/pages/:page.html"
     }
-  ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/index.js" },
-
-    { "src": "/css/(.*)",    "dest": "/public/css/$1" },
-    { "src": "/js/(.*)",     "dest": "/public/js/$1" },
-    { "src": "/assets/(.*)", "dest": "/public/assets/$1" },
-    { "src": "/pages/(.*)",  "dest": "/public/pages/$1" },
-
-    { "src": "/robots\\.txt",  "dest": "/public/robots.txt" },
-    { "src": "/sitemap\\.xml", "dest": "/public/sitemap.xml" },
-    { "src": "/favicon\\.ico", "dest": "/public/favicon.ico" },
-    { "src": "/google(.*)\\.html", "dest": "/public/google$1.html" },
-
-    { "src": "/([a-zA-Z0-9_-]+)\\.html", "dest": "/public/pages/$1.html" },
-
-    { "src": "/initiative",   "dest": "/public/pages/initiative.html" },
-    { "src": "/activities",   "dest": "/public/pages/activities.html" },
-    { "src": "/projects",     "dest": "/public/pages/projects.html" },
-    { "src": "/blog",         "dest": "/public/pages/blog.html" },
-    { "src": "/blog-post",    "dest": "/public/pages/blog-post.html" },
-    { "src": "/community",    "dest": "/public/pages/community.html" },
-    { "src": "/community-post", "dest": "/public/pages/community-post.html" },
-    { "src": "/contact",      "dest": "/public/pages/contact.html" },
-    { "src": "/cv",           "dest": "/public/pages/cv.html" },
-    { "src": "/skills",       "dest": "/public/pages/skills.html" },
-    { "src": "/achivments",   "dest": "/public/pages/achivments.html" },
-    { "src": "/stats",        "dest": "/public/pages/stats.html" },
-    { "src": "/testimonials", "dest": "/public/pages/testimonials.html" },
-    { "src": "/login",        "dest": "/public/pages/login.html" },
-    { "src": "/admin",        "dest": "/public/pages/admin.html" },
-
-    { "src": "/", "dest": "/public/index.html" },
-
-    { "src": "/(.*)", "dest": "/public/index.html" }
   ],
   "headers": [
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        }
       ]
     },
     {
       "source": "/css/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800, stale-while-revalidate=86400"
+        }
       ]
     },
     {
       "source": "/js/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800, stale-while-revalidate=86400"
+        }
       ]
     },
     {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=2592000" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000"
+        }
       ]
     },
     {
-      "source": "/sitemap\\.xml",
+      "source": "/sitemap.xml",
       "headers": [
-        { "key": "Content-Type",  "value": "application/xml; charset=utf-8" },
-        { "key": "Cache-Control", "value": "public, max-age=86400" }
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
       ]
     },
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options",        "value": "SAMEORIGIN" },
-        { "key": "X-XSS-Protection",       "value": "1; mode=block" },
-        { "key": "Referrer-Policy",        "value": "strict-origin-when-cross-origin" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
       ]
     }
   ]

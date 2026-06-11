@@ -1,5 +1,9 @@
 public/test/
 seed.js
 *.log
-.env.local
+.env
+.env.*
+!.env.example
+.vercel
+node_modules/
 README.md
