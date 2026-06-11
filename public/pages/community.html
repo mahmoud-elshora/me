@@ -167,6 +167,17 @@
 
     <script src="../js/components.js"></script>
     <script>
+      function escapeHTML(str) {
+        if (!str) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+    </script>
+    <script>
       /* ── تحميل مقالات المجتمع ── */
       async function loadCommunityPosts() {
         const container = document.getElementById("communityGrid");
@@ -198,16 +209,16 @@
             <span class="blog-cat"
                   style="background:rgba(213,0,249,0.1);color:var(--neon-violet);
                          border:1px solid rgba(213,0,249,0.2);">
-              بقلم: ${post.author || "زائر"}
+              بقلم: ${escapeHTML(post.author || "زائر")}
             </span>
             <span class="blog-date"><i class="fas fa-calendar"></i> ${
-              post.date || ""
+              escapeHTML(post.date)
             }</span>
           </div>
-          <h3>${post.title}</h3>
-          <p>${post.excerpt || "لا يوجد وصف مختصر."}</p>
+          <h3>${escapeHTML(post.title)}</h3>
+          <p>${escapeHTML(post.excerpt || "لا يوجد وصف مختصر.")}</p>
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <a href="community-post.html?id=${post.id}" class="blog-read-more">
+            <a href="community-post.html?id=${escapeHTML(post.id)}" class="blog-read-more">
               اقرأ المزيد <i class="fas fa-arrow-left"></i>
             </a>
             <button onclick="copyPostLink('${post.id}')"

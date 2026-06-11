@@ -148,6 +148,17 @@
     <script src="../js/components.js"></script>
     <script src="../js/page-scripts.js"></script>
     <script>
+      function escapeHTML(str) {
+        if (!str) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+    </script>
+    <script>
       /* ── تحميل مقالات المدونة من /api/posts?type=admin ── */
       async function loadBlogPosts() {
         const container = document.getElementById("blogPostsContainer");
@@ -181,14 +192,14 @@
               style="background:rgba(0,229,255,0.1);color:var(--neon-cyan);
                      border:1px solid rgba(0,229,255,0.2);">مقالاتي</span>
         <span class="blog-date"><i class="fas fa-calendar"></i> ${
-          post.date || ""
+          escapeHTML(post.date)
         }</span>
       </div>
 
-      <h3>${post.title}</h3>
-      <p>${post.excerpt || ""}</p>
+      <h3>${escapeHTML(post.title)}</h3>
+      <p>${escapeHTML(post.excerpt)}</p>
 
-      <a href="blog-post.html?id=${post.id}" class="blog-read-more">
+      <a href="blog-post.html?id=${escapeHTML(post.id)}" class="blog-read-more">
         اقرأ المزيد <i class="fas fa-arrow-left"></i>
       </a>
     </div>
