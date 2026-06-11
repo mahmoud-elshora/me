@@ -40,7 +40,21 @@ function getDB() {
 }
 
 /* ---------- Middleware ---------- */
-app.use(cors({ origin: true, credentials: true }));
+var ALLOWED_ORIGINS = [
+  "https://mahmoudelshora.vercel.app",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000"
+];
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || ALLOWED_ORIGINS.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: "2mb" }));
 app.use(cookieParser());
 
@@ -77,7 +91,6 @@ function signToken(user) {
 }
 
 function verifyAdmin(req, res, next) {
-  if (req.headers["authorization"] === "admin-token") return next();
   var token = null;
   if (req.cookies && req.cookies.pc_token) token = req.cookies.pc_token;
   var auth = req.headers && req.headers.authorization;
@@ -220,7 +233,7 @@ app.post("/api/login", loginLimiter, function (req, res) {
     sameSite: "lax",
     maxAge: TOKEN_AGE_MS,
   });
-  res.json({ success: true, token: token, legacy_token: "admin-token" });
+  res.json({ success: true, token: token });
 });
 
 app.post("/api/auth/logout", function (req, res) {
