@@ -6,4 +6,3 @@ seed.js
 !.env.example
 .vercel
 node_modules/
-README.md

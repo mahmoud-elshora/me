@@ -1,84 +1,24 @@
 {
   "version": 2,
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "public/**"
+    }
+  },
   "rewrites": [
     {
-      "source": "/initiative",
-      "destination": "/pages/initiative.html"
-    },
-    {
-      "source": "/activities",
-      "destination": "/pages/activities.html"
-    },
-    {
-      "source": "/projects",
-      "destination": "/pages/projects.html"
-    },
-    {
-      "source": "/blog",
-      "destination": "/pages/blog.html"
-    },
-    {
-      "source": "/blog-post",
-      "destination": "/pages/blog-post.html"
-    },
-    {
-      "source": "/community",
-      "destination": "/pages/community.html"
-    },
-    {
-      "source": "/community-post",
-      "destination": "/pages/community-post.html"
-    },
-    {
-      "source": "/contact",
-      "destination": "/pages/contact.html"
-    },
-    {
-      "source": "/cv",
-      "destination": "/pages/cv.html"
-    },
-    {
-      "source": "/skills",
-      "destination": "/pages/skills.html"
-    },
-    {
-      "source": "/achivments",
-      "destination": "/pages/achivments.html"
-    },
-    {
-      "source": "/stats",
-      "destination": "/pages/stats.html"
-    },
-    {
-      "source": "/testimonials",
-      "destination": "/pages/testimonials.html"
-    },
-    {
-      "source": "/login",
-      "destination": "/pages/login.html"
-    },
-    {
-      "source": "/admin",
-      "destination": "/pages/admin.html"
-    },
-    {
-      "source": "/:page.html",
-      "destination": "/pages/:page.html"
+      "source": "/(.*)",
+      "destination": "/api/index.js"
     }
   ],
   "headers": [
     {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate"
-        }
-      ]
-    },
-    {
       "source": "/css/(.*)",
       "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/css; charset=utf-8"
+        },
         {
           "key": "Cache-Control",
           "value": "public, max-age=604800, stale-while-revalidate=86400"
@@ -88,6 +28,10 @@
     {
       "source": "/js/(.*)",
       "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
+        },
         {
           "key": "Cache-Control",
           "value": "public, max-age=604800, stale-while-revalidate=86400"
